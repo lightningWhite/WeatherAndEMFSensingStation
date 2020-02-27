@@ -11,9 +11,18 @@ equipped with logging. It is heavily based off of the tutorial found
 
 This project is set up to handle the following sensors:
 
-* BME280 - Temperature, pressure, and humidity
+* BME280 - Temperature, pressure, and humidity.
+  * We are using a Diymore sensor. The address for this is 0x76.
 
-## Development
+## Raspberry Pi Configuration
+
+This works well with the NOOBS Raspbian OS installation.
+
+In order to use the I2C and SPI interfaces, these have to be enabled. This can
+be done by running `sudo raspi-config` and enabling I2C and SPI. A reboot is
+required for these to be fully enabled.
+
+## Dependencies and Prerequisites
 
 The project requires Python 3. Once this repository is cloned, perform the
 following steps:
@@ -25,10 +34,11 @@ python3 -m venv env
 source venv/bin/activate
 ```
 
-Install the BME280 Python library:
+Install the BME280 Python library (Note: Don't use sudo for the pip 
+installations in the virtual environment):
 
 ```
-sudo pip3 install RPi.bme280
+pip3 install RPi.bme280
 ```
 
 Install the MariaDB database server software:
