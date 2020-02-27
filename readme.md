@@ -18,20 +18,20 @@ This project is set up to handle the following sensors:
 The project requires Python 3. Once this repository is cloned, perform the
 following steps:
 
-* Create a python virtual environment and activate it:
+Create a python virtual environment and activate it:
 
 ```
 python3 -m venv env
 source venv/bin/activate
 ```
 
-* Install the BME280 Python library
+Install the BME280 Python library:
 
 ```
 sudo pip3 install RPi.bme280
 ```
 
-* Install the MariaDB database server software
+Install the MariaDB database server software:
 
 ```
 sudo apt-get install -y mariadb-server mariadb-client libmariadbclient-dev
