@@ -48,3 +48,20 @@ sudo apt-get install -y mariadb-server mariadb-client libmariadbclient-dev
 pip3 install mysqlclient
 ```
 
+## Files
+
+### bme280_sensor.py
+
+This file interfaces with the BME280 sensor to read the humidity, pressure,
+and ambient temperature. A flag is present that can be set true or false
+to report the temperature in Celsius or Fahrenheit. 
+
+There is also a calibration value that can be used to calibrate the barometer.
+It is simply a value to be added or subtracted from the sensor's reading. To
+determine what value to add or subtract from the reading, look up the 
+barometric reading from a local weather reporting agency, such as Weather.com
+or Wunderground.com. You may need to convert the agency's reading from inHg 
+to millibars. Then find the difference between the weather agency's reading and
+that which is reported by the sensor and add or subtract that difference as
+needed from the reading.
+
