@@ -48,6 +48,10 @@ sudo apt-get install -y mariadb-server mariadb-client libmariadbclient-dev
 pip3 install mysqlclient
 ```
 
+TODO: Format this better
+pip install gpiozero
+pip install RPi.GPIO
+
 ## Files
 
 ### bme280_sensor.py
@@ -64,4 +68,14 @@ or Wunderground.com. You may need to convert the agency's reading from inHg
 to millibars. Then find the difference between the weather agency's reading and
 that which is reported by the sensor and add or subtract that difference as
 needed from the reading.
+
+TODO: List the pin connections
+
+### wind.py
+
+TODO: List the pin connections
+
+Pin 3 on the RJ11 connector to ground
+Pin 4 on the RJ11 connector to pin 5 (BCM pin 5)
+
 
