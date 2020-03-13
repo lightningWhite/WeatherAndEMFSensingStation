@@ -73,9 +73,11 @@ TODO: List the pin connections
 
 ### wind.py
 
+The datasheet for the anemometer can be found
+[here](argentdata.com/files/80422_datasheet.pdf).
+
 TODO: List the pin connections
 
 Pin 3 on the RJ11 connector to ground
 Pin 4 on the RJ11 connector to pin 5 (BCM pin 5)
-
 
