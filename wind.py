@@ -24,7 +24,6 @@ wind_interval = 5 # How often in seconds to report the speed
 def spin():
     global wind_count
     wind_count = wind_count + 1
-    print("spin" + str(wind_count))
 
 def calculate_speed(time_sec):
     global wind_count
@@ -56,4 +55,3 @@ while True:
     time.sleep(wind_interval)
 
     print(calculate_speed(wind_interval), "mph")
-
