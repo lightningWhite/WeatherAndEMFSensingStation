@@ -8,8 +8,9 @@
 # Pin 4 on the RJ11 connector to BCM 5
 
 from gpiozero import Button
-import time
 import math
+import statistics
+import time
 
 CM_IN_A_MILE = 160934.4
 SECS_IN_AN_HOUR = 3600
@@ -20,6 +21,9 @@ wind_speed_sensor = Button(5) # BCM 5
 wind_count = 0  # Number of half rotations
 radius_cm = 9.0 # Radius of the anemometer
 wind_interval = 5 # How often in seconds to report the speed
+
+# Store speeds in order to record wind gusts
+store_speeds = []
 
 def spin():
     global wind_count
@@ -51,7 +55,22 @@ def reset_wind():
 wind_speed_sensor.when_pressed = spin
 
 while True:
-    wind_count = 0
-    time.sleep(wind_interval)
+    # wind_count = 0
+    # time.sleep(wind_interval)
 
-    print(calculate_speed(wind_interval), "mph")
+    # print(calculate_speed(wind_interval), "mph")
+
+    start_time = time.time()
+
+    # 
+    while time.time() - start_time <= wind_interval:
+        print("inner")
+        reset_wind()
+        time.sleep(wind_interval)
+        final_speed = calculate_speed(wind_interval)
+        store_speeds.apped(final_speed)
+
+    print("outer") 
+    wind_gust = max(store_speeds)
+    wind_speed = statistics.mean(store_speeds)
+    print(f"Avg. Wind Speed: {wind_speed}, Wind Gust: {wind_gust})
