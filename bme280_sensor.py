@@ -2,14 +2,14 @@
 # 
 # Reports the Relative Humidity as a percentage.
 # Reports the Barometric Pressure in millibars calibrated to an elevation.
-# Reports the Temperature in Celsius
+# Reports the Temperature in Fahrenheit or Celsius
 #
 # Ensure the following connections to the Raspberry Pi 3 Model B:
 # 
-# VIN connected to pin 17
-# GND connected to pin 9
-# SCL connected to pin 5
-# SDA connected to pin 3
+# VIN of the BME280 sensor connected to pin 17 (3v3 Power)
+# GND of the BME280 sensor connected to pin 9 (Ground)
+# SCL of the BME280 sensor connected to BCM 3 (SCL)
+# SDA of the BME280 sensor connected to BCM 2 (SDA)
 
 import bme280
 import smbus2
@@ -19,7 +19,7 @@ from time import sleep
 CALIBRATION = 157.3826 
 
 # True will report temperature in F, False will report in C
-DO_FAHRENHEIT = False
+DO_FAHRENHEIT = True
 
 port = 1
 address = 0x76 # BME280 address (Diymore sensor. Adafruit would be 0x77)

@@ -1,3 +1,12 @@
+# Argent Anemometer Sensor
+# 
+# Reports the wind speed in miles per hour
+#
+# Ensure the following connections to the Raspberry Pi 3 Model B:
+# 
+# Pin 3 on the RJ11 connector to Ground
+# Pin 4 on the RJ11 connector to BCM 5
+
 from gpiozero import Button
 import time
 import math
@@ -7,7 +16,7 @@ SECS_IN_AN_HOUR = 3600
 
 CALIBRATION = 2.3589722140805094
 
-wind_speed_sensor = Button(5)
+wind_speed_sensor = Button(5) # BCM 5
 wind_count = 0  # Number of half rotations
 radius_cm = 9.0 # Radius of the anemometer
 wind_interval = 5 # How often in seconds to report the speed
