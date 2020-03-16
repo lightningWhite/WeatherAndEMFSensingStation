@@ -50,9 +50,6 @@ def calculate_speed(time_sec):
 def reset_wind():
     global wind_count
     wind_count = 0
-    # TODO: I think I want to reset the store_speeds list every 15 minutes
-    # in order to capture the correct value in our logging time frame
-    # store_speeds.clear()
 
 # Call the spin function every half rotation
 wind_speed_sensor.when_pressed = spin
@@ -70,3 +67,6 @@ while True:
     wind_gust = max(store_speeds)
     wind_speed = statistics.mean(store_speeds)
     print(f"Avg. Wind Speed: {wind_speed}, Wind Gust: {wind_gust}")
+
+    # Clear the recorded speeds so the gust can be updated during the next log period
+    store_speeds.clear()
