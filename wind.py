@@ -17,9 +17,12 @@ SECS_IN_AN_HOUR = 3600
 
 CALIBRATION = 2.3589722140805094
 
+# The interval at which the wind speed average and wind gust is logged
+LOG_INTERVAL = 900 # 15 Minutes
+
 wind_speed_sensor = Button(5) # BCM 5
-wind_count = 0  # Number of half rotations
-radius_cm = 9.0 # Radius of the anemometer
+wind_count = 0    # Number of half rotations
+radius_cm = 9.0   # Radius of the anemometer
 wind_interval = 5 # How often in seconds to report the speed
 
 # Store speeds in order to record wind gusts
@@ -57,13 +60,15 @@ wind_speed_sensor.when_pressed = spin
 while True:
     start_time = time.time()
 
-    # Record the wind speed every 5 seconds, report the avg. and gust every 15 seconds
-    while time.time() - start_time <= 15:
+    # Record the wind speed every 5 seconds, report the avg. and gust every
+    # LOG_INTERVAL seconds
+    while time.time() - start_time <= LOG_INTERVAL:
         reset_wind()
         time.sleep(wind_interval)
         final_speed = calculate_speed(wind_interval)
         store_speeds.append(final_speed)
 
+    # Log the wind gust and the average speed over the LOG_INTERVAL
     wind_gust = max(store_speeds)
     wind_speed = statistics.mean(store_speeds)
     print(f"Avg. Wind Speed: {wind_speed}, Wind Gust: {wind_gust}")
