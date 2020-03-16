@@ -17,13 +17,13 @@ SECS_IN_AN_HOUR = 3600
 
 CALIBRATION = 2.3589722140805094
 
-# The interval at which the wind speed average and wind gust is logged
+# How often the average wind speed and wind gust should be logged
 LOG_INTERVAL = 900 # 15 Minutes
 
 wind_speed_sensor = Button(5) # BCM 5
 wind_count = 0    # Number of half rotations
 radius_cm = 9.0   # Radius of the anemometer
-wind_interval = 5 # How often in seconds to report the speed
+wind_interval = 30# How often in seconds to record the speed
 
 # Store speeds in order to record wind gusts
 store_speeds = []

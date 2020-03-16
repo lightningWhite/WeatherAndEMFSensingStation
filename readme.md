@@ -106,16 +106,20 @@ See [https://projects.raspberrypi.org/en/projects/build-your-own-weather-station
 
 ### wind.py
 
-This file interfaces with the anemometer to record the wind speed in miles per
-hour.
+This file interfaces with the anemometer to record the wind speed and the wind
+gust in miles per hour. It will read the wind speed every 30 seconds and store
+the value. Every 15 minutes it will log the average wind speed recorded as
+well as the highest speed (wind gust) recorded during the last 15 minutes.
 
 The wind speed sensor's radius of 9.0 cm. is used to calculate the speed.
 
 The datasheet indicates that the sensor should report a wind speed of 1.492 MPH
-if the switch is closed once per second. Thus, to calibrate the sensor,
-rotate the sensor five times in the first 5 seconds and obtain the reading. If
-the reading is not 1.492, perform the following equation to determine the
-value that should be entered in for the `CALIBRATION` constant in the file:
+if the switch is closed once per second. Thus, to calibrate the sensor, first
+modify the code so it prints the wind speed every 5 seconds and it calculates
+the wind speed every 5 seconds. Then, rotate the sensor five times in the first
+5 seconds and obtain the reading. If the reading is not 1.492, perform the 
+following equation to determine the value that should be entered in for 
+the `CALIBRATION` constant in the file:
 
 ```
 CALIBRATION = 1.492 / reading
