@@ -65,8 +65,8 @@ while True:
         reset_wind()
         time.sleep(wind_interval)
         final_speed = calculate_speed(wind_interval)
-        store_speeds.apped(final_speed)
+        store_speeds.append(final_speed)
 
     wind_gust = max(store_speeds)
     wind_speed = statistics.mean(store_speeds)
-    print(f"Avg. Wind Speed: {wind_speed}, Wind Gust: {wind_gust})
+    print(f"Avg. Wind Speed: {wind_speed}, Wind Gust: {wind_gust}")
