@@ -136,3 +136,64 @@ Ensure the following connections to the Raspberry Pi 3 Model B:
 
 Pin 3 on the RJ11 connector to Ground
 Pin 4 on the RJ11 connector to BCM 5
+
+### Vane Values
+
+A helper script for calculating the Vout values for each of 16 resistance values
+contained in the wind direction sensor.
+
+Each position of the wind vane results in a different resistance reading based
+off of the reference voltage (3.3V) and the resistors in the voltage divider
+circuit. The R2 value, chosen by us, is used to sufficiently separate the
+voltage readings so they can be mapped to specific directions.
+
+The wind vane datasheet provides output voltages based off of a 5V reference
+voltage. The Raspberry Pi logic levels are 3.3V, so we needed to recalculate
+the voltages that map to each direction. This script is also used for finding
+a suitable R1 value that separates the readings sufficiently to differentiate
+between them.
+
+For our uses, we've found that an R2 value of 4.7kohms works pretty well with
+3.3 volts.
+
+The values resistance values mapped to the voltage values using 3.3V and
+4.7kohms is as follows:
+
+```
+33000 2.889
+6570 1.924
+8200 2.098
+891 0.526
+1000 0.579
+688 0.421
+2200 1.052
+1410 0.762
+3900 1.497
+3140 1.322
+16000 2.551
+14120 2.476
+120000 3.176
+42120 2.969
+64900 3.077
+21880 2.716
+```
+
+### Wind Direction
+
+Ensure the following connections:
+
+* Anemometer connected into the Wind Direction Sensor
+* Wind Direction Sensor connected to the RJ11 connector
+* Pin 3 on the RJ11 connector to Ground
+* Pin 4 on the RJ11 connector to BCM 5
+* Ground to pin 9 on the MCP3304 chip
+* BCM 8 to pin 10 on the MCP3304 chip
+* BCM 10 to pin 11 on the MCP3304 chip
+* BCM 9 to pin 12 on the MCP3304 chip
+* BCM 11 to pin 13 on the MCP3304 chip
+* Ground to pin 14 on the MCP3304 chip
+* 3v3 to pin 15 on the MCP3304 chip
+* 3v3 to pin 16 on the MCP3304 chip
+* 4.7kohm resistor from ground to pin 1 on the MCP3304 chip
+* Pin 5 on the RJ11 connector to Ground ???
+* Pin 6 on the RJ11 connector to pin 1 on the MCP3304 chip ???
