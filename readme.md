@@ -195,5 +195,5 @@ Ensure the following connections:
 * 3v3 to pin 15 on the MCP3304 chip
 * 3v3 to pin 16 on the MCP3304 chip
 * 4.7kohm resistor from ground to pin 1 on the MCP3304 chip
-* Pin 5 on the RJ11 connector to Ground ???
-* Pin 6 on the RJ11 connector to pin 1 on the MCP3304 chip ???
+* Pin 5 on the RJ11 connector to pin 1 on the MCP3304 chip ???
+* Pin 6 on the RJ11 connector to 3v3 ???
