@@ -13,6 +13,7 @@ LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
 adc = MCP3304(channel=0)
+print(adc.value)
 
 # A map that maps voltage readings to wind directions
 volts = {2.889: 0.0, 
@@ -72,5 +73,5 @@ def get_value(time_period=LOG_INTERVAL):
 
     return get_average(data)
 
-while True:
-    print(get_value())
+# while True:
+    # print(get_value())
