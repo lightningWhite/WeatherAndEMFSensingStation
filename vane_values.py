@@ -16,7 +16,7 @@ vane_resistances = [33000, 6570, 8200, 891,
 
 def voltage_divider (r1, r2, vin):
     vout = (vin * r2) / (r1 + r2)
-    return round(vout, 3)
+    return round(vout, 1)
 
 for x in range(len(vane_resistances)):
     print(vane_resistances[x], voltage_divider(4.7 * 1000, vane_resistances[x], 3.3))
