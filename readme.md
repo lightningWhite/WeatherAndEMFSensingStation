@@ -137,7 +137,7 @@ Ensure the following connections to the Raspberry Pi 3 Model B:
 Pin 3 on the RJ11 connector to Ground
 Pin 4 on the RJ11 connector to BCM 5
 
-### Vane Values
+### vane_values.py
 
 A helper script for calculating the Vout values for each of 16 resistance values
 contained in the wind direction sensor.
@@ -178,7 +178,7 @@ The wind direction sensor's resistance values mapped to the voltage values using
 21880 2.7
 ```
 
-### Wind Direction
+### wind_direction.py
 
 Ensure the following connections:
 
@@ -200,3 +200,15 @@ TODO: Verify this.
 * 3v3 to pin 16 on (Vdd) the MCP3208 chip
 * 4.7kohm resistor from ground to pin 1 on the MCP3208 chip for voltage 
 division
+
+### rainfall.py
+
+This file interfaces with the rain sensor to calculate how much rain has fallen
+in inches. It counts how many times the bucket has tipped, where each bucket
+tip signifies 0.011 inches of rain.
+
+Ensure the following connections to the Raspberry Pi 3 Model B:
+
+* Pin 3 on the RJ11 connector to Ground
+* Pin 4 on the RJ11 connector to BCM 6
+ 

@@ -11,7 +11,7 @@ from gpiozero import Button
 import time
 
 rain_sensor = Button(6)
-BUCKET_SIZE = 0.011 # inches per bucket tip
+BUCKET_SIZE = 0.011 # Inches per bucket tip
 LOG_INTERVAL = 900 # How often to log in seconds (15 min)
 count = 0
 precipitation = 0

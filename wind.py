@@ -18,7 +18,7 @@ SECS_IN_AN_HOUR = 3600
 CALIBRATION = 2.3589722140805094
 
 # How often the average wind speed and wind gust should be logged
-LOG_INTERVAL = 5 #900 # 15 Minutes
+LOG_INTERVAL = 5 #900 # 15 Minutes in seconds
 wind_interval = 5 #30# How often in seconds to record the speed
 
 wind_speed_sensor = Button(5) # BCM 5
