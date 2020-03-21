@@ -28,9 +28,9 @@ This project is set up to handle the following sensors:
 
 ### Misc Parts
 
-* [MCP3304](https://www.microchip.com/wwwproducts/en/MCP3304) - 12/13 bit Analog to Digital Converter
+* [MCP3208](https://www.digikey.com/product-detail/en/microchip-technology/MCP3208-CI-P/MCP3208-CI-P-ND/305928) - 12 bit Analog to Digital Converter
   * Provided by Microchip Technology
-  * [Datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/21697F.pdf)
+  * [Datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/21298e.pdf)
 * 16-pin DIL/DIP IC Socket
 * 2 - 4.7 KOhm Through-hole Resistors
 * 2 - 2-pin male headers
@@ -145,42 +145,44 @@ contained in the wind direction sensor.
 Each position of the wind vane results in a different resistance reading based
 off of the reference voltage (3.3V) and the resistors in the voltage divider
 circuit. The R2 value, chosen by us, is used to sufficiently separate the
-voltage readings so they can be mapped to specific directions.
+voltage readings so they can be mapped to 16 specific directions.
 
 The wind vane datasheet provides output voltages based off of a 5V reference
 voltage. The Raspberry Pi logic levels are 3.3V, so we needed to recalculate
 the voltages that map to each direction. This script is also used for finding
-a suitable R1 value that separates the readings sufficiently to differentiate
-between them.
+a suitable R2 value in our voltage divider circuit that separates the readings
+sufficiently to differentiate between them.
 
 For our uses, we've found that an R2 value of 4.7kohms works pretty well with
 3.3 volts.
 
-The values resistance values mapped to the voltage values using 3.3V and
-4.7kohms is as follows:
+The wind direction sensor's resistance values mapped to the voltage values using
+3.3V and 4.7kohms are as follows:
 
 ```
-33000 2.889
-6570 1.924
-8200 2.098
-891 0.526
-1000 0.579
-688 0.421
-2200 1.052
-1410 0.762
-3900 1.497
-3140 1.322
-16000 2.551
-14120 2.476
-120000 3.176
-42120 2.969
-64900 3.077
-21880 2.716
+33000 2.9
+6570 1.9
+8200 2.1
+891 0.5
+1000 0.6
+688 0.4
+2200 1.1
+1410 0.8
+3900 1.5
+3140 1.3
+16000 2.6
+14120 2.5
+120000 3.2
+42120 3.0
+64900 3.1
+21880 2.7
 ```
 
 ### Wind Direction
 
 Ensure the following connections:
+
+TODO: Verify this.
 
 * Anemometer connected into the Wind Direction Sensor
 * Wind Direction Sensor connected to the RJ11 connector
@@ -195,5 +197,5 @@ Ensure the following connections:
 * 3v3 to pin 15 on the MCP3304 chip
 * 3v3 to pin 16 on the MCP3304 chip
 * 4.7kohm resistor from ground to pin 1 on the MCP3304 chip
-* Pin 5 on the RJ11 connector to Ground ???
-* Pin 6 on the RJ11 connector to pin 1 on the MCP3304 chip ???
+* Pin 5 on the RJ11 connector to pin 1 on the MCP3304 chip ???
+* Pin 6 on the RJ11 connector to 3v3 ???
