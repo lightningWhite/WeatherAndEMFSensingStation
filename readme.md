@@ -186,16 +186,17 @@ TODO: Verify this.
 
 * Anemometer connected into the Wind Direction Sensor
 * Wind Direction Sensor connected to the RJ11 connector
-* Pin 3 on the RJ11 connector to Ground
-* Pin 4 on the RJ11 connector to BCM 5
-* Ground to pin 9 on the MCP3304 chip
-* BCM 8 to pin 10 on the MCP3304 chip
-* BCM 10 to pin 11 on the MCP3304 chip
-* BCM 9 to pin 12 on the MCP3304 chip
-* BCM 11 to pin 13 on the MCP3304 chip
-* Ground to pin 14 on the MCP3304 chip
-* 3v3 to pin 15 on the MCP3304 chip
-* 3v3 to pin 16 on the MCP3304 chip
-* 4.7kohm resistor from ground to pin 1 on the MCP3304 chip
-* Pin 5 on the RJ11 connector to pin 1 on the MCP3304 chip ???
-* Pin 6 on the RJ11 connector to 3v3 ???
+* Pin 2 on the RJ11 connector to 3v3
+* Pin 5 on the RJ11 connector to pin 1 (CH0) on the MCP3208
+* Pin 3 on the RJ11 connector to Ground (For the anemometer)
+* Pin 4 on the RJ11 connector to BCM 5 (For the anemometer)
+* Ground to pin 9 on the MCP3208 chip
+* BCM 8 (CE0) to pin 10 (CS/SHDN) on the MCP3208 chip
+* BCM 10 (MOSI) to pin 11 (Din) on the MCP3208 chip
+* BCM 9 (MISO) to pin 12 (Dout) on the MCP3208 chip
+* BCM 11 (SCLK) to pin 13 (CLK) on the MCP3208 chip
+* Ground to pin 14 (AGND) on the MCP3208 chip
+* 3v3 to pin 15 on (Vref) the MCP3208 chip
+* 3v3 to pin 16 on (Vdd) the MCP3208 chip
+* 4.7kohm resistor from ground to pin 1 on the MCP3208 chip for voltage 
+division
