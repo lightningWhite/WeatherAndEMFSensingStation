@@ -1,6 +1,8 @@
 # Argent Rain Sensor
 # 
-# Reports the rainfall in inches
+# This file interfaces with the rain sensor to calculate how much rain has 
+# fallen in inches. It counts how many times the bucket has tipped, where each
+# bucket tip signifies 0.011 inches of rain.
 #
 # Ensure the following connections to the Raspberry Pi 3 Model B:
 # 
