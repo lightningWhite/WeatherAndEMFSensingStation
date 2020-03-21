@@ -33,23 +33,22 @@ import time
 LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
-# adc = MCP3208(channel=0)
-adc = MCP3304(channel=0)
+adc = MCP3208(channel=0)
+# adc = MCP3304(channel=0)
 
 count = 0
 values = []
 while True:
-    # TODO: Chanbe this back to 3.3
-    wind = round(adc.value * 5.0, 1)
+    wind = round(adc.value * 3.3, 1)
     if not wind in values:
         values.append(wind)
         count += 1
         print(f"Count: {count}, Value: {adc.value}, Wind: {wind}")
 
-#####
-# The above code is for debugging and testing first
+####
+#The above code is for debugging and testing first
 
-# # A map that maps voltage readings to wind directions in degrees
+# A map that maps voltage readings to wind directions in degrees
 # volts = {2.9: 0.0, 
 #          1.9: 22.5, 
 #          2.1: 45.0, 
@@ -107,5 +106,5 @@ while True:
 
 #     return get_average(data)
 
-# # while True:
-#     # print(get_value())
+# while True:
+    # print(get_value())
