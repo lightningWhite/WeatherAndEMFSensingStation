@@ -1,6 +1,6 @@
 from gpiozero import Button
 import bme280_sensor
-#import database
+import database
 import datetime
 import math
 import statistics
@@ -105,6 +105,9 @@ rain_sensor.when_pressed = bucket_tipped
 # TODO: Remove temp
 temp = 0
 
+# Connect to the MariaDB database
+db = database.weather_database()
+
 while True:
     start_time = time.time()
 
@@ -129,16 +132,19 @@ while True:
     current_time = datetime.datetime.now()
 
     print(f"Time:                         {current_time}")
-    print(f"Avg. Wind Speed (MPH):        {wind_speed}")
-    print(f"Wind Gust (MPH):              {wind_gust}")
+    print(f"Temperature (F):              {ambient_temp}")
+    print(f"Pressure (mbar):              {pressure}")
+    print(f"Humidity:                     {humidity}")
     print(f"Wind Direction (Degrees):     {wind_direction_avg}")
     print(f"Wind Direction String:        {wind_direction_string}")
+    print(f"Avg. Wind Speed (MPH):        {wind_speed}")
+    print(f"Wind Gust (MPH):              {wind_gust}")
     print(f"Precipitation (Inches):       {precipitation}")
-    print(f"Humidity:                     {humidity}")
-    print(f"Pressure (mbar):              {pressure}")
-    print(f"Temperature (F):              {ambient_temp}")
     print(f"Shortwave Radiation (W m^-2): {shortwave_radiation}")
     print("######################################################")
+
+    # Add the readings to the database
+    db.insert(ambient_temp, pressure, humidity, wind_direction_avg, wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
 
     # Clear the recorded speeds so the gust can be updated during the next log period
     store_speeds.clear()
