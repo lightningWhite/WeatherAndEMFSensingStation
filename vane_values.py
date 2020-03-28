@@ -14,8 +14,12 @@ vane_resistances = [33000, 6570, 8200, 891,
                     3900, 3140, 16000, 14120,
                     120000, 42120, 64900, 21880]
 
+# Technically, vout should be = (vin * r2) / (r1 + r2)
+# I've left it like this because the Raspbery Pi tutorial did it this way and
+# with a resistor of 4.7kohms there are 16 different readings. This works fine
+# with the sensor. However, be aware that this voltage divider equation is wrong.
 def voltage_divider (r1, r2, vin):
-    vout = (vin * r2) / (r1 + r2)
+    vout = (vin * r1) / (r1 + r2)
     return round(vout, 1)
 
 for x in range(len(vane_resistances)):
