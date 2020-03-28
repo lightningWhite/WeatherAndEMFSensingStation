@@ -75,6 +75,10 @@ sudo apt-get install -y mariadb-server mariadb-client libmariadbclient-dev
 
 ## Files
 
+### weather_station.py
+
+TODO
+
 ### bme280_sensor.py
 
 This file interfaces with the BME280 sensor to report the following:
@@ -211,4 +215,8 @@ Ensure the following connections to the Raspberry Pi 3 Model B:
 
 * Pin 3 on the RJ11 connector to Ground
 * Pin 4 on the RJ11 connector to BCM 6
+
+### pyranometer.py
+
+TODO
  
