@@ -23,7 +23,7 @@
 # 4.7kohm resistor from ground to pin 1 on the MCP3208 chip for voltage div
 
 from gpiozero import MCP3208
-# Remove this
+# TODO: Remove this
 from gpiozero import MCP3304
 
 import math
@@ -33,78 +33,120 @@ import time
 LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
-adc = MCP3208(channel=0)
-# adc = MCP3304(channel=0)
+#adc = MCP3208(channel=0)
 
-count = 0
-values = []
-while True:
-    wind = round(adc.value * 3.3, 1)
-    if not wind in values:
-        values.append(wind)
-        count += 1
-        print(f"Count: {count}, Value: {adc.value}, Wind: {wind}")
+# TODO: Remove this when we get the new chip
+adc = MCP3304(channel=0)
 
-####
-#The above code is for debugging and testing first
+# These volgate values mapped to headings came from the Raspberry Pi
+# weather station tutorial (see the readme). However, the voltages came 
+# from an incorrect voltage divider equation.
+# In the tutorial, they used the following equation:
+# vout = (vin * r1) / (r1 + r2)
+# It should have been the following:
+# vout = (vin * r2) / (r1 + r2)
+# However, with a vin of 3v3 and the external resistor of 4.7kohms
+# (r1 in their equation), there are 16 different values, so it works.
+# Due to limited resources and time, I left it as they had it rather
+# than find a different resistor value that would also work.
+volts = {0.4: 0.0,
+         1.4: 22.5, 
+         1.2: 45.0, 
+         2.8: 67.5,
+         2.7: 90.0, 
+         2.9: 112.5, 
+         2.2: 135.0, 
+         2.5: 157.5,
+         1.8: 180.0, 
+         2.0: 202.5, 
+         0.7: 225.0, 
+         0.8: 247.5,
+         0.1: 270.0, 
+         0.3: 292.5, 
+         0.2: 315.0, 
+         0.6: 337.5}
 
-# A map that maps voltage readings to wind directions in degrees
-# volts = {2.9: 0.0, 
-#          1.9: 22.5, 
-#          2.1: 45.0, 
-#          0.5: 67.5,
-#          0.6: 90.0, 
-#          0.4: 112.5, 
-#          1.1: 135.0, 
-#          0.8: 157.5,
-#          1.5: 180.0, 
-#          1.3: 202.5, 
-#          2.6: 225.0, 
-#          2.5: 247.5,
-#          3.2: 270.0, 
-#          3.0: 292.5, 
-#          3.1: 315.0, 
-#          2.7: 337.5}
+# Calculate the average angle from a list of angles
+def get_average(angles):
+    sin_sum = 0.0
+    cos_sum = 0.0
 
-# # Calculate the average angle from a list of angles
-# def get_average(angles):
-#     sin_sum = 0.0
-#     cos_sum = 0.0
+    for angle in angles:
+        r = math.radians(angle)
+        sin_sum += math.sin(r)
+        cos_sum += math.cos(r)
 
-#     for angle in angles:
-#         r = math.radians(angle)
-#         sin_sum += math.sin(r)
-#         cos_sum += math.cos(r)
+    flen = float(len(angles))
+    
+    # Don't allow division by 0
+    if flen == 0:
+        return 0.0
 
-#     flen = float(len(angles))
-#     s = sin_sum / flen
-#     c = cos_sum / flen
-#     arc = math.degrees(math.atan(s / c))
-#     average = 0.0
+    s = sin_sum / flen
+    c = cos_sum / flen
+    arc = math.degrees(math.atan(s / c))
+    average = 0.0
 
-#     if s > 0 and c > 0:
-#         average = arc
-#     elif c < 0:
-#         average = arc + 180
-#     elif s < 0 and c > 0:
-#         average = arc + 360
+    if s > 0 and c > 0:
+        average = arc
+    elif c < 0:
+        average = arc + 180
+    elif s < 0 and c > 0:
+        average = arc + 360
 
-#     return 0.0 if average == 360 else average
+    return 0.0 if average == 360 else average
 
-# # Returns the average direction read over a period of time
-# def get_value(time_period=LOG_INTERVAL):
-#     data = []
-#     print(f"Measuring wind direction for {time_period} seconds...")
-#     start_time = time.time()
+# Returns the average direction read over a period of time
+def get_value(time_period=LOG_INTERVAL):
+    global volts
 
-#     while time.time() - start_time <= time_period:
-#         wind = round(adc.value * 3.3, 3)
-#         if not wind in volts:
-#             print('unknown value ' + str(wind))
-#         else:
-#             data.append(volts[wind])
+    data = []
+    expected_voltages = volts.keys()
+    start_time = time.time()
+    
+    while time.time() - start_time <= time_period:
 
-#     return get_average(data)
+        voltage = round(adc.value * 3.3, 3)
 
-# while True:
-    # print(get_value())
+        closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))
+        data.append(volts[closest_voltage])
+        
+    return get_average(data)
+
+# A map that maps headings to wind direction strings
+directions = {0.0: "N",
+              22.5: "NNE", 
+              45.0: "NE", 
+              67.5: "ENE",
+              90.0: "E", 
+              112.5: "ESE", 
+              135.0: "SE", 
+              157.5: "SSE",
+              180.0: "S", 
+              202.5: "SSW", 
+              225.0: "SW", 
+              247.5: "WSW",
+              270.0: "W", 
+              292.5: "WNW", 
+              315.0: "NW", 
+              337.5: "NNW"}
+
+
+def get_direction(time_period=LOG_INTERVAL):
+    global directions
+    
+    value = get_value(time_period)
+    
+    expected_directions = directions.keys()
+    closest_direction = min(expected_directions, key=lambda x:abs(x-value))
+
+    return directions[closest_direction]
+
+def get_direction_as_string(angle):
+    global directions
+    
+    expected_directions = directions.keys()
+    closest_direction = min(expected_directions, key=lambda x:abs(x-angle))
+
+    return directions[closest_direction]
+

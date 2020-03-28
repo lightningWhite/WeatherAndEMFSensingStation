@@ -1,11 +1,12 @@
 from gpiozero import Button
 import bme280_sensor
-import database
+#import database
 import datetime
 import math
 import statistics
 import time
 import wind_direction
+import pyranometer
 
 # How often the sensor readings should be logged
 LOG_INTERVAL = 15 #900 # 15 Minutes in seconds
@@ -78,25 +79,23 @@ def bucket_tipped():
     global rain_count
     global precipitation
     rain_count = rain_count + 1
-    precipitation = rain_count * BUCKET_SIZE
-    print("tipped")
+    precipitation = round(rain_count * BUCKET_SIZE, 4)
 
 def reset_rainfall():
     global rain_count
+    global precipitation
     rain_count = 0
+    precipitation = 0
+    print("should be done")
 
 rain_sensor.when_pressed = bucket_tipped
 
-# TODO: clear the rainfall each day at midnight
-# import datetime
-# previous_day = datetime.datetime.now()
-#
-# # In loop check if the day has changed
-# current_day = datetime.datetime.now()
-# # When it's a new day, clear the rainfall total
-# if int(current_day.strftime("%w")) != int(previous_day.strftime("%w)):
-#     reset_rainfall()
-#     previous_day = current_day
+
+###############################################################################
+# Pyranometer
+###############################################################################
+
+
 
 
 ###############################################################################
@@ -121,20 +120,25 @@ while True:
         store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
 
     # Log the wind gust and the average speed over the LOG_INTERVAL
-    wind_gust = max(store_speeds)
-    wind_speed = statistics.mean(store_speeds)
-    # wind_direction = statistics.mean(store_directions)
+    wind_gust = round(max(store_speeds), 1)
+    wind_speed = round(statistics.mean(store_speeds), 1)
+    wind_direction_avg = round(statistics.mean(store_directions), 1)
+    wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
     humidity, pressure, ambient_temp = bme280_sensor.read_all()
+    shortwave_radiation = pyranometer.get_shortwave_radiation()
     current_time = datetime.datetime.now()
 
-    print(f"Time: {current_time}")
-    print(f"Avg. Wind Speed: {wind_speed}")
-    print(f"Wind Gust:       {wind_gust}")
-    # print(f"Wind Direction:  {wind_direction}")
-    print(f"Precipitation:   {precipitation}")
-    print(f"Humidity:        {humidity}")
-    print(f"Pressure (mbar): {pressure}")
-    print(f"Temperature (F): {ambient_temp}")
+    print(f"Time:                         {current_time}")
+    print(f"Avg. Wind Speed (MPH):        {wind_speed}")
+    print(f"Wind Gust (MPH):              {wind_gust}")
+    print(f"Wind Direction (Degrees):     {wind_direction_avg}")
+    print(f"Wind Direction String:        {wind_direction_string}")
+    print(f"Precipitation (Inches):       {precipitation}")
+    print(f"Humidity:                     {humidity}")
+    print(f"Pressure (mbar):              {pressure}")
+    print(f"Temperature (F):              {ambient_temp}")
+    print(f"Shortwave Radiation (W m^-2): {shortwave_radiation}")
+    print("######################################################")
 
     # Clear the recorded speeds so the gust can be updated during the next log period
     store_speeds.clear()
@@ -142,8 +146,12 @@ while True:
 
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
-    if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
+#    if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
         # TODO: Remove temp
-        if temp > 4:
-            reset_rainfall()
-            previous_day = current_day
+    if temp > 0:
+        print("Resetting precipitation")
+        reset_rainfall()
+        previous_day = current_time
+        temp = 0
+    temp = temp + 1
+
