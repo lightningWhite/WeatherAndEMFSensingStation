@@ -157,6 +157,8 @@ For our uses, we've found that an R2 value of 4.7kohms works pretty well with
 The wind direction sensor's resistance values mapped to the voltage values using
 3.3V and 4.7kohms are as follows:
 
+TODO: Update these...
+
 ```
 33000 2.9
 6570 1.9
