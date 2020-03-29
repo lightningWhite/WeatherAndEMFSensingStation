@@ -67,30 +67,6 @@ installation in the virtual environment):
 pip3 install -r requirements.txt
 ```
 
-Install the database dependencies:
-
-```
-sudo apt-get install -y mariadb-server mariadb-client libmariadbclient-dev
-```
-
-### Database Configuration
-
-The directions for configuring the database were largely pulled from the
-tutorial mentioned above. Additional information about the instructions
-below can be found there. Since there are a few more sensors and some
-different configurations for this project, the commands for setting up
-the database are as follows:
-
-```
-sudo mysql
-create user pi IDENTIFIED by 'raspberry';
-grant all privileges on *.* to 'pi' with grant option;
-create database weather;
-use weather;
-
-CREATE TABLE WEATHER_MEASUREMENT(ID BIGINT NOT NULL AUTO_INCREMENT, REMOTE_ID BIGINT, AMBIENT_TEMPERATURE DECIMAL(6,1) NOT NULL, AIR_PRESSURE DECIMAL(6,1) NOT NULL, HUMIDITY DECIMAL(6,1) NOT NULL, WIND_DIRECTION_DEGREES DECIMAL(6,1) NULL, WIND_DIRECTION_STRING VARCHAR(3) NULL, WIND_SPEED DECIMAL(6,1) NOT NULL, WIND_GUST DECIMAL(6,1) NOT NULL, PRECIPITATION DECIMAL(6,1) NOT NULL, SHORTWAVE_RADIATION DECIMAL(6,1) NOT NULL, CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ( ID ));
-```
-
 ## Files
 
 ### weather_station.py
