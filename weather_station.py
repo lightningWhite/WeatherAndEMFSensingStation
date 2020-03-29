@@ -1,11 +1,11 @@
 from gpiozero import Button
 import bme280_sensor
-import database
 import datetime
 import math
 import statistics
 import time
 import wind_direction
+import pymysql
 import pyranometer
 
 # How often the sensor readings should be logged
@@ -106,7 +106,10 @@ rain_sensor.when_pressed = bucket_tipped
 temp = 0
 
 # Connect to the MariaDB database
-db = database.weather_database()
+# db = database.weather_database()
+
+db = pymysql.connect(host='localhost', user='pi', password='raspberry', datasbase='weather')
+cursor = db.cursor()
 
 while True:
     start_time = time.time()
@@ -144,7 +147,20 @@ while True:
     print("######################################################")
 
     # Add the readings to the database
-    db.insert(ambient_temp, pressure, humidity, wind_direction_avg, wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
+    # db.insert(ambient_temp, pressure, humidity, wind_direction_avg, wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
+    sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, \
+           WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, \
+           PRECIPITATION, SHORTWAVE_RADIATION) \
+           VALUES ('%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d') % \
+           (ambient_temp, pressure, humidity, wind_direction_avg, \
+            wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
+
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        print("Failed to insert data into the database. Rolling back.")
+        db.rollback()
 
     # Clear the recorded speeds so the gust can be updated during the next log period
     store_speeds.clear()
