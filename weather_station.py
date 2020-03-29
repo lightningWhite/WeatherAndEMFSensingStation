@@ -108,7 +108,7 @@ temp = 0
 # Connect to the MariaDB database
 # db = database.weather_database()
 
-db = pymysql.connect(host='localhost', user='pi', password='raspberry', datasbase='weather')
+db = pymysql.connect(host='localhost', user='pi', password='raspberry', database='weather')
 cursor = db.cursor()
 
 while True:
@@ -148,12 +148,20 @@ while True:
 
     # Add the readings to the database
     # db.insert(ambient_temp, pressure, humidity, wind_direction_avg, wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
-    sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, \
-           WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, \
-           PRECIPITATION, SHORTWAVE_RADIATION) \
-           VALUES ('%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d') % \
-           (ambient_temp, pressure, humidity, wind_direction_avg, \
-            wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
+    # sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, \
+    #        WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, \
+    #        PRECIPITATION, SHORTWAVE_RADIATION) \
+    #        VALUES ('%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d') % \
+    #        (ambient_temp, pressure, humidity, wind_direction_avg, \
+    #         wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
+
+    sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, " 
+          "WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, "
+          "PRECIPITATION, SHORTWAVE_RADIATION) "
+          f"VALUES ({ambient_temp}, {pressure}, {humidity}, "
+          f"{wind_direction_avg}, {wind_direction_string}, {wind_speed}, {wind_gust}, {precipitation}, {shortwave_radiation})"
+
+
 
     try:
         cursor.execute(sql)
