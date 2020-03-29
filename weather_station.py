@@ -2,11 +2,14 @@ from gpiozero import Button
 import bme280_sensor
 import datetime
 import math
+import os
+import pyranometer
+from pathlib import Path
 import statistics
 import time
 import wind_direction
-import pymysql
-import pyranometer
+
+# TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
 LOG_INTERVAL = 15 #900 # 15 Minutes in seconds
@@ -73,7 +76,7 @@ previous_day = datetime.datetime.now()
 
 rain_sensor = Button(6)
 rain_count = 0
-precipitation = 0
+precipitation = 0.0
 
 def bucket_tipped():
     global rain_count
@@ -85,31 +88,35 @@ def reset_rainfall():
     global rain_count
     global precipitation
     rain_count = 0
-    precipitation = 0
-    print("should be done")
+    precipitation = 0.0
 
 rain_sensor.when_pressed = bucket_tipped
-
-
-###############################################################################
-# Pyranometer
-###############################################################################
-
-
 
 
 ###############################################################################
 # Main Program Loop
 ###############################################################################
 
+# Create a new file named by the current date and time
+data_file = os.getcwd() + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".data"
+if not os.path.exists(os.path.dirname(data_file)):
+    try:
+        os.makedirs(os.path.dirname(data_file))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+with open(data_file, "w") as file:
+    # Write the labels row
+    file.write("Record Number, Time, Temperature (F), Pressure (mbar), " \
+               "Humidity (%), Wind Direction (Degrees), Wind Direction (String), " \
+               "Wind Speed (MPH), Wind Gust (MPH), Precipitation (Inches), " \
+               "Shortwave Radiation (W m^(-2))\n")
+
 # TODO: Remove temp
 temp = 0
 
-# Connect to the MariaDB database
-# db = database.weather_database()
-
-db = pymysql.connect(host='localhost', user='pi', password='raspberry', database='weather')
-cursor = db.cursor()
+record_number = 1
 
 while True:
     start_time = time.time()
@@ -134,41 +141,25 @@ while True:
     shortwave_radiation = pyranometer.get_shortwave_radiation()
     current_time = datetime.datetime.now()
 
+    print(f"Record Number:                {record_number}")
     print(f"Time:                         {current_time}")
     print(f"Temperature (F):              {ambient_temp}")
     print(f"Pressure (mbar):              {pressure}")
-    print(f"Humidity:                     {humidity}")
+    print(f"Humidity (%):                 {humidity}")
     print(f"Wind Direction (Degrees):     {wind_direction_avg}")
-    print(f"Wind Direction String:        {wind_direction_string}")
+    print(f"Wind Direction (String):      {wind_direction_string}")
     print(f"Avg. Wind Speed (MPH):        {wind_speed}")
     print(f"Wind Gust (MPH):              {wind_gust}")
     print(f"Precipitation (Inches):       {precipitation}")
     print(f"Shortwave Radiation (W m^-2): {shortwave_radiation}")
     print("######################################################")
 
-    # Add the readings to the database
-    # db.insert(ambient_temp, pressure, humidity, wind_direction_avg, wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
-    # sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, \
-    #        WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, \
-    #        PRECIPITATION, SHORTWAVE_RADIATION) \
-    #        VALUES ('%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d') % \
-    #        (ambient_temp, pressure, humidity, wind_direction_avg, \
-    #         wind_direction_string, wind_speed, wind_gust, precipitation, shortwave_radiation)
-
-    sql = "INSERT INTO WEATHER(AMBIENT_TEMPERATURE, AIR_PRESSURE, HUMIDITY, " 
-          "WIND_DIRECTION_DEGREES, WIND_DIRECTION_STRING, WIND_SPEED, "
-          "PRECIPITATION, SHORTWAVE_RADIATION) "
-          f"VALUES ({ambient_temp}, {pressure}, {humidity}, "
-          f"{wind_direction_avg}, {wind_direction_string}, {wind_speed}, {wind_gust}, {precipitation}, {shortwave_radiation})"
-
-
-
-    try:
-        cursor.execute(sql)
-        db.commit()
-    except:
-        print("Failed to insert data into the database. Rolling back.")
-        db.rollback()
+    # Append the data to the data .csv file
+    with open(data_file, "a") as file:
+        file.write(f"{record_number}, {current_time}, {ambient_temp}, {pressure}, " \
+                   f"{humidity}, {wind_direction_avg}, {wind_direction_string}, " \
+                   f"{wind_speed}, {wind_gust}, {precipitation}, " \
+                   f"{shortwave_radiation}\n")
 
     # Clear the recorded speeds so the gust can be updated during the next log period
     store_speeds.clear()
@@ -176,12 +167,14 @@ while True:
 
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
-#    if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
-        # TODO: Remove temp
+    # if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
+    # TODO: Remove temp
     if temp > 0:
         print("Resetting precipitation")
         reset_rainfall()
         previous_day = current_time
         temp = 0
     temp = temp + 1
+
+    record_number = record_number + 1
 
