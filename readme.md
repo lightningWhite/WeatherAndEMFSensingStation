@@ -24,7 +24,11 @@ This project is set up to handle the following sensors:
 * [Apogee SP-110-SS Pyranometer](https://www.apogeeinstruments.com/sp-110-ss-self-powered-pyranometer/)
   * Provided by Apogee Instruments
   * [Manual](https://www.apogeeinstruments.com/content/SP-110-manual.pdf)
-* TODO: EMF Sensor
+* [EMF-390 Sensor](https://www.amazon.com/Advanced-GQ-Multi-Field-Electromagnetic-Radiation/dp/B07JGJ897T)
+  * Provided by GQ Electronics
+  * Software for running a command line interface on the Raspberry Pi can be
+  downloaded [here](https://gitlab.com/codref/em390cli/-/tags/v0.1.0).
+  * [Manual](https://www.gqelectronicsllc.com/GQ-EMF-360V2-380V2-390_UserGuide.pdf)
 
 ### Misc Parts
 
@@ -215,4 +219,60 @@ Ensure the following connections to the Raspberry Pi 3 Model B:
 ### pyranometer.py
 
 TODO
- 
+
+### EMF-390
+
+A command line interface tool has been written that allows the Raspberry Pi
+to perform real-time logging of the readings from the EMF-390 sensor.
+
+The application can be downloaded from [here](https://gitlab.com/codref/em390cli/-/tags/v0.1.0).
+Simply download the Arm Linux zip file to the Raspberry Pi and unzip it:
+
+`unzip emf390cli.zip`
+
+A forum that may be helpful that references this application and source code 
+can be found [here](https://www.gqelectronicsllc.com/forum/topic.asp?TOPIC_ID=6308).
+
+Instructions for running the tool can be found in the project's README
+[here](https://gitlab.com/codref/em390cli/-/blob/master/README.md).
+
+As a precaution in case the project disappears, the source code for it has been
+added to this repository. The clone of the GitLab project also includes the
+build directory with the application binaries for different platforms.
+However, as long as the project is alive, it will be best to use the provided
+application in order to receive the updates. The source code is licensed under
+the GNU General Public License. Instructions for building from source on the
+Raspberry Pi are provided in the README file.
+
+The README of the project also notes that to use the device for real-time data
+logging, it's best to remove the battery. It says that the charging circuit is
+not shielded and it will produce a lot of interferance.
+
+To read data in real-time from the device in a CSV format, the following command
+can be used:
+
+```
+emf390cli -p /dev/ttyUSB0 -f '%w%d%e%t%k%E%M' --csv
+```
+
+This specifies the serial port to connect to, the desired format, and to export
+the fetched values as a CSV string.
+
+The following is some sample output:
+
+```
+rfwatts, 0.000000000158, 158, pW, 672, MHz
+rfdbm, -68, -68, dbm, 672, MHz
+rfdensity, 0.0001, 0.1, mW/m2, 672, MHz
+rftotaldensity, 0.06720000000000001, 67.2, mW/m2, 0, n/a
+rftotaldensitypeak, 0.6354, 635.4, mW/m2, 0, n/a
+ef, 11.8, 11.8, V/m, 0, n/a
+emf, 0.6, 0.6, mG, 0, n/a
+```
+
+For each metric, it lists the name, the value, the raw value, the raw value
+unit, the MHz, and the MHz unit.
+
+TODO: Write a function that parses out the values I want and then put the name
+and unit as the CSV header and then incorporate it all with the rest of the 
+weather station logging loop.

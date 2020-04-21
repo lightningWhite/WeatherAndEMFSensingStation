@@ -1,0 +1,14 @@
+[package]
+name = "emf390cli"
+version = "0.1.0"
+authors = ["codref <dalfarra@codref.com>"]
+edition = "2018"
+
+[dependencies]
+regex = "1.1.0"
+serialport = "3.2.0"
+clap = "2.32.0"
+serde = "1.0.84"
+serde_derive = "1.0.84"
+serde_json = "1.0"
+chrono = "0.4.6"
