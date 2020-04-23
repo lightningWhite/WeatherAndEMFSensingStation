@@ -8,7 +8,7 @@
 
 
 # Radio Frequency (Watts)
- - 
+
 
 
 
@@ -41,4 +41,17 @@ Since the frequency is directly related to the power (magnitude of the wave), I 
 don't want those to be treated as independent values when machine learning with them.
 What I may end up doing is grouping the power readings into categories of common frequencies
 like 0-400MHz, 401-999MHz, 1000-3000MHz, etc. and then put the power values in each category.
-I can do that later though if I gather the data.
+I can do that later though after I gather the data and know what binnings make the most sense.
+
+The power density value obtained from the sensor is calculated using this formula:
+Power Density = (Pout * Gain) / (4 * PI * Distance^2)
+
+The gain used by the sensor for the antennae is 10. The distance we calculated to be
+0.0011213046 by solving for D when a Power Density was given. Pout is the rfwatts reading.
+
+Since the gain and the distance is hard coded, it is not the value of a tower or something.
+It is just a relative value at the current location.
+
+We aren't sure how the total power density is being calculated. It might be some sort of sum.
+
+This forum is helpful: https://www.gqelectronicsllc.com/forum/forum.asp?FORUM_ID=18
