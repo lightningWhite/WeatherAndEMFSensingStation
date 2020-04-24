@@ -132,7 +132,7 @@ while True:
     store_directions = []
     store_speeds = []
     store_rf_watts = []
-    store_rf_watts_frequencies []
+    store_rf_watts_frequencies = []
     store_ef_volts_per_meter = []
     store_emf_milligauss = []
 
@@ -226,10 +226,10 @@ while True:
     # Clear the recorded values so they can be updated over the next LOG_INTERVAL
     store_speeds.clear()
     store_directions.clear()
-    store_rf_watts = []
-    store_rf_watts_frequencies []
-    store_ef_volts_per_meter = []
-    store_emf_milligauss = []
+    store_rf_watts.clear()
+    store_rf_watts_frequencies.clear() 
+    store_ef_volts_per_meter.clear()
+    store_emf_milligauss.clear()
 
 
     # Clear the rainfall each day at midnight
