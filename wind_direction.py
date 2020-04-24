@@ -113,6 +113,19 @@ def get_value(time_period=LOG_INTERVAL):
         
     return get_average(data)
 
+
+# Returns the current wind direction
+def get_current_angle():
+    global volts
+
+    expected_voltages = volts.keys()
+    voltage = round(adc.value * 3.3, 3)
+    closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))
+    
+    # Return the angle mapped to the voltage read
+    return volts[closest_voltage]
+    
+
 # A map that maps headings to wind direction strings
 directions = {0.0: "N",
               22.5: "NNE", 

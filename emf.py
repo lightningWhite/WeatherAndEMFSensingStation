@@ -28,12 +28,12 @@ def get_rfwatts_and_mhz_frequency(rf_watts_words):
     """
    
     rf_watts = rf_watts_words[1]
-    rf_watts_freq = rf_watts_words[4]
+    rf_watts_frequency = rf_watts_words[4]
     rf_watts_units = rf_watts_words[5].strip()
 
-    rf_watts_mhz_freq = to_MHz(rf_watts_freq, rf_watts_units) 
+    rf_watts_mhz_frequency = to_MHz(rf_watts_frequency, rf_watts_units) 
 
-    return rf_watts, rf_watts_mhz_freq
+    return rf_watts, rf_watts_mhz_frequency
 
 
 def get_emf():
@@ -64,17 +64,17 @@ def get_emf():
     emf_words = lines[6].split(', ')
    
     # Obtain the values of interest
-    rf_watts, rf_watts_mhz_freq = get_rfwatts_and_mhz_frequency(rf_watts_words)
+    rf_watts, rf_watts_mhz_frequency = get_rfwatts_and_mhz_frequency(rf_watts_words)
     ef_volts_per_meter = ef_words[1] 
     emf_milligauss = emf_words[1] 
 
     print(f'rf_watts: {rf_watts}')
-    print(f'rf_watts_mhz_freq: {rf_watts_mhz_freq}')
+    print(f'rf_watts_mhz_frequency: {rf_watts_mhz_frequency}')
     print(f'ef_volts_per_meter: {ef_volts_per_meter}')
     print(f'emf_milligauss: {emf_milligauss}')
 
 
-    return rf_watts, rf_watts_mhz_freq, ef_volts_per_meter, emf_milligauss
+    return rf_watts, rf_watts_mhz_frequency, ef_volts_per_meter, emf_milligauss
 
 
 
