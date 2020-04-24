@@ -7,6 +7,35 @@
 import subprocess
 
 
+def to_MHz(frequency, unit):
+    """
+    Given a freqeuncy and a unit, convert the frequency to MHz
+    """
+
+    if unit == 'Hz':
+        return frequency / 1000000
+    elif unit == 'kHz':
+        return frequency / 1000
+    elif unit == 'MHz':
+        return frequency
+    elif unit == 'GHz':
+        return frequency * 1000
+
+
+def get_rfwatts_and_mhz_frequency(rf_watts_words):
+    """
+    Return the watts value and the frequency in MHz
+    """
+   
+    rf_watts = rf_watts_words[1]
+    rf_watts_freq = rf_watts_words[4]
+    rf_watts_units = rf_watts_words[5].strip()
+
+    rf_watts_mhz_freq = to_MHz(rf_watts_freq, rf_watts_units) 
+
+    return rf_watts, rf_watts_mhz_freq
+
+
 def get_emf():
 
     # Run the emf390cli application to obtain the EMF-390 sensor readings
@@ -20,27 +49,32 @@ def get_emf():
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)    
 
+    # Obtain the output from the command
     stdout, stderr = command.communicate()
 
-    print(stderr)
-    print(stdout.decode('utf-8'))
-
+    # Convert the readings from bytes to utf-8
     readings = stdout.decode('utf-8')
-    print('')
 
+    # Separate the output into separate lines
     lines = readings.split('\n')
-    print(lines)
-    print('')
 
-    rfwatts_words = lines[0].split(', ')
-    print(rfwatts_words)
-    print('')
-    
-    rf_watts = rfwatts_words[1]
-    rf_watts_freq = rfwatts_words[4]
-    rf_watts_units = rfwatts_words[5].strip()
+    # Put the words of each line of interest into lists
+    rf_watts_words = lines[0].split(', ')
+    ef_words = lines[5].split(', ')
+    emf_words = lines[6].split(', ')
+   
+    # Obtain the values of interest
+    rf_watts, rf_watts_mhz_freq = get_rfwatts_and_mhz_frequency(rf_watts_words)
+    ef_volts_per_meter = ef_words[1] 
+    emf_milligauss = emf_words[1] 
 
-    print(f'{rf_watts} {rf_watts_freq} {rf_watts_units}')
+    print(f'rf_watts: {rf_watts}')
+    print(f'rf_watts_mhz_freq: {rf_watts_mhz_freq}')
+    print(f'ef_volts_per_meter: {ef_volts_per_meter}')
+    print(f'emf_milligauss: {emf_milligauss}')
+
+
+    return rf_watts, rf_watts_mhz_freq, ef_volts_per_meter, emf_milligauss
 
 
 
