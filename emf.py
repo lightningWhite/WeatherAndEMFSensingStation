@@ -6,7 +6,7 @@
 
 import subprocess
 
-#./emf390cli -p /dev/ttyUSB0 -f '%w%d%e%t%k%E%M' --csv
+
 def get_emf():
 
     # Run the emf390cli application to obtain the EMF-390 sensor readings
@@ -23,10 +23,28 @@ def get_emf():
     stdout, stderr = command.communicate()
 
     print(stderr)
-    print(stdout)
+    print(stdout.decode('utf-8'))
+
+    readings = stdout.decode('utf-8')
+    print('')
+
+    lines = readings.split('\n')
+    print(lines)
+    print('')
+
+    rfwatts_words = lines[0].split(', ')
+    print(rfwatts_words)
+    print('')
+    
+    rf_watts = rfwatts_words[1]
+    rf_watts_freq = rfwatts_words[4]
+    rf_watts_units = rfwatts_words[5].strip()
+
+    print(f'{rf_watts} {rf_watts_freq} {rf_watts_units}')
 
 
 
+get_emf()
 
 
 
