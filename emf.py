@@ -68,17 +68,13 @@ def get_emf():
     ef_volts_per_meter = ef_words[1] 
     emf_milligauss = emf_words[1] 
 
-    print(f'rf_watts: {rf_watts}')
-    print(f'rf_watts_mhz_frequency: {rf_watts_mhz_frequency}')
-    print(f'ef_volts_per_meter: {ef_volts_per_meter}')
-    print(f'emf_milligauss: {emf_milligauss}')
+    #print(f'rf_watts: {rf_watts}')
+    #print(f'rf_watts_mhz_frequency: {rf_watts_mhz_frequency}')
+    #print(f'ef_volts_per_meter: {ef_volts_per_meter}')
+    #print(f'emf_milligauss: {emf_milligauss}')
 
 
-    return rf_watts, rf_watts_mhz_frequency, ef_volts_per_meter, emf_milligauss
-
-
-
-get_emf()
+    return float(rf_watts), float(rf_watts_mhz_frequency), float(ef_volts_per_meter), float(emf_milligauss)
 
 
 

@@ -13,10 +13,10 @@ import wind_direction
 # TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 15 #900 # 15 Minutes in seconds
+LOG_INTERVAL = 9 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 5 #180 # 3 minuntes in seconds
+ACCUMULATION_INTERVAL = 3 #5 #180 # 3 minuntes in seconds
 
 ###############################################################################
 # Anemometer
@@ -135,6 +135,10 @@ while True:
     store_rf_watts_frequencies = []
     store_ef_volts_per_meter = []
     store_emf_milligauss = []
+    rf_watts = 0.0
+    rf_watts_mhz_frequency = 0.0
+    ef_volts_per_meter = 0.0
+    emf_milligauss = 0.0
 
     # Accumulate wind direction and wind speeds every ACCUMULATION_INTERVAL
     # seconds, and log the averages every LOG_INTERVAL
@@ -143,14 +147,14 @@ while True:
         store_directions.append(wind_direction.get_current_angle())
         store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
         
-        rf_watts, rf_watts_mhz_freq, ef_volts_per_meter, emf_milligauss = emf.get_emf()
+        rf_watts, rf_watts_mhz_frequency, ef_volts_per_meter, emf_milligauss = emf.get_emf()
         store_rf_watts.append(rf_watts) 
-        store_rf_watts_frequencies.append(rf_watts_mhz_freq)
+        store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
         store_ef_volts_per_meter.append(ef_volts_per_meter)
         store_emf_milligauss.append(emf_milligauss)
 
         time.sleep(ACCUMULATION_INTERVAL)
-        
+
     # Obtain the wind gust and the average speed over the LOG_INTERVAL
     wind_gust = round(max(store_speeds), 1)
     wind_speed = round(statistics.mean(store_speeds), 1)
@@ -168,23 +172,23 @@ while True:
 
     # Obtain the max RF watts value and its associated frequency
     rf_watts_peak = max(store_rf_watts)
-    frequency_of_rf_watts_peak = store_rf_watts_frequencies[store_rf_watts.index(max(store_rf_watts))]
+    frequency_of_rf_watts_peak = round(store_rf_watts_frequencies[store_rf_watts.index(max(store_rf_watts))], 1)
 
     # Obtain the max RF frequency and its associated power (watts)
     rf_frequency_peak = max(store_rf_watts_frequencies)
-    watts_of_rf_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts))]
+    watts_of_rf_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
 
     # Obtain the average RF power and the average frequency
     rf_watts_avg = statistics.mean(store_rf_watts)
-    rf_freq_avg = statistics.mean(store_rf_watts_frequencies)
+    rf_freq_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
 
     # Obtain the average and max EF values
-    ef_volts_per_meter_avg = statistics.mean(ef_volts_per_meter)
-    ef_volts_per_meter_max = max(ef_volts_per_meter)
+    ef_volts_per_meter_avg = round(statistics.mean(store_ef_volts_per_meter), 1)
+    ef_volts_per_meter_max = round(max(store_ef_volts_per_meter), 1)
 
     # Obtain the average and max EMF values
-    emf_milligauss_avg = statistics.mean(ef_volts_per_meter)
-    emf_milligauss_max = max(ef_volts_per_meter)
+    emf_milligauss_avg = round(statistics.mean(store_emf_milligauss), 1)
+    emf_milligauss_max = round(max(store_emf_milligauss), 1)
 
     current_time = datetime.datetime.now()
 
@@ -199,12 +203,12 @@ while True:
     print(f"Wind Gust (MPH):                  {wind_gust}")
     print(f"Precipitation (Inches):           {precipitation}")
     print(f"Shortwave Radiation (W m^-2):     {shortwave_radiation}")
-    print(f"Avg. RF Watts (W):                {rf_watts_avg}")
+    print(f"Avg. RF Watts (W):                {rf_watts_avg:.16f}")
     print(f"Avg. RF Frequency (MHz):          {rf_freq_avg}")
-    print(f"Peak RF Watts (W):                {rf_watts_peak}")
+    print(f"Peak RF Watts (W):                {rf_watts_peak:.16f}")
     print(f"Frequency of RF Watts Peak (MHz): {frequency_of_rf_watts_peak}")
     print(f"Peak RF Frequency (MHz):          {rf_frequency_peak}")
-    print(f"Watts of RF Frequency Peak (W):   {watts_of_rf_frequency_peak}")
+    print(f"Watts of RF Frequency Peak (W):   {watts_of_rf_frequency_peak:.16f}")
     print(f"Avg. EF (V/m):                    {ef_volts_per_meter_avg}")
     print(f"Max. EF (V/m):                    {ef_volts_per_meter_max}")
     print(f"Avg. EMF (mG):                    {emf_milligauss_avg}")
@@ -217,9 +221,9 @@ while True:
         file.write(f"{record_number}, {current_time}, {ambient_temp}, {pressure}, " \
                    f"{humidity}, {wind_direction_avg}, {wind_direction_string}, " \
                    f"{wind_speed}, {wind_gust}, {precipitation}, " \
-                   f"{shortwave_radiation}, {rf_watts_avg}, {rf_freq_avg}, " \
-                   f"{rf_watts_peak}, {frequency_of_rf_watts_peak}, " \
-                   f"{rf_frequency_peak}, {watts_of_rf_frequency_peak}, " \
+                   f"{shortwave_radiation}, {rf_watts_avg:.16f}, {rf_freq_avg}, " \
+                   f"{rf_watts_peak:.16f}, {frequency_of_rf_watts_peak}, " \
+                   f"{rf_frequency_peak}, {watts_of_rf_frequency_peak:.16f}, " \
                    f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
                    f"{emf_milligauss_avg}, {emf_milligauss_max},\n")
 
