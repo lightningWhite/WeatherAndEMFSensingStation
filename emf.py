@@ -22,9 +22,9 @@ def to_MHz(frequency, unit):
         return frequency * 1000
 
 
-def get_rfwatts_and_mhz_frequency(rf_watts_words):
+def get_rf_watts_and_mhz_frequency(rf_watts_words):
     """
-    Return the watts value and the frequency in MHz
+    Return the RF watts value and the frequency in MHz
     """
    
     rf_watts = rf_watts_words[1]
@@ -36,11 +36,41 @@ def get_rfwatts_and_mhz_frequency(rf_watts_words):
     return rf_watts, rf_watts_mhz_frequency
 
 
+def get_rf_density_and_mhz_frequency(rf_density_words):
+    """
+    Return the RF density value and the frequency in MHz
+    """
+   
+    rf_density = rf_density_words[1]
+    rf_density_frequency = rf_density_words[4]
+    rf_density_units = rf_watts_words[5].strip()
+
+    rf_density_mhz_frequency = to_MHz(rf_density_frequency, rf_density_units) 
+
+    return rf_density, rf_density_mhz_frequency
+
+
+def get_total_rf_density(rf_total_density_words):
+    """
+    Return the RF total density value and the frequency in MHz
+    """
+   
+    rf_watts = rf_watts_words[1]
+    rf_watts_frequency = rf_watts_words[4]
+    rf_watts_units = rf_watts_words[5].strip()
+
+    rf_watts_mhz_frequency = to_MHz(rf_watts_frequency, rf_watts_units) 
+
+    return rf_watts, rf_watts_mhz_frequency
+
+
+
 def get_emf():
 
     # Run the emf390cli application to obtain the EMF-390 sensor readings
     command = subprocess.Popen([
-        './em390cli/build/arm-linux/emf390cli',
+        # './em390cli/build/arm-linux/emf390cli',
+        './em390cli/build/x86-linux/emf390cli',
         '-p',
         '/dev/ttyUSB0',
         '-f',
@@ -57,14 +87,20 @@ def get_emf():
 
     # Separate the output into separate lines
     lines = readings.split('\n')
+    print(lines)
+    print("")
 
     # Put the words of each line of interest into lists
     rf_watts_words = lines[0].split(', ')
+    rf_density_words = lines[2].split(', ')
+    rf_total_density_words = lines[2].split(', ')
     ef_words = lines[5].split(', ')
     emf_words = lines[6].split(', ')
    
     # Obtain the values of interest
-    rf_watts, rf_watts_mhz_frequency = get_rfwatts_and_mhz_frequency(rf_watts_words)
+    rf_watts, rf_watts_mhz_frequency = get_rf_watts_and_mhz_frequency(rf_watts_words)
+    rf_density, rf_density_mhz_frequency = get_rf_density_and_mhz_frequency(rf_density_words)
+    rf_total_density = get_total_rf_density(rf_total_density_words)
     ef_volts_per_meter = ef_words[1] 
     emf_milligauss = emf_words[1] 
 
@@ -74,9 +110,12 @@ def get_emf():
     #print(f'emf_milligauss: {emf_milligauss}')
 
 
-    return float(rf_watts), float(rf_watts_mhz_frequency), float(ef_volts_per_meter), float(emf_milligauss)
+    return float(rf_watts), float(rf_watts_mhz_frequency), \
+           float(rf_density), float(rf_density_mhz_frequency), \
+           float(rf_total_density), float(ef_volts_per_meter), \
+           float(emf_milligauss)
 
-
+print(get_emf())
 
 
 # rfwatts, 0.000000000158, 158, pW, 672, MHz
