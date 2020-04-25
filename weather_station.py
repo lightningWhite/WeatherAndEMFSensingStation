@@ -13,10 +13,10 @@ import wind_direction
 # TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 4 #15 #900 # 15 Minutes in seconds
+LOG_INTERVAL = 900 #4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 2 #5 #180 # 3 minuntes in seconds
+ACCUMULATION_INTERVAL = 5 #2 #5 #180 # 3 minuntes in seconds
 
 ###############################################################################
 # Anemometer
@@ -317,9 +317,9 @@ while True:
 
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
-    # if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
+    if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
     # TODO: Remove temp
-    if temp > 0:
+   #    if temp > 0:
         print("Resetting precipitation")
         reset_rainfall()
         previous_day = current_time
