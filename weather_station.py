@@ -109,14 +109,35 @@ if not os.path.exists(os.path.dirname(data_file)):
 
 with open(data_file, "w") as file:
     # Write the labels row
-    file.write("Record Number, Time, Temperature (F), Pressure (mbar), " \
-               "Humidity (%), Wind Direction (Degrees), Wind Direction (String), " \
-               "Wind Speed (MPH), Wind Gust (MPH), Precipitation (Inches), " \
-               "Shortwave Radiation (W m^(-2)), Avg. RF Watts (W), " \
-               "Avg. RF Frequency (MHz), Peak RF Watts (W), " \
-               "Frequency of RF Watts Peak (MHz), Peak RF Frequency (MHz), " \
-               "Watts of RF Frequency Peak (W), Avg. EF (V/m), Max. EF (V/m), " \
-               "Avg. EMF (mG), Max. EMF (mG)\n")
+    file.write("Record Number, " \
+               "Time, " \
+               "Temperature (F), " \
+               "Pressure (mbar), " \
+               "Humidity (%), " \
+               "Wind Direction (Degrees), " \
+               "Wind Direction (String), " \
+               "Wind Speed (MPH), " \
+               "Wind Gust (MPH), " \
+               "Precipitation (Inches), " \
+               "Shortwave Radiation (W m^(-2)), " \
+               "Avg. RF Watts (W), " \
+               "Avg. RF Watts Frequency (MHz), " \
+               "Peak RF Watts (W), " \
+               "Frequency of RF Watts Peak (MHz), "\
+               "Peak RF Watts Frequency (MHz), " \
+               "Watts of RF Watts Frequency Peak (W), " \
+               "Avg. RF Density (W m^(-2)), " \
+               "Avg. RF Density Frequency (MHz), " \
+               "Peak RF Density (W m^(-2)), " \
+               "Frequency of RF Density Peak (MHz), "\
+               "Peak RF Density Frequency (MHz), " \
+               "Density of RF Density Frequency Peak (W m^(-2)), " \
+               "Avg. Total Density, " \
+               "Max Total Density, " \
+               "Avg. EF (V/m), " \
+               "Max EF (V/m), " \
+               "Avg. EMF (mG), " \
+               "Max EMF (mG)\n")
     
 # TODO: Remove temp for resetting the rain after midnight
 temp = 0
@@ -133,6 +154,9 @@ while True:
     store_speeds = []
     store_rf_watts = []
     store_rf_watts_frequencies = []
+    store_rf_density = []
+    store_rf_density_frequencies = []
+    store_rf_total_density = []
     store_ef_volts_per_meter = []
     store_emf_milligauss = []
     rf_watts = 0.0
@@ -147,9 +171,18 @@ while True:
         store_directions.append(wind_direction.get_current_angle())
         store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
         
-        rf_watts, rf_watts_mhz_frequency, ef_volts_per_meter, emf_milligauss = emf.get_emf()
+        rf_watts, 
+        rf_watts_mhz_frequency, 
+        rf_density, rf_density_frequency, 
+        rf_total_density, 
+        ef_volts_per_meter, 
+        emf_milligauss = emf.get_emf()
+
         store_rf_watts.append(rf_watts) 
         store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
+        store_rf_density.append(rf_density)
+        store_rf_density_frequencies.append(rf_density_frequency)
+        store_rf_total_density.append(rf_total_density)
         store_ef_volts_per_meter.append(ef_volts_per_meter)
         store_emf_milligauss.append(emf_milligauss)
 
@@ -170,21 +203,42 @@ while True:
     # Obtain the current shortwave radiation
     shortwave_radiation = pyranometer.get_shortwave_radiation()
 
+
     # Obtain the max RF watts value and its associated frequency
     rf_watts_peak = max(store_rf_watts)
     frequency_of_rf_watts_peak = round(store_rf_watts_frequencies[store_rf_watts.index(max(store_rf_watts))], 1)
 
-    # Obtain the max RF frequency and its associated power (watts)
-    rf_frequency_peak = max(store_rf_watts_frequencies)
-    watts_of_rf_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
+    # Obtain the max RF watts frequency and its associated power (watts)
+    rf_watts_frequency_peak = max(store_rf_watts_frequencies)
+    watts_of_rf_watts_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
 
     # Obtain the average RF power and the average frequency
     rf_watts_avg = statistics.mean(store_rf_watts)
-    rf_freq_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
+    rf_watts_frequency_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
+
+
+    # Obtain the max RF density value and its associated frequency
+    rf_density_peak = max(store_rf_density)
+    frequency_of_rf_density_peak = round(store_rf_density_frequencies[store_rf_density.index(max(store_rf_density))], 1)
+
+    # Obtain the max RF density frequency and its associated density (W m^-2)
+    rf_density_frequency_peak = max(store_rf_density_frequencies)
+    density_of_rf_density_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
+
+    # Obtain the average RF power density and the average frequency
+    rf_density_avg = statistics.mean(store_rf_watts)
+    rf_density_freq_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
+
+
+    # Obtain the average and max RF total density value
+    rf_total_density_avg = round(statistics.mean(store_rf_total_density), 1)
+    rf_total_density_max = round(max(store_rf_total_density), 1)
+
 
     # Obtain the average and max EF values
     ef_volts_per_meter_avg = round(statistics.mean(store_ef_volts_per_meter), 1)
     ef_volts_per_meter_max = round(max(store_ef_volts_per_meter), 1)
+
 
     # Obtain the average and max EMF values
     emf_milligauss_avg = round(statistics.mean(store_emf_milligauss), 1)
@@ -192,27 +246,47 @@ while True:
 
     current_time = datetime.datetime.now()
 
-    print(f"Record Number:                    {record_number}")
-    print(f"Time:                             {current_time}")
-    print(f"Temperature (F):                  {ambient_temp}")
-    print(f"Pressure (mbar):                  {pressure}")
-    print(f"Humidity (%):                     {humidity}")
-    print(f"Wind Direction (Degrees):         {wind_direction_avg}")
-    print(f"Wind Direction (String):          {wind_direction_string}")
-    print(f"Avg. Wind Speed (MPH):            {wind_speed}")
-    print(f"Wind Gust (MPH):                  {wind_gust}")
-    print(f"Precipitation (Inches):           {precipitation}")
-    print(f"Shortwave Radiation (W m^-2):     {shortwave_radiation}")
-    print(f"Avg. RF Watts (W):                {rf_watts_avg:.16f}")
-    print(f"Avg. RF Frequency (MHz):          {rf_freq_avg}")
-    print(f"Peak RF Watts (W):                {rf_watts_peak:.16f}")
-    print(f"Frequency of RF Watts Peak (MHz): {frequency_of_rf_watts_peak}")
-    print(f"Peak RF Frequency (MHz):          {rf_frequency_peak}")
-    print(f"Watts of RF Frequency Peak (W):   {watts_of_rf_frequency_peak:.16f}")
-    print(f"Avg. EF (V/m):                    {ef_volts_per_meter_avg}")
-    print(f"Max. EF (V/m):                    {ef_volts_per_meter_max}")
-    print(f"Avg. EMF (mG):                    {emf_milligauss_avg}")
-    print(f"Max. EMF (mG):                    {emf_milligauss_max}")
+    print(f"Record Number:                            {record_number}")
+    print(f"Time:                                     {current_time}")
+
+    # Weather
+    print(f"Temperature (F):                          {ambient_temp}")
+    print(f"Pressure (mbar):                          {pressure}")
+    print(f"Humidity (%):                             {humidity}")
+    print(f"Wind Direction (Degrees):                 {wind_direction_avg}")
+    print(f"Wind Direction (String):                  {wind_direction_string}")
+    print(f"Avg. Wind Speed (MPH):                    {wind_speed}")
+    print(f"Wind Gust (MPH):                          {wind_gust}")
+    print(f"Precipitation (Inches):                   {precipitation}")
+    print(f"Shortwave Radiation (W m^-2):             {shortwave_radiation}")
+
+    # RF Watts
+    print(f"Avg. RF Watts (W):                        {rf_watts_avg:.16f}")
+    print(f"Avg. RF Watts Frequency (MHz):            {rf_watts_frequency_avg}")
+    print(f"Peak RF Watts (W):                        {rf_watts_peak:.16f}")
+    print(f"Frequency of RF Watts Peak (MHz):         {frequency_of_rf_watts_peak}")
+    print(f"Peak RF Watts Frequency (MHz):            {rf_watts_frequency_peak}")
+    print(f"Watts of RF Watts Frequency Peak (W):     {watts_of_rf_watts_frequency_peak:.16f}")
+
+    # RF Density
+    print(f"Avg. RF Density (W m^-2):                 {rf_density_avg:.16f}")
+    print(f"Avg. RF Density Frequency (MHz):          {rf_density_frequency_avg}")
+    print(f"Peak RF Density (W):                      {rf_density_peak:.16f}")
+    print(f"Frequency of RF Density Peak (MHz):       {frequency_of_rf_density_peak}")
+    print(f"Peak RF Density Frequency (MHz):          {rf_density_frequency_peak}")
+    print(f"Density of RF Density Frequency Peak (W): {density_of_rf_watts_frequency_peak:.16f}")
+
+    # RF Total Density 
+    print(f"Avg. RF Total Density (W m^-2):           {rf_total_density_avg}")
+    print(f"Max  RF Total Density (W m^-2):           {rf_total_density_max}")
+
+    # EF
+    print(f"Avg. EF (V/m):                            {ef_volts_per_meter_avg}")
+    print(f"Max  EF (V/m):                            {ef_volts_per_meter_max}")
+
+    # EMF
+    print(f"Avg. EMF (mG):                            {emf_milligauss_avg}")
+    print(f"Max  EMF (mG):                            {emf_milligauss_max}")
 
     print("######################################################")
 
@@ -221,9 +295,12 @@ while True:
         file.write(f"{record_number}, {current_time}, {ambient_temp}, {pressure}, " \
                    f"{humidity}, {wind_direction_avg}, {wind_direction_string}, " \
                    f"{wind_speed}, {wind_gust}, {precipitation}, " \
-                   f"{shortwave_radiation}, {rf_watts_avg:.16f}, {rf_freq_avg}, " \
+                   f"{shortwave_radiation}, {rf_watts_avg:.16f}, {rf_watts_frequency_avg}, " \
                    f"{rf_watts_peak:.16f}, {frequency_of_rf_watts_peak}, " \
-                   f"{rf_frequency_peak}, {watts_of_rf_frequency_peak:.16f}, " \
+                   f"{rf_watts_frequency_peak}, {watts_of_rf_watts_frequency_peak:.16f}, " \
+                   f"{rf_density_peak:.16f}, {frequency_of_rf_density_peak}, " \
+                   f"{rf_density_frequency_peak}, {density_of_rf_density_frequency_peak:.16f}, " \
+                   f"{rf_total_density_avg}, {rf_total_density_max}, " \
                    f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
                    f"{emf_milligauss_avg}, {emf_milligauss_max},\n")
 
@@ -232,6 +309,9 @@ while True:
     store_directions.clear()
     store_rf_watts.clear()
     store_rf_watts_frequencies.clear() 
+    store_rf_density.clear()
+    store_rf_density_frequencies.clear()
+    store_rf_total_density.clear()
     store_ef_volts_per_meter.clear()
     store_emf_milligauss.clear()
 
