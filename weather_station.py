@@ -273,7 +273,7 @@ while True:
     print(f"Peak RF Density (W):                      {rf_density_peak:.16f}")
     print(f"Frequency of RF Density Peak (MHz):       {frequency_of_rf_density_peak}")
     print(f"Peak RF Density Frequency (MHz):          {rf_density_frequency_peak}")
-    print(f"Density of RF Density Frequency Peak (W): {density_of_rf_watts_frequency_peak:.16f}")
+    print(f"Density of RF Density Frequency Peak (W): {density_of_rf_density_frequency_peak:.16f}")
 
     # RF Total Density 
     print(f"Avg. RF Total Density (W m^-2):           {rf_total_density_avg}")
