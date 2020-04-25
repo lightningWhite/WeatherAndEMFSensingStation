@@ -161,6 +161,9 @@ while True:
     store_emf_milligauss = []
     rf_watts = 0.0
     rf_watts_mhz_frequency = 0.0
+    rf_density = 0.0
+    rf_density_frequency = 0.0
+    rf_total_density = 0.0
     ef_volts_per_meter = 0.0
     emf_milligauss = 0.0
 
