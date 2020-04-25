@@ -13,10 +13,10 @@ import wind_direction
 # TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 9 #15 #900 # 15 Minutes in seconds
+LOG_INTERVAL = 4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 3 #5 #180 # 3 minuntes in seconds
+ACCUMULATION_INTERVAL = 2 #5 #180 # 3 minuntes in seconds
 
 ###############################################################################
 # Anemometer
@@ -186,6 +186,7 @@ while True:
 
         time.sleep(ACCUMULATION_INTERVAL)
 
+
     # Obtain the wind gust and the average speed over the LOG_INTERVAL
     wind_gust = round(max(store_speeds), 1)
     wind_speed = round(statistics.mean(store_speeds), 1)
@@ -208,7 +209,7 @@ while True:
 
     # Obtain the max RF watts frequency and its associated power (watts)
     rf_watts_frequency_peak = max(store_rf_watts_frequencies)
-    watts_of_rf_watts_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
+    watts_of_rf_watts_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))]
 
     # Obtain the average RF power and the average frequency
     rf_watts_avg = statistics.mean(store_rf_watts)
@@ -221,7 +222,7 @@ while True:
 
     # Obtain the max RF density frequency and its associated density (W m^-2)
     rf_density_frequency_peak = max(store_rf_density_frequencies)
-    density_of_rf_density_frequency_peak = round(store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))], 1)
+    density_of_rf_density_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))]
 
     # Obtain the average RF power density and the average frequency
     rf_density_avg = statistics.mean(store_rf_watts)
@@ -229,8 +230,8 @@ while True:
 
 
     # Obtain the average and max RF total density value
-    rf_total_density_avg = round(statistics.mean(store_rf_total_density), 1)
-    rf_total_density_max = round(max(store_rf_total_density), 1)
+    rf_total_density_avg = statistics.mean(store_rf_total_density)
+    rf_total_density_max = max(store_rf_total_density)
 
 
     # Obtain the average and max EF values
@@ -239,7 +240,6 @@ while True:
 
 
     # Obtain the average and max EMF values
-    print(store_emf_milligauss)
     emf_milligauss_avg = round(statistics.mean(store_emf_milligauss), 1)
     emf_milligauss_max = round(max(store_emf_milligauss), 1)
 
@@ -276,8 +276,8 @@ while True:
     print(f"Density of RF Density Frequency Peak (W): {density_of_rf_density_frequency_peak:.16f}")
 
     # RF Total Density 
-    print(f"Avg. RF Total Density (W m^-2):           {rf_total_density_avg}")
-    print(f"Max  RF Total Density (W m^-2):           {rf_total_density_max}")
+    print(f"Avg. RF Total Density (W m^-2):           {rf_total_density_avg:.16f}")
+    print(f"Max  RF Total Density (W m^-2):           {rf_total_density_max:.16f}")
 
     # EF
     print(f"Avg. EF (V/m):                            {ef_volts_per_meter_avg}")
@@ -299,7 +299,7 @@ while True:
                    f"{rf_watts_frequency_peak}, {watts_of_rf_watts_frequency_peak:.16f}, " \
                    f"{rf_density_peak:.16f}, {frequency_of_rf_density_peak}, " \
                    f"{rf_density_frequency_peak}, {density_of_rf_density_frequency_peak:.16f}, " \
-                   f"{rf_total_density_avg}, {rf_total_density_max}, " \
+                   f"{rf_total_density_avg:.16f}, {rf_total_density_max:.16f}, " \
                    f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
                    f"{emf_milligauss_avg}, {emf_milligauss_max},\n")
 
