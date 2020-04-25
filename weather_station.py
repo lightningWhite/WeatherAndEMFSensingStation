@@ -225,7 +225,7 @@ while True:
 
     # Obtain the average RF power density and the average frequency
     rf_density_avg = statistics.mean(store_rf_watts)
-    rf_density_freq_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
+    rf_density_frequency_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
 
 
     # Obtain the average and max RF total density value
