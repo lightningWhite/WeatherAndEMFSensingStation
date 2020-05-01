@@ -60,6 +60,11 @@ def get_total_rf_density(rf_total_density_words):
     return rf_total_density
 
 
+# TODO: I need to determine which USB the EMF sensor is connected to.
+# I'm thinking I can do something like 'ls /dev/ttyUSB*' and then try
+# to run the em390cli command to see if it runs successfully. Then set
+# a variable for the USB connection and use that. This will be especially
+# important when the external hard drive is connected.
 
 def get_emf():
 

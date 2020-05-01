@@ -71,6 +71,18 @@ installation in the virtual environment):
 pip3 install -r requirements.txt
 ```
 
+## Running the Weather Station
+
+TODO: I think I'll need to install tmux or something to be able to start the
+script and have it keep running even when an ssh session is terminated. I tried
+nohup (nohup python weather_station.py) and it didn't seem to work when I ended
+the ssh session. Also, it seemed like I got some permission errors when attempting
+to source the python virtual environment.
+
+startWeatherStation.sh will source the python virtual environment and start the
+weather station.
+
+
 ## Files
 
 ### weather_station.py
