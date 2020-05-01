@@ -13,7 +13,7 @@ import wind_direction
 # TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 900 #4 #15 #900 # 15 Minutes in seconds
+LOG_INTERVAL = 300 #4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
 ACCUMULATION_INTERVAL = 5 #2 #5 #180 # 3 minuntes in seconds
@@ -174,7 +174,11 @@ while True:
         store_directions.append(wind_direction.get_current_angle())
         store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
         
-        rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
+        try:
+            rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
+        except:
+            print('\nERROR: The EMF sensor may not be on or connected correctly. Exiting.\n')
+            exit(1)
 
         store_rf_watts.append(rf_watts) 
         store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
