@@ -65,20 +65,79 @@ def get_total_rf_density(rf_total_density_words):
 # to run the em390cli command to see if it runs successfully. Then set
 # a variable for the USB connection and use that. This will be especially
 # important when the external hard drive is connected.
+def get_serial_port():
+    """
+    Determine which USB serial port the device is plugged into since there
+    may be other devices plugged into the USB ports.
+    This will throw if no successful connection can be established.
+    """ 
+
+    # List the connected USB devices
+    command = subprocess.Popen([
+        'ls',
+        '/dev/ttyUSB*'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)    
+
+    # Obtain the output from the command
+    stdout, stderr = command.communicate()
+
+    # Convert the terminal output from bytes to utf-8
+    output = stdout.decode('utf-8')
+
+    print('Output of listing the devices: ') 
+    print(output)
+
+    # Place each outputted device into a list
+    USBDevices = output.split(' ')
+    print('USBDevices')
+    print(USBDevices)
+
+    # Attempt to connect to each device to determin which one works
+    for device in USBDevices:
+        try:
+            print('trying a connection')
+            command = subprocess.Popen([
+                './em390cli/build/arm-linux/emf390cli',
+                '-p',
+                device,
+                '-f',
+                '%w%d%e%t%k%E%M',
+                '--csv'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+
+            # Since it didn't throw, this is a good connection
+            return device 
+        except:
+            print('excepting')
+            pass
+    print('about to raise the exception')
+
+    # If it gets here, no successful connection could be established 
+    raise Exception('The EMF sensor may not be on or connected correctly. Exiting.')
+    
 
 def get_emf():
 
+    # Get the serial port that the emf sensor is connected to
+    try:
+        USBDevice = get_serial_port()
+    except Exception as e:
+        print(e)
+        exit(1)
+        
     # Run the emf390cli application to obtain the EMF-390 sensor readings
     command = subprocess.Popen([
         # './em390cli/build/arm-linux/emf390cli',
         './em390cli/build/arm-linux/emf390cli',
         '-p',
-        '/dev/ttyUSB0',
+        USBDevice,
         '-f',
         '%w%d%e%t%k%E%M',
         '--csv'],
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)    
+        stderr=subprocess.STDOUT)
 
     # Obtain the output from the command
     stdout, stderr = command.communicate()
