@@ -139,9 +139,6 @@ with open(data_file, "w") as file:
                "Avg. EMF (mG), " \
                "Max EMF (mG)\n")
     
-# TODO: Remove temp for resetting the rain after midnight
-temp = 0
-
 record_number = 1
 
 ###############################################################################
@@ -322,13 +319,9 @@ while True:
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
     if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
-    # TODO: Remove temp
-   #    if temp > 0:
         print("Resetting precipitation")
         reset_rainfall()
         previous_day = current_time
-        temp = 0
-    temp = temp + 1
 
     record_number = record_number + 1
 
