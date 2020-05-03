@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# /etc/init.d/startWeatherStation.sh
+### BEGIN INIT INFO
+# Provides:          startWeatherStation.sh
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon weather station at boot time
+# Description:       Start daemon weather station at boot time
+### END INIT INFO
+
+
 # This script will start the weather station in a tmux terminal and then detach
 # it. This makes it so the ssh session can time out or be terminated and the
 # weather station process will remain running. Using tmux also allows the user
