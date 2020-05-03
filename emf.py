@@ -60,22 +60,22 @@ def get_total_rf_density(rf_total_density_words):
     return rf_total_density
 
 
-# TODO: I need to determine which USB the EMF sensor is connected to.
-# I'm thinking I can do something like 'ls /dev/ttyUSB*' and then try
-# to run the em390cli command to see if it runs successfully. Then set
-# a variable for the USB connection and use that. This will be especially
-# important when the external hard drive is connected.
 def get_serial_port():
     """
     Determine which USB serial port the device is plugged into since there
     may be other devices plugged into the USB ports.
     This will throw if no successful connection can be established.
+    
+    WARNING: This function is probably very buggy. I added it because on
+    occasion the device may be /dev/ttyUSB0 and at other times it may show
+    up as /dev/ttyUSB1. I don't know if this would change if there are
+    other USB devices connected or not, such as an external hard drive.
     """ 
 
     # List the connected USB devices
-    command = subprocess.Popen([
-        'ls',
-        '/dev/ttyUSB*'],
+    command = subprocess.Popen(
+        'ls /dev/ttyUSB*',
+        shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)    
 
@@ -85,18 +85,15 @@ def get_serial_port():
     # Convert the terminal output from bytes to utf-8
     output = stdout.decode('utf-8')
 
-    print('Output of listing the devices: ') 
-    print(output)
-
     # Place each outputted device into a list
-    USBDevices = output.split(' ')
-    print('USBDevices')
-    print(USBDevices)
+    USBDevices = output.split('\n')
 
-    # Attempt to connect to each device to determin which one works
+    # Remove the empty entry after splitting by '\n'
+    USBDevices.remove('')
+
+    # Attempt to connect to each device to determine which one works
     for device in USBDevices:
         try:
-            print('trying a connection')
             command = subprocess.Popen([
                 './em390cli/build/arm-linux/emf390cli',
                 '-p',
@@ -106,13 +103,22 @@ def get_serial_port():
                 '--csv'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT)
+            
+            # Obtain the output from the command
+            stdout, stderr = command.communicate()
+        
+            # Convert the terminal output from bytes to utf-8
+            test_output = stdout.decode('utf-8')
+            if len(test_output) > 0:
+                test_output = test_output.split(', ')
 
-            # Since it didn't throw, this is a good connection
-            return device 
+                # The first word of the output should be rfwatts
+                if test_output[0] == 'rfwatts':
+                    # This is the device, return it
+                    return device
+        
         except:
-            print('excepting')
             pass
-    print('about to raise the exception')
 
     # If it gets here, no successful connection could be established 
     raise Exception('The EMF sensor may not be on or connected correctly. Exiting.')

@@ -82,6 +82,13 @@ to source the python virtual environment.
 startWeatherStation.sh will source the python virtual environment and start the
 weather station.
 
+## Data Logging
+
+TODO: Fill this section out
+
+The CSV file will grow at a rate of about 4 Kilobytes for every 4 entries. In
+other words, if the LOG_INTERVAL is set to 15 minutes, the data file will grow
+at about 4K per hour.
 
 ## Files
 
