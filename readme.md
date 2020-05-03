@@ -73,14 +73,19 @@ pip3 install -r requirements.txt
 
 ## Running the Weather Station
 
-TODO: I think I'll need to install tmux or something to be able to start the
-script and have it keep running even when an ssh session is terminated. I tried
-nohup (nohup python weather_station.py) and it didn't seem to work when I ended
-the ssh session. Also, it seemed like I got some permission errors when attempting
-to source the python virtual environment.
+The `startAll.sh` script will start a tmux session and call the
+`startWeatherStation.sh` script. This script will source the python virtual
+environment and start the weather station. It will then detach the tmux session. 
+This makes it so the ssh session can time out or be terminated and the weather
+station process will remain running. Using tmux also allows the user to attach
+to the session at any time and view the real-time output of the program.
 
-startWeatherStation.sh will source the python virtual environment and start the
-weather station.
+After the `startAll.sh` script has been executed, you can attach to the process
+and view the output in real-time by typing `tmux attach`. To detach from the
+session again so it can continue running when the ssh session times out or you
+log out from it, type `Ctrl+b` and then `d`. This will put it in the
+background to continue running.
+
 
 ## Data Logging
 
