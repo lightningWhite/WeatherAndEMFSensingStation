@@ -76,19 +76,26 @@ pip3 install -r requirements.txt
 
 ## Running the Weather Station
 
-The `startAll.sh` script will start a tmux session and call the
+The `startWeatherStation.sh` script will start a tmux session and call the
 `initializeWeatherStation.sh` script. This script will source the python virtual
 environment. It will then start the weather station and detach the tmux session. 
 This makes it so the ssh session can time out or be terminated and the weather
 station process will remain running. Using tmux also allows the user to attach
 to the session at any time and view the real-time output of the program.
 
-After the `startAll.sh` script has been executed, you can attach to the process
-and view the output in real-time by typing `tmux attach`. To detach from the
-session again so it can continue running when the ssh session times out or you
-log out from it, type `Ctrl+b` and then `d`. This will put it in the
+After the `startWeatherStation.sh` script has been executed, you can attach to
+the process and view the output in real-time by typing `tmux attach`. To detach
+from the session again so it can continue running when the ssh session times
+out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
 background to continue running.
 
+The `install.sh` script when run will copy the necessary files to `/etc/init.d`
+so the weather station will start on boot automatically. Simply execute the
+script and reboot. Note that the `install.sh` script must be run as root.
+
+Also note that when the weather station has been started automatically on boot,
+to view the real-time output of the weather station, you must attach to the
+tmux session as root: `sudo tmux attach`.
 
 ## Data Logging
 
