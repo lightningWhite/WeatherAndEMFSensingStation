@@ -197,7 +197,7 @@ while True:
 
     # Obtain the average wind direction over the LOG_INTERVAL 
     # TODO: Make sure the precision is right
-    wind_direction_avg = wind_direction.get_average(store_directions)
+    wind_direction_avg = round(wind_direction.get_average(store_directions), 1)
     wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
 
     # Obtain the current humidity, pressure, and ambient temperature

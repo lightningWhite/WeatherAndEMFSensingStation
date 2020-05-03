@@ -97,6 +97,14 @@ Also note that when the weather station has been started automatically on boot,
 to view the real-time output of the weather station, you must attach to the
 tmux session as root: `sudo tmux attach`.
 
+The EMF-390 sensor must be connected to the Raspberry Pi for the weather
+station to start up correctly. The sensor must also be in vertical mode viewing
+RF. If this is not set up like this, the Weather Station may crash and won't
+report the correct EMF values. Also, it's important that the battery is
+removed from the EMF-390 device. Some resources on the internet report that
+the charging circuit is not shielded. Since it is plugged into the Raspberry
+Pi, this unshielded circuit would throw off the EMF readings.
+
 ## Data Logging
 
 TODO: Fill this section out
@@ -307,6 +315,7 @@ emf, 0.6, 0.6, mG, 0, n/a
 For each metric, it lists the name, the value, the raw value, the raw value
 unit, the MHz, and the MHz unit.
 
-TODO: Write a function that parses out the values I want and then put the name
-and unit as the CSV header and then incorporate it all with the rest of the 
-weather station logging loop.
+IMPORTANT: In order for the correct values to be obtained, the EMF sensor must
+be in `Vertical Mode` or else the readings will be incorrect and a potential
+crash could occur.
+
