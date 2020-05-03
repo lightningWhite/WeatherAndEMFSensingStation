@@ -54,8 +54,11 @@ required for these to be fully enabled.
 
 ## Dependencies and Prerequisites
 
-The project requires Python 3. Once this repository is cloned, perform the
-following steps:
+The project must be cloned to `/home/pi/` for the scripts to work correctly.
+
+The project requires Python 3 to be installed. 
+
+Once this repository is cloned, perform the following steps:
 
 Create a python virtual environment and activate it:
 
@@ -74,8 +77,8 @@ pip3 install -r requirements.txt
 ## Running the Weather Station
 
 The `startAll.sh` script will start a tmux session and call the
-`startWeatherStation.sh` script. This script will source the python virtual
-environment and start the weather station. It will then detach the tmux session. 
+`initializeWeatherStation.sh` script. This script will source the python virtual
+environment. It will then start the weather station and detach the tmux session. 
 This makes it so the ssh session can time out or be terminated and the weather
 station process will remain running. Using tmux also allows the user to attach
 to the session at any time and view the real-time output of the program.
