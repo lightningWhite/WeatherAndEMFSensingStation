@@ -19,10 +19,10 @@
 # program.
 
 # Start the weather station in a tmux terminal and then detach it
-tmux new-session -d -s weather_station '. /home/pi/WeatherStation/initializeWeatherStation.sh && python3 weather_station.py && tmux detach'
+tmux new-session -d -s weather_station '. /home/pi/WeatherStation/initializeWeatherStation.sh && python3 /home/pi/WeatherStation/weather_station.py && tmux detach'
 
 echo "The weather station has been started."
-echo "The log location is at ${PWD}/data/"
+echo "The log location is at /home/pi/WeatherStation/data/"
 echo "To view the real-time output of the process, run 'tmux attach'"
 echo "To detach and keep the process running after exiting the ssh session, type 'Ctrl+b' and then 'd' before logging out"
 

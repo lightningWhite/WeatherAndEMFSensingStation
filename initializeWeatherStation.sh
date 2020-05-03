@@ -6,5 +6,5 @@ echo 'Ensure this script is run as follows to source the current terminal:'
 echo '. /home/pi/WeatherStation/initializeWeatherStation.sh'
 
 echo 'Sourcing the python virtual environment...'
-source env/bin/activate
+source /home/pi/WeatherStation/env/bin/activate
 
