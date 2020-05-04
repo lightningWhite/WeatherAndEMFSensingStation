@@ -301,6 +301,7 @@ while True:
                    f"{shortwave_radiation}, {rf_watts_avg:.16f}, {rf_watts_frequency_avg}, " \
                    f"{rf_watts_peak:.16f}, {frequency_of_rf_watts_peak}, " \
                    f"{rf_watts_frequency_peak}, {watts_of_rf_watts_frequency_peak:.16f}, " \
+                   f"{rf_density_avg:.16f}, {rf_density_frequency_avg}, " \
                    f"{rf_density_peak:.16f}, {frequency_of_rf_density_peak}, " \
                    f"{rf_density_frequency_peak}, {density_of_rf_density_frequency_peak:.16f}, " \
                    f"{rf_total_density_avg:.16f}, {rf_total_density_max:.16f}, " \

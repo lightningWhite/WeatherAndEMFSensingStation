@@ -71,6 +71,12 @@ installation in the virtual environment):
 pip3 install -r requirements.txt
 ```
 
+Install `tmux`:
+
+```
+sudo apt-get install tmux
+```
+
 ## Running the Weather Station
 
 TODO: I think I'll need to install tmux or something to be able to start the
