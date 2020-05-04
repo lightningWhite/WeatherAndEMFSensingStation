@@ -99,7 +99,7 @@ rain_sensor.when_pressed = bucket_tipped
 ###############################################################################
 
 # Create a new file named by the current date and time
-data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".data"
+data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".csv"
 if not os.path.exists(os.path.dirname(data_file)):
     try:
         os.makedirs(os.path.dirname(data_file))
