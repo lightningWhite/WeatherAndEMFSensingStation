@@ -17,7 +17,7 @@
 
 from gpiozero import MCP3208
 # TODO: Remove this
-from gpiozero import MCP3304
+# from gpiozero import MCP3304
 
 import math
 
@@ -25,10 +25,10 @@ import math
 LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
-#adc = MCP3208(channel=1)
+adc = MCP3208(channel=1)
 
 # TODO: Remove this when we get the new chip
-adc = MCP3304(channel=1)
+# adc = MCP3304(channel=1)
 
 # Return the total shortwave radiation on a horizontal plane at Earth's surface
 # in Watts per meter squared (W m^-2)

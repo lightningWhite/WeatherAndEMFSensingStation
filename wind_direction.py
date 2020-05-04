@@ -24,7 +24,7 @@
 
 from gpiozero import MCP3208
 # TODO: Remove this
-from gpiozero import MCP3304
+# from gpiozero import MCP3304
 
 import math
 import time
@@ -33,10 +33,10 @@ import time
 LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
-#adc = MCP3208(channel=0)
+adc = MCP3208(channel=0)
 
 # TODO: Remove this when we get the new chip
-adc = MCP3304(channel=0)
+# adc = MCP3304(channel=0)
 
 # These volgate values mapped to headings came from the Raspberry Pi
 # weather station tutorial (see the readme). However, the voltages came 
