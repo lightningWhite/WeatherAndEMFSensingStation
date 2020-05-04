@@ -54,8 +54,11 @@ required for these to be fully enabled.
 
 ## Dependencies and Prerequisites
 
-The project requires Python 3. Once this repository is cloned, perform the
-following steps:
+The project must be cloned to `/home/pi/` for the scripts to work correctly.
+
+The project requires Python 3 to be installed. 
+
+Once this repository is cloned, perform the following steps:
 
 Create a python virtual environment and activate it:
 
@@ -79,14 +82,34 @@ sudo apt-get install tmux
 
 ## Running the Weather Station
 
-TODO: I think I'll need to install tmux or something to be able to start the
-script and have it keep running even when an ssh session is terminated. I tried
-nohup (nohup python weather_station.py) and it didn't seem to work when I ended
-the ssh session. Also, it seemed like I got some permission errors when attempting
-to source the python virtual environment.
+The `startWeatherStation.sh` script will start a tmux session and call the
+`initializeWeatherStation.sh` script. This script will source the python virtual
+environment. It will then start the weather station and detach the tmux session. 
+This makes it so the ssh session can time out or be terminated and the weather
+station process will remain running. Using tmux also allows the user to attach
+to the session at any time and view the real-time output of the program.
 
-startWeatherStation.sh will source the python virtual environment and start the
-weather station.
+After the `startWeatherStation.sh` script has been executed, you can attach to
+the process and view the output in real-time by typing `tmux attach`. To detach
+from the session again so it can continue running when the ssh session times
+out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
+background to continue running.
+
+The `install.sh` script when run will copy the necessary files to `/etc/init.d`
+so the weather station will start on boot automatically. Simply execute the
+script and reboot. Note that the `install.sh` script must be run as root.
+
+Also note that when the weather station has been started automatically on boot,
+to view the real-time output of the weather station, you must attach to the
+tmux session as root: `sudo tmux attach`.
+
+The EMF-390 sensor must be connected to the Raspberry Pi for the weather
+station to start up correctly. The sensor must also be in vertical mode viewing
+RF. If this is not set up like this, the Weather Station may crash and won't
+report the correct EMF values. Also, it's important that the battery is
+removed from the EMF-390 device. Some resources on the internet report that
+the charging circuit is not shielded. Since it is plugged into the Raspberry
+Pi, this unshielded circuit would throw off the EMF readings.
 
 ## Data Logging
 
@@ -298,6 +321,7 @@ emf, 0.6, 0.6, mG, 0, n/a
 For each metric, it lists the name, the value, the raw value, the raw value
 unit, the MHz, and the MHz unit.
 
-TODO: Write a function that parses out the values I want and then put the name
-and unit as the CSV header and then incorporate it all with the rest of the 
-weather station logging loop.
+IMPORTANT: In order for the correct values to be obtained, the EMF sensor must
+be in `Vertical Mode` or else the readings will be incorrect and a potential
+crash could occur.
+

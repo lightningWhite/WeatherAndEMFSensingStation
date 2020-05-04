@@ -99,7 +99,7 @@ rain_sensor.when_pressed = bucket_tipped
 ###############################################################################
 
 # Create a new file named by the current date and time
-data_file = os.getcwd() + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".data"
+data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".data"
 if not os.path.exists(os.path.dirname(data_file)):
     try:
         os.makedirs(os.path.dirname(data_file))
@@ -139,9 +139,6 @@ with open(data_file, "w") as file:
                "Avg. EMF (mG), " \
                "Max EMF (mG)\n")
     
-# TODO: Remove temp for resetting the rain after midnight
-temp = 0
-
 record_number = 1
 
 ###############################################################################
@@ -197,7 +194,7 @@ while True:
 
     # Obtain the average wind direction over the LOG_INTERVAL 
     # TODO: Make sure the precision is right
-    wind_direction_avg = wind_direction.get_average(store_directions)
+    wind_direction_avg = round(wind_direction.get_average(store_directions), 1)
     wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
 
     # Obtain the current humidity, pressure, and ambient temperature
@@ -323,13 +320,9 @@ while True:
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
     if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
-    # TODO: Remove temp
-   #    if temp > 0:
         print("Resetting precipitation")
         reset_rainfall()
         previous_day = current_time
-        temp = 0
-    temp = temp + 1
 
     record_number = record_number + 1
 
