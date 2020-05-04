@@ -302,7 +302,7 @@ while True:
                    f"{rf_density_frequency_peak}, {density_of_rf_density_frequency_peak:.16f}, " \
                    f"{rf_total_density_avg:.16f}, {rf_total_density_max:.16f}, " \
                    f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
-                   f"{emf_milligauss_avg}, {emf_milligauss_max},\n")
+                   f"{emf_milligauss_avg}, {emf_milligauss_max}\n")
 
     # Clear the recorded values so they can be updated over the next LOG_INTERVAL
     store_speeds.clear()
