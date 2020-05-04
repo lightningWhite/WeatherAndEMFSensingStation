@@ -52,6 +52,83 @@ In order to use the I2C and SPI interfaces, these have to be enabled. This can
 be done by running `sudo raspi-config` and enabling I2C and SPI. A reboot is
 required for these to be fully enabled.
 
+### Real Time Clock
+
+The Raspberry Pi can't keep accurate time when it's disconnected from the
+internet. For this reason, we use a Real Time Clock (RTC) module. We've
+chosen to use the ChronoDot 2.1.
+
+The following location provides a nice tutorial for setting up the Raspberry Pi
+to use the RTC:
+
+* [Adding a DS3231 Real Time Clock To The Raspberry Pi](https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/)
+
+The following instructions come largely from the link above.
+
+Ensure the following connections to the Raspberry Pi 3 Model B:
+
+* GND of the RTC connected to pin 9 (Ground)
+* VCC of the RTC connected to pin 17 (3v3 Power)
+* SCL of the RTC connected to BCM 3 (SCL)
+* SDA of the RTC connected to BCM 2 (SDA)
+
+To view the I2C address of the RTC, the following command can be run:
+
+```
+sudo i2cdetect -y 1
+```
+
+This may show the addresses of other connected I2C devices, but the RTC address
+will likely by 0x68.
+
+In order to synchronize the Raspberry Pi's time with the RTC when the Pi boots,
+the following needs to be added to the `/etc/rc.local` file right before the
+`exit 0` at the end: 
+
+```
+echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+```
+
+The Raspberry Pi should then be rebooted:
+
+```
+sudo reboot
+```
+
+The date and time reported by the Raspberry Pi can be viewed with the `date`
+command. If the time needs to be manually set, it can be done with a command
+such as the following:
+
+```
+sudo date -s "29 AUG 1997 13:00:00"
+```
+
+When the time is correcly set, the system date and time can be written to the
+RTC module with the following command:
+
+```
+sudo hwclock -w
+```
+
+The time can then be read from the RTC with this command:
+
+```
+sudo hwclock -r
+```
+
+To verify that the system time and the RTC time is the same, the following
+command can be run:
+
+```
+date; sudo hwclock -r
+```
+
+To verify that the RTC is correctly keeping time and that the Raspberry Pi
+will use it when it boots, power down the Raspberry Pi, disconnect the
+power cable, remove the network connection, connect the Pi to a monitor and
+keyboard, leave it overnight, and then power it up and use "date" to
+verify that the time reported is correct.
+
 ## Dependencies and Prerequisites
 
 The project must be cloned to `/home/pi/` for the scripts to work correctly.
@@ -324,4 +401,3 @@ unit, the MHz, and the MHz unit.
 IMPORTANT: In order for the correct values to be obtained, the EMF sensor must
 be in `Vertical Mode` or else the readings will be incorrect and a potential
 crash could occur.
-
