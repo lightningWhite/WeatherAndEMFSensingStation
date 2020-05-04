@@ -74,6 +74,12 @@ installation in the virtual environment):
 pip3 install -r requirements.txt
 ```
 
+Install `tmux`:
+
+```
+sudo apt-get install tmux
+```
+
 ## Running the Weather Station
 
 The `startWeatherStation.sh` script will start a tmux session and call the
