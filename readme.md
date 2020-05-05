@@ -140,7 +140,7 @@ The project must be cloned to `/home/pi/` for the scripts to work correctly.
 This can be done by running the following:
 
 ```
-git clone 
+git clone https://github.com/lightningWhite/WeatherStation.git
 ```
 
 The project requires Python 3 to be installed. 
