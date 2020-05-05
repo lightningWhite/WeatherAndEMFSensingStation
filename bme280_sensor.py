@@ -31,11 +31,11 @@ bme280.load_calibration_params(bus, address)
 # ambient_temperature
 def read_all():
     bme280_data = bme280.sample(bus, address)
-    humidity = bme280_data.humidity
-    pressure = bme280_data.pressure + CALIBRATION
-    ambient_temperature = bme280_data.temperature
+    humidity = round(bme280_data.humidity, 1)
+    pressure = round(bme280_data.pressure + CALIBRATION, 1)
+    ambient_temperature = round(bme280_data.temperature, 1)
     if DO_FAHRENHEIT:
-        ambient_temperature = (ambient_temperature * 1.8) + 32
+        ambient_temperature = round((ambient_temperature * 1.8) + 32, 1)
 
     return humidity, pressure, ambient_temperature
 
