@@ -151,7 +151,7 @@ Create a python virtual environment and activate it:
 
 ```
 python3 -m venv env
-source venv/bin/activate
+source env/bin/activate
 ```
 
 Install the pip dependencies of the project (Note: Don't use sudo for the pip
@@ -164,6 +164,7 @@ pip3 install -r requirements.txt
 Install `tmux`:
 
 ```
+sudo apt-get update
 sudo apt-get install tmux
 ```
 
