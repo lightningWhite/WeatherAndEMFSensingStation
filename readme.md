@@ -7,6 +7,9 @@ various sensors to be connected to a Raspberry Pi to form a weather station
 equipped with logging. It is heavily based off of the tutorial found 
 [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station).
 
+It also provides for EMF sensing and logging using the EMF-390 sensor connected
+to the Raspberry Pi.
+
 ## Hardware
 
 Raspberry Pi 3 Model B Board
@@ -42,7 +45,7 @@ This project is set up to handle the following sensors:
 * 2 - [RJ11 Breakout Boards](http://www.mdfly.com/products/rj11-6p6c-connector-breakout-board-module-ra-screw-terminals.html)
 * [3.4 x 3.4 x 2inch (85 x 85 x 50mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07Q1YBFLP/ref=asc_df_B07Q1YBFLP/?tag=hyprod-20&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&psc=1&tag=&ref=&adgrpid=69357499415&hvpone=&hvptwo=&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684)
 * [5.9 x 4.3 x 2.8inch (150 x 110 x 70mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07PVVDLCC/ref=asc_df_B07Q1YBFLP/?tag=&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&ref=&adgrpid=69357499415&th=1)
-* TODO: May need a clock
+* [ChronoDot 2.1 (DS3231 Chip) Real Time Clock](https://www.adafruit.com/product/255)
 
 ## Raspberry Pi Configuration
 
@@ -182,7 +185,7 @@ tmux session as root: `sudo tmux attach`.
 
 The EMF-390 sensor must be connected to the Raspberry Pi for the weather
 station to start up correctly. The sensor must also be in vertical mode viewing
-RF. If this is not set up like this, the Weather Station may crash and won't
+RF. If this is not set up like this, the Weather Station may crash and/or won't
 report the correct EMF values. Also, it's important that the battery is
 removed from the EMF-390 device. Some resources on the internet report that
 the charging circuit is not shielded. Since it is plugged into the Raspberry
@@ -190,17 +193,24 @@ Pi, this unshielded circuit would throw off the EMF readings.
 
 ## Data Logging
 
-TODO: Fill this section out
+As the weather station runs, it will log readings from all of the sensors at a
+configurable rate. This can be set in the weather_sttion.py file. The
+LOG_INTERVAL defines how often the readings will be logged. The
+ACCUMULATION_INTERVAL defines how often samples should be taken of some of the
+sensors in order to calculate and averages or maximums. The
+ACCUMULATION_INTERVAL should be less than the LOG_INTERVAL.
 
-The CSV file will grow at a rate of about 4 Kilobytes for every 4 entries. In
-other words, if the LOG_INTERVAL is set to 15 minutes, the data file will grow
-at about 4K per hour.
+A log file will be created every time the weather station is started and it
+will be saved to `/home/pi/WeatherStation/data` and be named the date and time
+of when it was created.
+
+The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
 
 ## Files
 
 ### weather_station.py
 
-TODO
+This file is the main program. It contains the main program loop.
 
 ### bme280_sensor.py
 

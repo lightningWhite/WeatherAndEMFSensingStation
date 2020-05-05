@@ -2,8 +2,8 @@
 #
 # Uses the ADC to read the voltage from the Apogee SP-110 Pyranomter sensor.
 #
-# Ensure the following connections:
-# 
+# Ensure the following connections to the Raspberry Pi 3 Model B:
+#
 # Ground to pin 9 on the MCP3208 chip
 # BCM 8 (CE0) to pin 10 (CS/SHDN) on the MCP3208 chip
 # BCM 10 (MOSI) to pin 11 (Din) on the MCP3208 chip

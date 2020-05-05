@@ -1,8 +1,17 @@
 # EMF-390 Sensor
 #
-# Uses the EMF-390 sensor to read 
+# Uses the EMF-390 sensor to read the following:
+# - Radio Frequency Watts
+# - Radio Frequency of the Watts value (MHz)
+# - Radio Frequency Density and the associated frequency (W m^-2)
+# - Radio Frequency Total Density (W m^-2)
+# - Electric Field (V/m)
+# - Electromagnetic Field (mG)
 #
-#
+# Note that the reading for each value may occur at a different time. This
+# means that the Watts value reported may not be the Watts value used in
+# the calculation of the power density. This may be an artifact of the
+# emf390cli tool sampling each reading individually.
 
 import subprocess
 
