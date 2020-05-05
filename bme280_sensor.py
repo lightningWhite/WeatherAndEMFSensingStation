@@ -16,7 +16,7 @@ import smbus2
 from time import sleep
 
 # Amount to add to the barometer reading for Logan, Utah
-CALIBRATION = 157.3826 
+CALIBRATION = 150.9016
 
 # True will report temperature in F, False will report in C
 DO_FAHRENHEIT = True
@@ -40,7 +40,7 @@ def read_all():
     return humidity, pressure, ambient_temperature
 
 # This can be used to print the values being read for testing or calibration
-#while True:
-#    humidity, pressure, ambient_temperature = read_all()
-#    print(f"Humidity: {humidity}, Pressure: {pressure}, Temperature: {ambient_temperature}")
-#    sleep(1)
+while True:
+    humidity, pressure, ambient_temperature = read_all()
+    print(f"Humidity: {humidity}, Pressure: {pressure}, Temperature: {ambient_temperature}")
+    sleep(1)
