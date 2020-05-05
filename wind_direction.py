@@ -23,8 +23,6 @@
 # 4.7kohm resistor from ground to pin 1 on the MCP3208 chip for voltage div
 
 from gpiozero import MCP3208
-# TODO: Remove this
-# from gpiozero import MCP3304
 
 import math
 import time
@@ -35,10 +33,7 @@ LOG_INTERVAL = 5 #900 # 15 Minutes
 # Analog to Digital Converter
 adc = MCP3208(channel=0)
 
-# TODO: Remove this when we get the new chip
-# adc = MCP3304(channel=0)
-
-# These volgate values mapped to headings came from the Raspberry Pi
+# These voltage values mapped to headings came from the Raspberry Pi
 # weather station tutorial (see the readme). However, the voltages came 
 # from an incorrect voltage divider equation.
 # In the tutorial, they used the following equation:
@@ -162,4 +157,3 @@ def get_direction_as_string(angle):
     closest_direction = min(expected_directions, key=lambda x:abs(x-angle))
 
     return directions[closest_direction]
-

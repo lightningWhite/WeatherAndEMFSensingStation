@@ -1,6 +1,6 @@
 # Pyranometer
 #
-# Uses the ADC to read the voltage from the Apogee SP-110 Pyranomter sensor.
+# Uses the ADC to read the voltage from the Apogee SP-110 Pyranometer sensor.
 #
 # Ensure the following connections to the Raspberry Pi 3 Model B:
 #
@@ -16,19 +16,10 @@
 # White wire of the Pyranometer to pin 2 (CH1) of the MCP3208 chip
 
 from gpiozero import MCP3208
-# TODO: Remove this
-# from gpiozero import MCP3304
-
 import math
-
-# How often the average wind direction should be logged
-LOG_INTERVAL = 5 #900 # 15 Minutes
 
 # Analog to Digital Converter
 adc = MCP3208(channel=1)
-
-# TODO: Remove this when we get the new chip
-# adc = MCP3304(channel=1)
 
 # Return the total shortwave radiation on a horizontal plane at Earth's surface
 # in Watts per meter squared (W m^-2)
@@ -41,4 +32,3 @@ def get_shortwave_radiation():
     sensor_voltage = round(adc.value * 3.3, 3) * 1000
 
     return round(calibration_factor * sensor_voltage, 1)
-

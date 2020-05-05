@@ -193,7 +193,6 @@ while True:
     wind_speed = round(statistics.mean(store_speeds), 1)
 
     # Obtain the average wind direction over the LOG_INTERVAL 
-    # TODO: Make sure the precision is right
     wind_direction_avg = round(wind_direction.get_average(store_directions), 1)
     wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
 
@@ -244,6 +243,9 @@ while True:
     emf_milligauss_avg = round(statistics.mean(store_emf_milligauss), 1)
     emf_milligauss_max = round(max(store_emf_milligauss), 1)
 
+    # This will pull from the Real Time Clock so it can be accurate
+    # when there isn't an internet connection. See the readme for
+    # instructions on how to configure the Real Time Clock correctly.
     current_time = datetime.datetime.now()
 
     print(f"Record Number:                            {record_number}")
@@ -325,4 +327,3 @@ while True:
         previous_day = current_time
 
     record_number = record_number + 1
-
