@@ -49,11 +49,12 @@ This project is set up to handle the following sensors:
 
 ## Raspberry Pi Configuration
 
-This works well with the NOOBS Raspbian OS installation.
+This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation.
 
 In order to use the I2C and SPI interfaces, these have to be enabled. This can
-be done by running `sudo raspi-config` and enabling I2C and SPI. A reboot is
-required for these to be fully enabled.
+be done by running `sudo raspi-config` and enabling I2C and SPI in the
+`Interfacing Options`. A reboot is required for these to be fully enabled. This
+can be done by running `sudo reboot`.
 
 ### Real Time Clock
 
@@ -90,6 +91,7 @@ the following needs to be added to the `/etc/rc.local` file right before the
 
 ```
 echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+hwclock -s
 ```
 
 The Raspberry Pi should then be rebooted:
@@ -106,7 +108,7 @@ such as the following:
 sudo date -s "29 AUG 1997 13:00:00"
 ```
 
-When the time is correcly set, the system date and time can be written to the
+When the time is correctly set, the system date and time can be written to the
 RTC module with the following command:
 
 ```
@@ -135,6 +137,11 @@ verify that the time reported is correct.
 ## Dependencies and Prerequisites
 
 The project must be cloned to `/home/pi/` for the scripts to work correctly.
+This can be done by running the following:
+
+```
+git clone 
+```
 
 The project requires Python 3 to be installed. 
 
@@ -205,6 +212,34 @@ will be saved to `/home/pi/WeatherStation/data` and be named the date and time
 of when it was created.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
+
+## Helpful Connection Information
+
+In order to connect to the Raspberry Pi via ssh, it must be enabled first.
+This resource provides some instructions on how to do that:
+
+* https://www.raspberrypi.org/documentation/remote-access/ssh/
+
+One of the methods mentioned is to have the Pi connected to a keyboard and
+monitor and then run the following:
+
+```
+sudo systemctl enable ssh
+sudo systemctl start ssh
+```
+
+A helpful tool for finding the IP address of the Raspberry Pi in order to
+ssh to it, is `arp-scan`. It can be installed by running the following:
+
+```
+sudo apt-get install arp-scan
+```
+
+To list the IP addresses of devices on the network, run the following:
+
+```
+sudo arp-scan -l
+```
 
 ## Files
 
