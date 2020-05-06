@@ -34,15 +34,3 @@ rain_sensor.when_pressed = bucket_tipped
 while True:
     print(precipitation)
     time.sleep(LOG_INTERVAL)
-
-# TODO: clear the rainfall each day at midnight
-# import datetime
-# previous_day = datetime.datetime.now()
-#
-# # In loop check if the day has changed
-# current_day = datetime.datetime.now()
-# # When it's a new day, clear the rainfall total
-# if int(current_day.strftime("%w")) != int(previous_day.strftime("%w)):
-#     reset_rainfall()
-#     previous_day = current_day
-

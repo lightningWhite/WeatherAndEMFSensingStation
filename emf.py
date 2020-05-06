@@ -18,7 +18,7 @@ import subprocess
 
 def to_MHz(frequency, unit):
     """
-    Given a freqeuncy and a unit, convert the frequency to MHz
+    Given a frequency and a unit, convert the frequency to MHz
     """
 
     if unit == 'Hz':

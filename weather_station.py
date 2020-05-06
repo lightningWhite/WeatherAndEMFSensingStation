@@ -16,7 +16,7 @@ import wind_direction
 LOG_INTERVAL = 10  #300 #4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 1 #2 #5 #180 # 3 minuntes in seconds
+ACCUMULATION_INTERVAL = 1 #2 #5 #180 # 3 minutes in seconds
 
 ###############################################################################
 # Anemometer
@@ -46,7 +46,7 @@ def calculate_speed(time_sec):
     circumference_cm = (2 * math.pi) * RADIUS_CM
     rotations = wind_count / 2.0
 
-    # Calcuate the distance travelled by a cup in cm
+    # Calculate the distance travelled by a cup in cm
     dist_mile = (circumference_cm * rotations) / CM_IN_A_MILE
 
     # Report the wind speed in miles per hour
@@ -68,7 +68,7 @@ wind_speed_sensor.when_pressed = spin
 
 
 ###############################################################################
-# Rain Guage
+# Rain Gauge
 ###############################################################################
 
 BUCKET_SIZE = 0.011 # Inches per bucket tip
