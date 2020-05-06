@@ -37,7 +37,7 @@ def calculate_speed(time_sec):
     circumference_cm = (2 * math.pi) * radius_cm
     rotations = wind_count / 2.0
 
-    # Calcuate the distance travelled by a cup in cm
+    # Calculate the distance travelled by a cup in cm
     dist_mile = (circumference_cm * rotations) / CM_IN_A_MILE
 
     # Report the wind speed in miles per hour

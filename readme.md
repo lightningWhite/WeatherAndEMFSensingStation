@@ -191,7 +191,7 @@ Also note that when the weather station has been started automatically on boot,
 to view the real-time output of the weather station, you must attach to the
 tmux session as root: `sudo tmux attach`.
 
-The EMF-390 sensor must be connected to the Raspberry Pi for the weather
+The EMF-390 sensor must be connected to the Raspberry Pi via USB for the weather
 station to start up correctly. The sensor must also be in vertical mode viewing
 RF. If this is not set up like this, the Weather Station may crash and/or won't
 report the correct EMF values. Also, it's important that the battery is
@@ -202,7 +202,7 @@ Pi, this unshielded circuit would throw off the EMF readings.
 ## Data Logging
 
 As the weather station runs, it will log readings from all of the sensors at a
-configurable rate. This can be set in the weather_sttion.py file. The
+configurable rate. This can be set in the weather_station.py file. The
 LOG_INTERVAL defines how often the readings will be logged. The
 ACCUMULATION_INTERVAL defines how often samples should be taken of some of the
 sensors in order to calculate and averages or maximums. The
@@ -344,7 +344,7 @@ file works.
 #### pyranometer.py
 
 This file uses the ADC to read the voltage from the Apogee SP-110 Pyranometer
-sensor. This sensor will output a volage between 0 and 250 mV where each
+sensor. This sensor will output a voltage between 0 and 250 mV where each
 mV represents 5.0 W m^-2.
 
 According to the sensor's documentation, full sunlight should yield a total
@@ -390,7 +390,7 @@ Raspberry Pi are provided in the README file.
 
 The README of the project also notes that to use the device for real-time data
 logging, it's best to remove the battery. It says that the charging circuit is
-not shielded and it will produce a lot of interferance.
+not shielded and it will produce a lot of interference.
 
 To read data in real-time from the device in a CSV format, the following command
 can be used:
@@ -434,7 +434,7 @@ using this formula: Power Density = (Pout * Gain) / (4 * PI * Distance^2)
 
 The gain used by the sensor for the antennae is 10 (configurable in the sensor
 settings, but the forum recommends to leave it at 10 unless using some sort of
-external antennea). The distance can be calculated when D when a Power Density
+external antenna). The distance can be calculated when D when a Power Density
 is reported, however, this distance seems to change for different readings, so
 it's unclear what's being used for the distance in the equation. Pout is
 probably the rfwatts reading.
@@ -608,7 +608,7 @@ respective files. Be sure to undo the changes when done testing.
 HAT board to the MCP3208. I clipped the bare metal end of the clear wire and
 coiled it up so it wouldn't accidentally touch anything. We don't use it.
 Again, test this to make sure it works before moving on.
-* Connect the rain guage. Like the others, I strung the wires from the Pi to
+* Connect the rain gauge. Like the others, I strung the wires from the Pi to
 the RJ11 breakout board through the slot. I positioned the RJ11 connector to
 sit on top of the USB ports. Remember to insulate the bottom of the RJ11
 connector and/or the top of the USB ports.
