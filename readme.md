@@ -151,7 +151,7 @@ Create a python virtual environment and activate it:
 
 ```
 python3 -m venv env
-source venv/bin/activate
+source env/bin/activate
 ```
 
 Install the pip dependencies of the project (Note: Don't use sudo for the pip
@@ -164,6 +164,7 @@ pip3 install -r requirements.txt
 Install `tmux`:
 
 ```
+sudo apt-get update
 sudo apt-get install tmux
 ```
 
@@ -578,3 +579,47 @@ follows:
 0.2: 315.0 
 0.6: 337.5
 ```
+
+### Board Assembly Notes
+
+Referring to the Raspberry Pi Weather Station tutorial mentioned earlier can
+be helpful, but since this weather station has several modifications, these
+are some additional notes of what I did that may be helpful while assembling
+the board. Remember to turn off the Pi before taking off or putting on the
+Pi HAT board. Sometimes bugs can crop up by leaving the Pi on while doing this
+that can take a good while to figure out.
+
+* I would start with placing the MCP3208 chip socket. After this
+is placed, connect all the wires that go from the Pi to the chip.
+* Connect the wind speed and wind direction sensors. This requires the RJ11
+breakout board. I found it helpful to string the wires from the Pi and the
+MCP3208 to the breakout board under the board and up through the slot on the
+HAT board. This kind of holds them in place. I placed the RJ11 breakout board
+so it would sit on top of the Ethernet port of the Pi. When doing this, it's
+extremely important to insulate the bottom of the RJ11 breakout board and/or
+the top of the Ethernet and USB ports, otherwise the connections on the RJ11
+board will ground out on the metal. I just used some electrical tape. Also,
+I just strung the resistor from the chip's pin 1 to the ground rail near the
+5V power rail. And, don't be tempted to use the 5V power rail by accident. Be
+sure to test that the wind speed and wind direction sensors work. I tested them
+by slightly modifying the code to print out the values obtained in the
+respective files. Be sure to undo the changes when done testing.
+* Connect the Pyranometer. Again, I strung the wires through the slot on the
+HAT board to the MCP3208. I clipped the bare metal end of the clear wire and
+coiled it up so it wouldn't accidentally touch anything. We don't use it.
+Again, test this to make sure it works before moving on.
+* Connect the rain guage. Like the others, I strung the wires from the Pi to
+the RJ11 breakout board through the slot. I positioned the RJ11 connector to
+sit on top of the USB ports. Remember to insulate the bottom of the RJ11
+connector and/or the top of the USB ports.
+* Solder on the two two-pin headers for the BME280 sensor. Make sure it works.
+* Connect the Real Time Clock. This one is a little tricky because it needs
+to be connected to the SDA and SCL pins which are already in use by the
+BME280 sensor. I got around this by just soldering the end of the wires to the
+stubs on the back of the Pi HAT of the two-pin header on those two pins. Take
+care not to bridge the SDA and SCL pins when soldering the ends. Then I strung
+it under over to the clock. I placed the clock between the ADC and the RJ11
+connectors. Remember to test it out and set the clock. Again, make sure you
+have the Pi off and start it after it's connected. Also, remember to follow
+the set up instructions near the top of this readme to configure and set the
+Real Time Clock.

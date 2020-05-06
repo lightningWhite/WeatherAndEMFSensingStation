@@ -132,8 +132,8 @@ with open(data_file, "w") as file:
                "Frequency of RF Density Peak (MHz), "\
                "Peak RF Density Frequency (MHz), " \
                "Density of RF Density Frequency Peak (W m^(-2)), " \
-               "Avg. Total Density, " \
-               "Max Total Density, " \
+               "Avg. Total Density (W m^(-2)), " \
+               "Max Total Density (W m^(-2)), " \
                "Avg. EF (V/m), " \
                "Max EF (V/m), " \
                "Avg. EMF (mG), " \
@@ -225,8 +225,8 @@ while True:
     density_of_rf_density_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))]
 
     # Obtain the average RF power density and the average frequency
-    rf_density_avg = statistics.mean(store_rf_watts)
-    rf_density_frequency_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
+    rf_density_avg = statistics.mean(store_rf_density)
+    rf_density_frequency_avg = round(statistics.mean(store_rf_density_frequencies), 1)
 
 
     # Obtain the average and max RF total density value
@@ -248,47 +248,47 @@ while True:
     # instructions on how to configure the Real Time Clock correctly.
     current_time = datetime.datetime.now()
 
-    print(f"Record Number:                            {record_number}")
-    print(f"Time:                                     {current_time}")
+    print(f"Record Number:                                 {record_number}")
+    print(f"Time:                                          {current_time}")
 
     # Weather
-    print(f"Temperature (F):                          {ambient_temp}")
-    print(f"Pressure (mbar):                          {pressure}")
-    print(f"Humidity (%):                             {humidity}")
-    print(f"Wind Direction (Degrees):                 {wind_direction_avg}")
-    print(f"Wind Direction (String):                  {wind_direction_string}")
-    print(f"Avg. Wind Speed (MPH):                    {wind_speed}")
-    print(f"Wind Gust (MPH):                          {wind_gust}")
-    print(f"Precipitation (Inches):                   {precipitation}")
-    print(f"Shortwave Radiation (W m^-2):             {shortwave_radiation}")
+    print(f"Temperature (F):                               {ambient_temp}")
+    print(f"Pressure (mbar):                               {pressure}")
+    print(f"Humidity (%):                                  {humidity}")
+    print(f"Wind Direction (Degrees):                      {wind_direction_avg}")
+    print(f"Wind Direction (String):                       {wind_direction_string}")
+    print(f"Avg. Wind Speed (MPH):                         {wind_speed}")
+    print(f"Wind Gust (MPH):                               {wind_gust}")
+    print(f"Precipitation (Inches):                        {precipitation}")
+    print(f"Shortwave Radiation (W m^-2):                  {shortwave_radiation}")
 
     # RF Watts
-    print(f"Avg. RF Watts (W):                        {rf_watts_avg:.16f}")
-    print(f"Avg. RF Watts Frequency (MHz):            {rf_watts_frequency_avg}")
-    print(f"Peak RF Watts (W):                        {rf_watts_peak:.16f}")
-    print(f"Frequency of RF Watts Peak (MHz):         {frequency_of_rf_watts_peak}")
-    print(f"Peak RF Watts Frequency (MHz):            {rf_watts_frequency_peak}")
-    print(f"Watts of RF Watts Frequency Peak (W):     {watts_of_rf_watts_frequency_peak:.16f}")
+    print(f"Avg. RF Watts (W):                             {rf_watts_avg:.16f}")
+    print(f"Avg. RF Watts Frequency (MHz):                 {rf_watts_frequency_avg}")
+    print(f"Peak RF Watts (W):                             {rf_watts_peak:.16f}")
+    print(f"Frequency of RF Watts Peak (MHz):              {frequency_of_rf_watts_peak}")
+    print(f"Peak RF Watts Frequency (MHz):                 {rf_watts_frequency_peak}")
+    print(f"Watts of RF Watts Frequency Peak (W):          {watts_of_rf_watts_frequency_peak:.16f}")
 
     # RF Density
-    print(f"Avg. RF Density (W m^-2):                 {rf_density_avg:.16f}")
-    print(f"Avg. RF Density Frequency (MHz):          {rf_density_frequency_avg}")
-    print(f"Peak RF Density (W):                      {rf_density_peak:.16f}")
-    print(f"Frequency of RF Density Peak (MHz):       {frequency_of_rf_density_peak}")
-    print(f"Peak RF Density Frequency (MHz):          {rf_density_frequency_peak}")
-    print(f"Density of RF Density Frequency Peak (W): {density_of_rf_density_frequency_peak:.16f}")
+    print(f"Avg. RF Density (W m^-2):                      {rf_density_avg:.16f}")
+    print(f"Avg. RF Density Frequency (MHz):               {rf_density_frequency_avg}")
+    print(f"Peak RF Density (W m^-2):                      {rf_density_peak:.16f}")
+    print(f"Frequency of RF Density Peak (MHz):            {frequency_of_rf_density_peak}")
+    print(f"Peak RF Density Frequency (MHz):               {rf_density_frequency_peak}")
+    print(f"Density of RF Density Frequency Peak (W m^-2): {density_of_rf_density_frequency_peak:.16f}")
 
     # RF Total Density 
-    print(f"Avg. RF Total Density (W m^-2):           {rf_total_density_avg:.16f}")
-    print(f"Max  RF Total Density (W m^-2):           {rf_total_density_max:.16f}")
+    print(f"Avg. RF Total Density (W m^-2):                {rf_total_density_avg:.16f}")
+    print(f"Max  RF Total Density (W m^-2):                {rf_total_density_max:.16f}")
 
     # EF
-    print(f"Avg. EF (V/m):                            {ef_volts_per_meter_avg}")
-    print(f"Max  EF (V/m):                            {ef_volts_per_meter_max}")
+    print(f"Avg. EF (V/m):                                 {ef_volts_per_meter_avg}")
+    print(f"Max  EF (V/m):                                 {ef_volts_per_meter_max}")
 
     # EMF
-    print(f"Avg. EMF (mG):                            {emf_milligauss_avg}")
-    print(f"Max  EMF (mG):                            {emf_milligauss_max}")
+    print(f"Avg. EMF (mG):                                 {emf_milligauss_avg}")
+    print(f"Max  EMF (mG):                                 {emf_milligauss_max}")
 
     print("######################################################")
 
