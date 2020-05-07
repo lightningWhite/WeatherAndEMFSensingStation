@@ -222,7 +222,7 @@ while True:
 
     # Obtain the max RF density frequency and its associated density (W m^-2)
     rf_density_frequency_peak = max(store_rf_density_frequencies)
-    density_of_rf_density_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))]
+    density_of_rf_density_frequency_peak = store_rf_density[store_rf_density_frequencies.index(max(store_rf_watts_frequencies))]
 
     # Obtain the average RF power density and the average frequency
     rf_density_avg = statistics.mean(store_rf_density)
