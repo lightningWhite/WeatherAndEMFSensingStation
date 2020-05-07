@@ -16,7 +16,7 @@ import smbus2
 from time import sleep
 
 # Amount to add to the barometer reading for Logan, Utah
-CALIBRATION = 157.3826 
+CALIBRATION = 155.2696
 
 # True will report temperature in F, False will report in C
 DO_FAHRENHEIT = True
