@@ -49,7 +49,7 @@ This project is set up to handle the following sensors:
 
 ## Raspberry Pi Configuration
 
-This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation.
+This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation. This was all tested with the Buster version of Raspbian.
 
 In order to use the I2C and SPI interfaces, these have to be enabled. This can
 be done by running `sudo raspi-config` and enabling I2C and SPI in the
@@ -171,8 +171,10 @@ sudo apt-get install tmux
 The `install.sh` script when run will copy the necessary files to `/etc/init.d`
 so the weather station will start on boot automatically. It will also create a
 mount point and modify the fstab so an external USB storage device will be
-automatically mounted on boot. It must be run as root and the Pi must be
-restarted for the changes to take effect:
+automatically mounted on boot. It will also configure the Pi to automatically
+connect to a network named `Weather` if present. This can be helpful if you want
+to connect to the Pi wirelessly using a mobile hotspot. This script must be run
+as root and the Pi must be restarted for the changes to take effect:
 
 ```
 sudo ./install.sh
@@ -245,6 +247,8 @@ sudo systemctl enable ssh
 sudo systemctl start ssh
 ```
 
+Note that this can also be done using `raspi-config`.
+
 A helpful tool for finding the IP address of the Raspberry Pi in order to
 ssh to it, is `arp-scan`. It can be installed by running the following:
 
@@ -263,7 +267,7 @@ sudo arp-scan -l
 #### termux
 
 An Android app called `termux` can be installed from Google Play. This
-app provides a terminal on the Android phone. Using this terminal files
+app provides a terminal on the Android phone. Using this terminal, files
 can be copied from the Raspberry Pi via `scp`. Connections can also be made to
 the Pi using `ssh`. To do this, open termux on an Android phone and run the
 following commands:
@@ -290,8 +294,8 @@ the same network:
 ssh pi@192.168.0.23
 ```
 
-You can also copy a .csv file from the Pi to your phone with a command
-such as this:
+You can also copy one of the data files from the Pi to your phone with a
+command such as this:
 
 ```
 cd storage/downloads
@@ -301,6 +305,14 @@ scp pi@192.168.0.23:/home/pi/WeatherStation/data/05-07-2020--19-08-22.csv .
 Enter the Raspberry Pi's password and the file should be copied to the phone.
 
 The file should then be copied to the Downloads folder of the phone.
+
+If you want to copy all of the data files to your phone, you can do so using
+the wildcard such as this:
+
+```
+cd storage/downloads
+scp pi@192.168.0.23:/home/pi/WeatherStation/data/*.csv .
+```
 
 #### VNC Viewer - Remote Desktop
 
@@ -326,6 +338,55 @@ entering the IP address of the Raspberry Pi followed by a :1 such as this:
 ```
 
 This will provide the desktop GUI with which you can interact.
+
+#### Connecting Using a WiFi Hotspot from an Android Phone
+
+Since the Pi will likely be running in a location without WiFi, in order to
+connect via the methods above, some sort of network needs to be in place. This
+can be a mobile hotspot.
+
+The Raspberry Pi can be configured to connect automatically to a WiFi hotspot.
+Then the mobile device or another device connected to the same network can
+ssh to the Pi or scp files from the Pi to the phone. Do the following to make
+this possible:
+
+Modify the `wpa_supplicant.conf` file located at `/etc/wpa_supplicant/` to
+include the hotspot network and password. An example of what should be added
+is as follows:
+
+```
+network={
+  ssid="Weather"
+  psk="weatherStationNetwork"
+  key_mgmt=WPA-PSK
+  priority=20
+}
+```
+
+The Raspberry Pi must be restarted for the changes to take effect.
+
+This will cause the Raspberry Pi to automatically connect to a network with the
+name of "Weather" and use the password "weatherStationNetwork" if the network is
+present. Setting the priority to 20 (some arbitrarily large number) should
+ensure that it will be the first network that it will try to connect to. Note
+that the `install.sh` script will configure this network connection when it is
+run.
+
+On the mobile device, set up a hotspot with that name and password and turn it
+on. The Pi should automatically connect to the hotspot.
+
+The mobile hotspot should show that one device is connected. To view the IP
+address of the Raspberry Pi, open up a terminal in the phone using something
+like Termux and type the following:
+
+```
+ip neigh
+```
+
+This should show the IP address of the Raspberry Pi on the hotspot network.
+
+Any of the previously mentioned methods should now work to connect to the
+Raspberry Pi using the mobile device.
 
 ## Files
 
