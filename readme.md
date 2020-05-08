@@ -49,7 +49,7 @@ This project is set up to handle the following sensors:
 
 ## Raspberry Pi Configuration
 
-This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation.
+This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation. This was all tested with the Buster version of Raspbian.
 
 In order to use the I2C and SPI interfaces, these have to be enabled. This can
 be done by running `sudo raspi-config` and enabling I2C and SPI in the
@@ -168,6 +168,19 @@ sudo apt-get update
 sudo apt-get install tmux
 ```
 
+The `install.sh` script when run will copy the necessary files to `/etc/init.d`
+so the weather station will start on boot automatically. It will also create a
+mount point and modify the fstab so an external USB storage device will be
+automatically mounted on boot. It will also configure the Pi to automatically
+connect to a network named `Weather` if present. This can be helpful if you want
+to connect to the Pi wirelessly using a mobile hotspot. This script must be run
+as root and the Pi must be restarted for the changes to take effect:
+
+```
+sudo ./install.sh
+sudo reboot
+```
+
 ## Running the Weather Station
 
 The `startWeatherStation.sh` script will start a tmux session and call the
@@ -183,11 +196,7 @@ from the session again so it can continue running when the ssh session times
 out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
 background to continue running.
 
-The `install.sh` script when run will copy the necessary files to `/etc/init.d`
-so the weather station will start on boot automatically. Simply execute the
-script and reboot. Note that the `install.sh` script must be run as root.
-
-Also note that when the weather station has been started automatically on boot,
+Note that when the weather station has been started automatically on boot,
 to view the real-time output of the weather station, you must attach to the
 tmux session as root: `sudo tmux attach`.
 
@@ -214,6 +223,15 @@ of when it was created.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
 
+If an external USB storage device is connected, such as a thumbdrive, the data
+file will be copied to it after each data record is written. When the next
+record is to be copied to the external storage drive, the previously copied
+file will have its name changed to have a .bak extension so it isn't overwritten
+until the latest copy of the data file is obtained. The next time the data file
+is to be copied to the external storage device, the .bak file will be
+overwritten with the previously backed up file and the new data file will be
+copied to the drive.
+
 ## Helpful Connection Information
 
 In order to connect to the Raspberry Pi via ssh, it must be enabled first.
@@ -229,6 +247,8 @@ sudo systemctl enable ssh
 sudo systemctl start ssh
 ```
 
+Note that this can also be done using `raspi-config`.
+
 A helpful tool for finding the IP address of the Raspberry Pi in order to
 ssh to it, is `arp-scan`. It can be installed by running the following:
 
@@ -241,6 +261,132 @@ To list the IP addresses of devices on the network, run the following:
 ```
 sudo arp-scan -l
 ```
+
+### Connecting to the Raspberry Pi Using an Android Phone
+
+#### termux
+
+An Android app called `termux` can be installed from Google Play. This
+app provides a terminal on the Android phone. Using this terminal, files
+can be copied from the Raspberry Pi via `scp`. Connections can also be made to
+the Pi using `ssh`. To do this, open termux on an Android phone and run the
+following commands:
+
+Enable tmux to access the phone's storage so you can access any copied files
+from the Pi:
+
+```
+termux-setup-storage
+```
+
+Allow access when the dialog pops up.
+
+Install ssh and scp:
+
+```
+pkg install openssh
+```
+
+You can now ssh to the Raspberry Pi using the Pi's IP address if you're on
+the same network:
+
+```
+ssh pi@192.168.0.23
+```
+
+You can also copy one of the data files from the Pi to your phone with a
+command such as this:
+
+```
+cd storage/downloads
+scp pi@192.168.0.23:/home/pi/WeatherStation/data/05-07-2020--19-08-22.csv .
+```
+
+Enter the Raspberry Pi's password and the file should be copied to the phone.
+
+The file should then be copied to the Downloads folder of the phone.
+
+If you want to copy all of the data files to your phone, you can do so using
+the wildcard such as this:
+
+```
+cd storage/downloads
+scp pi@192.168.0.23:/home/pi/WeatherStation/data/*.csv .
+```
+
+#### VNC Viewer - Remote Desktop
+
+`VNC Viewer - Remote Desktop` can be installed via Google Play. Once this is
+installed, a vncserver can be started on the Raspberry Pi. vncserver needs to
+be enabled on the Pi before doing this. This can be done by running
+`raspi-config` and selecting `Interfacing Options`. Then select VNC and
+enable it.
+
+Once it is enabled, a vncserver can be started by running the following:
+
+```
+vncserver :1
+```
+
+This will start the vncserver on port 5901.
+
+Using the Android vnc client application, you can connect to the Pi by
+entering the IP address of the Raspberry Pi followed by a :1 such as this:
+
+```
+192.168.0.23:1
+```
+
+This will provide the desktop GUI with which you can interact.
+
+#### Connecting Using a WiFi Hotspot from an Android Phone
+
+Since the Pi will likely be running in a location without WiFi, in order to
+connect via the methods above, some sort of network needs to be in place. This
+can be a mobile hotspot.
+
+The Raspberry Pi can be configured to connect automatically to a WiFi hotspot.
+Then the mobile device or another device connected to the same network can
+ssh to the Pi or scp files from the Pi to the phone. Do the following to make
+this possible:
+
+Modify the `wpa_supplicant.conf` file located at `/etc/wpa_supplicant/` to
+include the hotspot network and password. An example of what should be added
+is as follows:
+
+```
+network={
+  ssid="Weather"
+  psk="weatherStationNetwork"
+  key_mgmt=WPA-PSK
+  priority=20
+}
+```
+
+The Raspberry Pi must be restarted for the changes to take effect.
+
+This will cause the Raspberry Pi to automatically connect to a network with the
+name of "Weather" and use the password "weatherStationNetwork" if the network is
+present. Setting the priority to 20 (some arbitrarily large number) should
+ensure that it will be the first network that it will try to connect to. Note
+that the `install.sh` script will configure this network connection when it is
+run.
+
+On the mobile device, set up a hotspot with that name and password and turn it
+on. The Pi should automatically connect to the hotspot.
+
+The mobile hotspot should show that one device is connected. To view the IP
+address of the Raspberry Pi, open up a terminal in the phone using something
+like Termux and type the following:
+
+```
+ip neigh
+```
+
+This should show the IP address of the Raspberry Pi on the hotspot network.
+
+Any of the previously mentioned methods should now work to connect to the
+Raspberry Pi using the mobile device.
 
 ## Files
 
