@@ -7,6 +7,7 @@ import os
 import pyranometer
 from pathlib import Path
 import statistics
+import subprocess
 import time
 import wind_direction
 
@@ -99,7 +100,8 @@ rain_sensor.when_pressed = bucket_tipped
 ###############################################################################
 
 # Create a new file named by the current date and time
-data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S") + ".csv"
+time_name = datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S")
+data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + time_name + ".csv"
 if not os.path.exists(os.path.dirname(data_file)):
     try:
         os.makedirs(os.path.dirname(data_file))
@@ -307,6 +309,38 @@ while True:
                    f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
                    f"{emf_milligauss_avg}, {emf_milligauss_max}\n")
 
+    # Check if an external USB storage device is connected
+    check_external_drive = subprocess.Popen(
+        'df -h | grep /dev/sda1',
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)    
+    stdout, stderr = check_external_drive.communicate()
+
+    # Copy the newly written file to the external USB drive if one is connected
+    if len(stdout) > 0:
+        file_name = time_name + '.csv'
+        backup_name = time_name + '.csv' + '.bak'
+
+        # Change the name of the last backup so we don't overwrite it until
+        # the latest backup is obtained
+        rename_old_backup_data = subprocess.Popen(
+            f"mv /mnt/usb1/{file_name} /mnt/usb1/{backup_name}",
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        stdout, stderr = rename_old_backup_data.communicate()
+
+        # Get the latest data file to the external drive
+        backup_data = subprocess.Popen(
+            f"cp {data_file} /mnt/usb1/{file_name}",
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        stdout, stderr = backup_data.communicate()
+    else:
+        print("WARNING: The data is not being backed up. Ensure an external storage device is connected.")
+
     # Clear the recorded values so they can be updated over the next LOG_INTERVAL
     store_speeds.clear()
     store_directions.clear()
@@ -327,3 +361,4 @@ while True:
         previous_day = current_time
 
     record_number = record_number + 1
+

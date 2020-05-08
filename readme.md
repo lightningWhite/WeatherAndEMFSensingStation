@@ -168,6 +168,17 @@ sudo apt-get update
 sudo apt-get install tmux
 ```
 
+The `install.sh` script when run will copy the necessary files to `/etc/init.d`
+so the weather station will start on boot automatically. It will also create a
+mount point and modify the fstab so an external USB storage device will be
+automatically mounted on boot. It must be run as root and the Pi must be
+restarted for the changes to take effect:
+
+```
+sudo ./install.sh
+sudo reboot
+```
+
 ## Running the Weather Station
 
 The `startWeatherStation.sh` script will start a tmux session and call the
@@ -183,11 +194,7 @@ from the session again so it can continue running when the ssh session times
 out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
 background to continue running.
 
-The `install.sh` script when run will copy the necessary files to `/etc/init.d`
-so the weather station will start on boot automatically. Simply execute the
-script and reboot. Note that the `install.sh` script must be run as root.
-
-Also note that when the weather station has been started automatically on boot,
+Note that when the weather station has been started automatically on boot,
 to view the real-time output of the weather station, you must attach to the
 tmux session as root: `sudo tmux attach`.
 
@@ -213,6 +220,15 @@ will be saved to `/home/pi/WeatherStation/data` and be named the date and time
 of when it was created.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
+
+If an external USB storage device is connected, such as a thumbdrive, the data
+file will be copied to it after each data record is written. When the next
+record is to be copied to the external storage drive, the previously copied
+file will have its name changed to have a .bak extension so it isn't overwritten
+until the latest copy of the data file is obtained. The next time the data file
+is to be copied to the external storage device, the .bak file will be
+overwritten with the previously backed up file and the new data file will be
+copied to the drive.
 
 ## Helpful Connection Information
 
