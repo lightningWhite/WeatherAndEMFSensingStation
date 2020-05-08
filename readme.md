@@ -258,6 +258,75 @@ To list the IP addresses of devices on the network, run the following:
 sudo arp-scan -l
 ```
 
+### Connecting to the Raspberry Pi Using an Android Phone
+
+#### termux
+
+An Android app called `termux` can be installed from Google Play. This
+app provides a terminal on the Android phone. Using this terminal files
+can be copied from the Raspberry Pi via `scp`. Connections can also be made to
+the Pi using `ssh`. To do this, open termux on an Android phone and run the
+following commands:
+
+Enable tmux to access the phone's storage so you can access any copied files
+from the Pi:
+
+```
+termux-setup-storage
+```
+
+Allow access when the dialog pops up.
+
+Install ssh and scp:
+
+```
+pkg install openssh
+```
+
+You can now ssh to the Raspberry Pi using the Pi's IP address if you're on
+the same network:
+
+```
+ssh pi@192.168.0.23
+```
+
+You can also copy a .csv file from the Pi to your phone with a command
+such as this:
+
+```
+cd storage/downloads
+scp pi@192.168.0.23:/home/pi/WeatherStation/data/05-07-2020--19-08-22.csv .
+```
+
+Enter the Raspberry Pi's password and the file should be copied to the phone.
+
+The file should then be copied to the Downloads folder of the phone.
+
+#### VNC Viewer - Remote Desktop
+
+`VNC Viewer - Remote Desktop` can be installed via Google Play. Once this is
+installed, a vncserver can be started on the Raspberry Pi. vncserver needs to
+be enabled on the Pi before doing this. This can be done by running
+`raspi-config` and selecting `Interfacing Options`. Then select VNC and
+enable it.
+
+Once it is enabled, a vncserver can be started by running the following:
+
+```
+vncserver :1
+```
+
+This will start the vncserver on port 5901.
+
+Using the Android vnc client application, you can connect to the Pi by
+entering the IP address of the Raspberry Pi followed by a :1 such as this:
+
+```
+192.168.0.23:1
+```
+
+This will provide the desktop GUI with which you can interact.
+
 ## Files
 
 The following files are the primary files used in the weather and EMF sensing
