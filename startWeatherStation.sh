@@ -21,7 +21,7 @@
 echo "Starting the weather station..."
 
 # Start the weather station in a tmux terminal and then detach it
-tmux new-session -d -s weather_station '. /home/pi/WeatherStation/initializeWeatherStation.sh && python3 -u /home/pi/WeatherStation/weather_station.py | tee logs/$(date -Is).log && tmux detach'
+tmux new-session -d -s weather_station '. /home/pi/WeatherStation/initializeWeatherStation.sh && python3 -u /home/pi/WeatherStation/weather_station.py | tee /home/pi/WeatherStation/logs/$(date -Is).log && tmux detach'
 
 # Wait before checking if it started successfully
 sleep 2
