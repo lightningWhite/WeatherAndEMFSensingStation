@@ -271,7 +271,6 @@ try:
         
         logging.log("Printing the values obtained and calculated")
     
-        print("##########################################################################")
         print(f"Record Number:                                 {record_number}")
         print(f"Time:                                          {current_time}")
     
