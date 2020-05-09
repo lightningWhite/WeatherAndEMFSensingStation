@@ -8,6 +8,7 @@ import pyranometer
 from pathlib import Path
 import statistics
 import subprocess
+import sys
 import time
 import wind_direction
 
@@ -18,6 +19,10 @@ LOG_INTERVAL = 10  #300 #4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
 ACCUMULATION_INTERVAL = 1 #2 #5 #180 # 3 minutes in seconds
+
+print("The weather and emf sensing station has been started")
+print(f"Readings will be accumulated every {ACCUMULATION_INTERVAL} seconds")
+print(f"The data will be written every {LOG_INTERVAL} seconds")
 
 ###############################################################################
 # Anemometer
@@ -168,6 +173,7 @@ while True:
 
     # Accumulate wind direction and wind speeds every ACCUMULATION_INTERVAL
     # seconds, and log the averages every LOG_INTERVAL
+    print("Accumulating the sensor readings")
     while time.time() - start_time <= LOG_INTERVAL:
 
         store_directions.append(wind_direction.get_current_angle())
@@ -175,9 +181,9 @@ while True:
         
         try:
             rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
-        except:
-            print('\nERROR: The EMF sensor may not be on or connected correctly. Exiting.\n')
-            exit(1)
+        except Exception as e:
+            print(e.args)
+            sys.exit(1)
 
         store_rf_watts.append(rf_watts) 
         store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
@@ -199,9 +205,11 @@ while True:
     wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
 
     # Obtain the current humidity, pressure, and ambient temperature
+    print("Obtaining the humidity, pressure, and temperature readings from the bme280 sensor")
     humidity, pressure, ambient_temp = bme280_sensor.read_all()
 
     # Obtain the current shortwave radiation
+    print("Obtaining the shortwave radiation value from the pyranometer")
     shortwave_radiation = pyranometer.get_shortwave_radiation()
 
 
@@ -249,7 +257,10 @@ while True:
     # when there isn't an internet connection. See the readme for
     # instructions on how to configure the Real Time Clock correctly.
     current_time = datetime.datetime.now()
+    
+    print("Printing the values obtained and calculated")
 
+    print("##########################################################################")
     print(f"Record Number:                                 {record_number}")
     print(f"Time:                                          {current_time}")
 
@@ -292,7 +303,9 @@ while True:
     print(f"Avg. EMF (mG):                                 {emf_milligauss_avg}")
     print(f"Max  EMF (mG):                                 {emf_milligauss_max}")
 
-    print("######################################################")
+    print("##########################################################################")
+    
+    print(f"Writing the data to {data_file}")
 
     # Log the data by appending the values to the data .csv file
     with open(data_file, "a") as file:
@@ -321,7 +334,8 @@ while True:
     if len(stdout) > 0:
         file_name = time_name + '.csv'
         backup_name = time_name + '.csv' + '.bak'
-
+        print(f"Backing up the data to /mnt/usb1/{file_name}")
+        
         # Change the name of the last backup so we don't overwrite it until
         # the latest backup is obtained
         rename_old_backup_data = subprocess.Popen(
@@ -351,7 +365,6 @@ while True:
     store_rf_total_density.clear()
     store_ef_volts_per_meter.clear()
     store_emf_milligauss.clear()
-
 
     # Clear the rainfall each day at midnight
     # When it's a new weekday, clear the rainfall total
