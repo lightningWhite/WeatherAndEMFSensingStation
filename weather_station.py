@@ -46,6 +46,7 @@ def spin():
     wind_count = wind_count + 1
 
 def calculate_speed(time_sec):
+    logging.log("Calculating the wind speed")
     global wind_count
     circumference_cm = (2 * math.pi) * RADIUS_CM
     rotations = wind_count / 2.0
@@ -84,12 +85,14 @@ rain_count = 0
 precipitation = 0.0
 
 def bucket_tipped():
+    logging.log("Detected a rainfall bucket tip")
     global rain_count
     global precipitation
     rain_count = rain_count + 1
     precipitation = round(rain_count * BUCKET_SIZE, 4)
 
 def reset_rainfall():
+    logging.log("Resetting the accumulated rainfall")
     global rain_count
     global precipitation
     rain_count = 0
@@ -111,6 +114,7 @@ logging.initialize_logger(f"/home/pi/WeatherStation/logs/{time_name}.log")
 logging.log("The weather and emf sensing station has been started")
 logging.log(f"Readings will be accumulated every {ACCUMULATION_INTERVAL} seconds")
 logging.log(f"The data will be written every {LOG_INTERVAL} seconds")
+logging.log(f"The data file is located here: {data_file}")
 
 try:
     if not os.path.exists(os.path.dirname(data_file)):
@@ -181,7 +185,7 @@ try:
         # seconds, and log the averages every LOG_INTERVAL
         logging.log("Accumulating the sensor readings")
         while time.time() - start_time <= LOG_INTERVAL:
-    
+   
             store_directions.append(wind_direction.get_current_angle())
             store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
             
@@ -201,8 +205,8 @@ try:
     
             time.sleep(ACCUMULATION_INTERVAL)
     
-    
-        # Obtain the wind gust and the average speed over the LOG_INTERVAL
+  
+        # Obtain the wind gust and the average speed over the LOG_INTERVAL 
         wind_gust = round(max(store_speeds), 1)
         wind_speed = round(statistics.mean(store_speeds), 1)
     
@@ -217,7 +221,8 @@ try:
         # Obtain the current shortwave radiation
         logging.log("Obtaining the shortwave radiation value from the pyranometer")
         shortwave_radiation = pyranometer.get_shortwave_radiation()
-    
+   
+        logging.log("Calculating the max, peak, and averages of the EMF data")
     
         # Obtain the max RF watts value and its associated frequency
         rf_watts_peak = max(store_rf_watts)
@@ -235,8 +240,6 @@ try:
         # Obtain the max RF density value and its associated frequency
         rf_density_peak = max(store_rf_density)
         frequency_of_rf_density_peak = round(store_rf_density_frequencies[store_rf_density.index(max(store_rf_density))], 1)
-        # TODO: REMOVE THIS!!! 
-        frequency_of_rf_density_peak = round(store_rf_density_frequencies[store_rf_density.index(3)], 1)
     
         # Obtain the max RF density frequency and its associated density (W m^-2)
         rf_density_frequency_peak = max(store_rf_density_frequencies)
@@ -378,8 +381,7 @@ try:
         # Clear the rainfall each day at midnight
         # When it's a new weekday, clear the rainfall total
         if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
-            print("Resetting precipitation")
-            logging.log("Resetting precipitation")
+            print("Resetting the accumulated rainfall")
             reset_rainfall()
             previous_day = current_time
     
