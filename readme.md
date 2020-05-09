@@ -239,6 +239,13 @@ is to be copied to the external storage device, the .bak file will be
 overwritten with the previously backed up file and the new data file will be
 copied to the drive.
 
+## Logging
+
+The `weather_station.py` file initializes a logger. Log messages from the
+weather and EMF sensing station will be stored in the `logs` directory by
+the same time name as the data file. This log output can be very helpful for
+debugging if any issues arise.
+
 ## Helpful Connection Information
 
 In order to connect to the Raspberry Pi via ssh, it must be enabled first.
@@ -606,6 +613,13 @@ Although there are some discrepancies between the values obtained from the
 emf390cli tool, these discrepancies are mitigated in the `weather_station.py`
 file by collecting values and then reporting averages and maximums rather than
 simply reporting each of the values directly reported by the tool.
+
+#### logging.py
+
+This file provides logging functionality. A path to the log file location is
+passed to the intialize_logger function and then messages can then be logged
+by calling the log function and passing a message. The message will be logged
+with the current time.
 
 ### Developmental and Utility Files
 
