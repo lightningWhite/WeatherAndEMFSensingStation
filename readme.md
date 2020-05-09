@@ -208,6 +208,13 @@ removed from the EMF-390 device. Some resources on the internet report that
 the charging circuit is not shielded. Since it is plugged into the Raspberry
 Pi, this unshielded circuit would throw off the EMF readings.
 
+When the weather and EMF sensing station is started with the
+`startWeatherStation.sh` script, the real-time output will be written to a log
+file by the name of the time the weather station was started and be written to
+the /logs directory in the repository. Log messages are written to stdout and
+should capture most of the problems that may arise while the weather station is
+running. This can assist in debugging.
+
 ## Data Logging
 
 As the weather station runs, it will log readings from all of the sensors at a
