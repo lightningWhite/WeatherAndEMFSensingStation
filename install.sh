@@ -23,9 +23,6 @@ echo "/dev/sda1 /mnt/usb1 vfat uid=pi,gid=pi,umask=0022,sync,auto,nofail,nosuid,
 echo "Setting up a default network to which the Pi should attempt to connect if present..."
 printf 'network={\n\tssid="Weather"\n\tpsk="weatherStationNetwork"\n\tkey_mgmt=WPA-PSK\n\tpriority=20\n}\n' >> /etc/wpa_supplicant/wpa_supplicant.conf
 
-echo "Ensuring the data and logs directories are created..."
-mkdir -p data logs
-
 echo ""
 
 echo "The weather station has been installed!"
