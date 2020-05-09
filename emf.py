@@ -13,6 +13,7 @@
 # the calculation of the power density. This may be an artifact of the
 # emf390cli tool sampling each reading individually.
 
+import logging
 import subprocess
 import sys
 
@@ -100,12 +101,12 @@ def get_serial_port():
     # Remove the empty entry after splitting by '\n'
     USBDevices.remove('')
     
-    print(f"USBDevices: {USBDevices}")
+    logging.log(f"USBDevices: {USBDevices}")
 
     # Attempt to connect to each device to determine which one works
     for device in USBDevices:
         try:
-            print(f"Attempting to connect to {device}")
+            logging.log(f"Attempting to connect to {device}")
             command = subprocess.Popen([
                 '/home/pi/WeatherStation/em390cli/build/arm-linux/emf390cli',
                 '-p',
@@ -123,7 +124,7 @@ def get_serial_port():
             try:
                 stdout, stderr = command.communicate(timeout=5)
             except:
-                print(f"Attempting to connect to {device} timed out. Exiting.")
+                logging.log(f"Attempting to connect to {device} timed out. Exiting.")
                 sys.exit(1)
 
             # Convert the terminal output from bytes to utf-8
@@ -147,14 +148,14 @@ def get_emf():
 
     # Get the serial port that the emf sensor is connected to
     try:
-        print("Obtaining the EMF device port")
+        logging.log("Obtaining the EMF device port")
         USBDevice = get_serial_port()
     except Exception as e:
-        print(e)
+        logging.log(e)
         sys.exit(1)
         
     # Run the emf390cli application to obtain the EMF-390 sensor readings
-    print("Obtaining the EMF sensor readings")
+    logging.log("Obtaining the EMF sensor readings")
     command = subprocess.Popen([
         '/home/pi/WeatherStation/em390cli/build/arm-linux/emf390cli',
         '-p',
@@ -172,7 +173,7 @@ def get_emf():
     try:
         stdout, stderr = command.communicate(timeout=5)
     except:
-        print(f"Attempting to connect to {USBDevice} timed out. Exiting.")
+        logging.log(f"Attempting to connect to {USBDevice} timed out. Exiting.")
         sys.exit(1)
 
     # Convert the readings from bytes to utf-8
@@ -195,7 +196,7 @@ def get_emf():
     ef_volts_per_meter = ef_words[1] 
     emf_milligauss = emf_words[1] 
 
-    print("Returning the EMF sensor readings")
+    logging.log("Returning the EMF sensor readings")
     return float(rf_watts), float(rf_watts_mhz_frequency), \
            float(rf_density), float(rf_density_mhz_frequency), \
            float(rf_total_density), float(ef_volts_per_meter), \

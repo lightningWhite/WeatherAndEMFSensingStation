@@ -24,6 +24,7 @@
 
 from gpiozero import MCP3208
 
+import logging
 import math
 import time
 
@@ -63,6 +64,8 @@ volts = {0.4: 0.0,
 
 # Calculate the average angle from a list of angles
 def get_average(angles):
+    logging.log("Calculating the average of the list of angles")
+
     sin_sum = 0.0
     cos_sum = 0.0
 
@@ -94,6 +97,8 @@ def get_average(angles):
 # Returns the average direction read over a period of time
 def get_value(time_period=LOG_INTERVAL):
     global volts
+    
+    logging.log("Obtaining the average wind direction over a period of time")
 
     data = []
     expected_voltages = volts.keys()
@@ -112,6 +117,8 @@ def get_value(time_period=LOG_INTERVAL):
 # Returns the current wind direction
 def get_current_angle():
     global volts
+
+    logging.log("Obtaining the current wind direction angle")
 
     expected_voltages = volts.keys()
     voltage = round(adc.value * 3.3, 3)
@@ -152,8 +159,11 @@ def get_direction(time_period=LOG_INTERVAL):
 
 def get_direction_as_string(angle):
     global directions
-    
+
+    logging.log("Converting an angle direction to a string")
+
     expected_directions = directions.keys()
     closest_direction = min(expected_directions, key=lambda x:abs(x-angle))
 
     return directions[closest_direction]
+
