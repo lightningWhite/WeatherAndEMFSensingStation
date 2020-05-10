@@ -192,7 +192,7 @@ try:
             try:
                 rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
             except Exception as e:
-                logging.log(e.args)
+                logging.log(str(e.args))
                 sys.exit(1)
     
             store_rf_watts.append(rf_watts) 
