@@ -16,10 +16,10 @@ import wind_direction
 # TODO: Adjust the log interval when done testing
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 10  #300 #4 #15 #900 # 15 Minutes in seconds
+LOG_INTERVAL = 900 #300 #4 #15 #900 # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 1 #2 #5 #180 # 3 minutes in seconds
+ACCUMULATION_INTERVAL = 10 #2 #5 #180 # 3 minutes in seconds
 
 
 ###############################################################################
