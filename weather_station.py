@@ -13,8 +13,6 @@ import sys
 import time
 import wind_direction
 
-# TODO: Adjust the log interval when done testing
-
 # How often the sensor readings should be logged
 LOG_INTERVAL = 900 # 15 Minutes in seconds
 
@@ -185,7 +183,8 @@ try:
         # seconds, and log the averages every LOG_INTERVAL
         logging.log("Accumulating the sensor readings")
         while time.time() - start_time <= LOG_INTERVAL:
-   
+            bad_values = False
+
             store_directions.append(wind_direction.get_current_angle())
             store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
             
@@ -193,19 +192,31 @@ try:
                 rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
             except Exception as e:
                 logging.log(str(e.args))
-                sys.exit(1)
-    
-            store_rf_watts.append(rf_watts) 
-            store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
-            store_rf_density.append(rf_density)
-            store_rf_density_frequencies.append(rf_density_frequency)
-            store_rf_total_density.append(rf_total_density)
-            store_ef_volts_per_meter.append(ef_volts_per_meter)
-            store_emf_milligauss.append(emf_milligauss)
+                logging.log("Not accumulating the EMF sensor values because getting the values raised an exception")
+                bad_values = True
+
+            if not bad_values: 
+                store_rf_watts.append(rf_watts) 
+                store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
+                store_rf_density.append(rf_density)
+                store_rf_density_frequencies.append(rf_density_frequency)
+                store_rf_total_density.append(rf_total_density)
+                store_ef_volts_per_meter.append(ef_volts_per_meter)
+                store_emf_milligauss.append(emf_milligauss)
     
             time.sleep(ACCUMULATION_INTERVAL)
     
-  
+        # If any of the EMF lists are empty, they all are. Set the EMF sensor values to -1.
+        if len(store_rf_watts) == 0:
+            logging.log("Setting the EMF values to -1 because no values were obtained from the sensor over the log period")
+            store_rf_watts.append(-1) 
+            store_rf_watts_frequencies.append(-1)
+            store_rf_density.append(-1)
+            store_rf_density_frequencies.append(-1)
+            store_rf_total_density.append(-1)
+            store_ef_volts_per_meter.append(-1)
+            store_emf_milligauss.append(-1)
+
         # Obtain the wind gust and the average speed over the LOG_INTERVAL 
         wind_gust = round(max(store_speeds), 1)
         wind_speed = round(statistics.mean(store_speeds), 1)
