@@ -24,7 +24,7 @@
 
 from gpiozero import MCP3208
 
-import logging
+import logger as logging
 import math
 import time
 

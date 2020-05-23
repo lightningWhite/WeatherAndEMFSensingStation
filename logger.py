@@ -1,4 +1,4 @@
-# Logging
+# Logger
 #
 # This file provides a function for logging messages while the weather and
 # EMF sensing station is running.
