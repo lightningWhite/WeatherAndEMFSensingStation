@@ -27,7 +27,7 @@ echo "Configuring the Pi to synchronize with the Real Time Clock..."
 # Delete the last line of the file containing 'exit 0'
 sed -i '/exit/d' /etc/rc.local
 # Place the following at the end of the file followed by exit 0
-printf 'echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device\nhwclock -s\nexit 0'
+printf 'echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device\nhwclock -s\nexit 0' >> /etc/rc.local
 
 echo ""
 
