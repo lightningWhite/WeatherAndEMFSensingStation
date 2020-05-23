@@ -208,6 +208,13 @@ removed from the EMF-390 device. Some resources on the internet report that
 the charging circuit is not shielded. Since it is plugged into the Raspberry
 Pi, this unshielded circuit would throw off the EMF readings.
 
+When the weather and EMF sensing station is started with the
+`startWeatherStation.sh` script, the real-time output will be written to a log
+file by the name of the time the weather station was started and be written to
+the /logs directory in the repository. Log messages are written to stdout and
+should capture most of the problems that may arise while the weather station is
+running. This can assist in debugging.
+
 ## Data Logging
 
 As the weather station runs, it will log readings from all of the sensors at a
@@ -246,6 +253,13 @@ Record Number, Time, Temperature (F), Pressure (mbar), Humidity (%), Wind Direct
 
 This can easily be viewed by opening the .csv file with a spreadsheet
 application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
+
+## Logging
+
+The `weather_station.py` file initializes a logger. Log messages from the
+weather and EMF sensing station will be stored in the `logs` directory by
+the same time name as the data file. This log output can be very helpful for
+debugging if any issues arise.
 
 ## Helpful Connection Information
 
@@ -615,6 +629,13 @@ Although there are some discrepancies between the values obtained from the
 emf390cli tool, these discrepancies are mitigated in the `weather_station.py`
 file by collecting values and then reporting averages and maximums rather than
 simply reporting each of the values directly reported by the tool.
+
+#### logging.py
+
+This file provides logging functionality. A path to the log file location is
+passed to the intialize_logger function and then messages can then be logged
+by calling the log function and passing a message. The message will be logged
+with the current time.
 
 ### Developmental and Utility Files
 
