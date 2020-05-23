@@ -105,9 +105,9 @@ rain_sensor.when_pressed = bucket_tipped
 
 # Create a new file named by the current date and time
 time_name = datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S")
-data_file = "/home/pi/WeatherStation" + "/" +  "data" + "/" + time_name + ".csv"
+data_file = "/home/pi/WeatherAndEMFSensingStation" + "/" +  "data" + "/" + time_name + ".csv"
 
-logging.initialize_logger(f"/home/pi/WeatherStation/logs/{time_name}.log")
+logging.initialize_logger(f"/home/pi/WeatherAndEMFSensingStation/logs/{time_name}.log")
 
 logging.log("The weather and emf sensing station has been started")
 logging.log(f"Readings will be accumulated every {ACCUMULATION_INTERVAL} seconds")
