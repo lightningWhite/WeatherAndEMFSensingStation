@@ -1,14 +1,11 @@
-# Weather Station
+# Weather and EMF Sensing Station
 
 ## Overview
 
 The object of this project is to provide a collection of Python modules for
-various sensors to be connected to a Raspberry Pi to form a weather station
-equipped with logging. It is heavily based off of the tutorial found 
-[here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station).
-
-It also provides for EMF sensing and logging using the EMF-390 sensor connected
-to the Raspberry Pi.
+various sensors to be connected to a Raspberry Pi to form a weather and
+Electromagnetic Frequency sensing station equipped with logging. It is heavily
+based off of the tutorial found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station) and further customized.
 
 ## Hardware
 
