@@ -13,7 +13,7 @@
 # the calculation of the power density. This may be an artifact of the
 # emf390cli tool sampling each reading individually.
 
-import logging
+import logger as logging
 import subprocess
 import sys
 
