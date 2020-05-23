@@ -108,7 +108,7 @@ def get_serial_port():
         try:
             logging.log(f"Attempting to connect to {device}")
             command = subprocess.Popen([
-                '/home/pi/WeatherStation/em390cli/build/arm-linux/emf390cli',
+                '/home/pi/WeatherAndEMFSensingStation/em390cli/build/arm-linux/emf390cli',
                 '-p',
                 device,
                 '-f',
@@ -157,7 +157,7 @@ def get_emf():
     # Run the emf390cli application to obtain the EMF-390 sensor readings
     logging.log("Obtaining the EMF sensor readings")
     command = subprocess.Popen([
-        '/home/pi/WeatherStation/em390cli/build/arm-linux/emf390cli',
+        '/home/pi/WeatherAndEMFSensingStation/em390cli/build/arm-linux/emf390cli',
         '-p',
         USBDevice,
         '-f',

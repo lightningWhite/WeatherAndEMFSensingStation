@@ -21,7 +21,7 @@
 echo "Starting the weather station..."
 
 # Start the weather station in a tmux terminal and then detach it
-tmux new-session -d -s weather_station ". /home/pi/WeatherStation/initializeWeatherStation.sh && python3 -u /home/pi/WeatherStation/weather_station.py && tmux detach"
+tmux new-session -d -s weather_station ". /home/pi/WeatherAndEMFSensingStation/initializeWeatherStation.sh && python3 -u /home/pi/WeatherAndEMFSensingStation/weather_station.py && tmux detach"
 
 # Wait before checking if it started successfully
 sleep 2
@@ -30,7 +30,7 @@ sleep 2
 if ps -a | grep python3
 then
   echo "The weather and emf sensing station has been started."
-  echo "The data location is at /home/pi/WeatherStation/data/"
+  echo "The data location is at /home/pi/WeatherAndEMFSensingStation/data/"
   echo "The log output can be found in logs/" 
   echo "To view the real-time output of the process, run 'tmux attach'"
   echo "To detach and keep the process running after exiting the ssh session, type 'Ctrl+b' and then 'd' before logging out"

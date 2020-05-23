@@ -42,6 +42,7 @@ This project is set up to handle the following sensors:
 * 2 - [RJ11 Breakout Boards](http://www.mdfly.com/products/rj11-6p6c-connector-breakout-board-module-ra-screw-terminals.html)
 * [3.4 x 3.4 x 2inch (85 x 85 x 50mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07Q1YBFLP/ref=asc_df_B07Q1YBFLP/?tag=hyprod-20&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&psc=1&tag=&ref=&adgrpid=69357499415&hvpone=&hvptwo=&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684)
 * [5.9 x 4.3 x 2.8inch (150 x 110 x 70mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07PVVDLCC/ref=asc_df_B07Q1YBFLP/?tag=&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&ref=&adgrpid=69357499415&th=1)
+* [5.9 x 5.9 x 2.8inch (150 x 150 x 70mm) Junction Box](https://www.amazon.com/LeMotech-Dustproof-Waterproof-Electrical-150mmx150mmx70mm/dp/B075DG55KS/ref=sr_1_4?dchild=1&keywords=150x150x70+junction+box+Zulkit&qid=1590254877&sr=8-4)
 * [ChronoDot 2.1 (DS3231 Chip) Real Time Clock](https://www.adafruit.com/product/255)
 
 ## Raspberry Pi Configuration
@@ -137,7 +138,7 @@ The project must be cloned to `/home/pi/` for the scripts to work correctly.
 This can be done by running the following:
 
 ```
-git clone https://github.com/lightningWhite/WeatherStation.git
+git clone https://github.com/lightningWhite/WeatherAndEMFSensingStation.git
 ```
 
 The project requires Python 3 to be installed. 
@@ -222,7 +223,7 @@ sensors in order to calculate and averages or maximums. The
 ACCUMULATION_INTERVAL should be less than the LOG_INTERVAL.
 
 A log file will be created every time the weather station is started and it
-will be saved to `/home/pi/WeatherStation/data` and be named the date and time
+will be saved to `/home/pi/WeatherAndEMFSensingStation/data` and be named the date and time
 of when it was created.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
@@ -325,7 +326,7 @@ command such as this:
 
 ```
 cd storage/downloads
-scp pi@192.168.0.23:/home/pi/WeatherStation/data/05-07-2020--19-08-22.csv .
+scp pi@192.168.0.23:/home/pi/WeatherAndEMFSensingStation/data/05-07-2020--19-08-22.csv .
 ```
 
 Enter the Raspberry Pi's password and the file should be copied to the phone.
@@ -337,7 +338,7 @@ the wildcard such as this:
 
 ```
 cd storage/downloads
-scp -r pi@192.168.0.23:/home/pi/WeatherStation/data/ .
+scp -r pi@192.168.0.23:/home/pi/WeatherAndEMFSensingStation/data/ .
 ```
 
 #### VNC Viewer - Remote Desktop
