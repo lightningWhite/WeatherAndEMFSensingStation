@@ -821,4 +821,8 @@ Real Time Clock.
 recording them every 15 minutes from when the station was started. This needs
 to be changed so it will record the data every 15 minutes (or what ever the
 configured interval is) from the start of the hour instead. 
-
+* The logs need to be rotated. They grow to be much larger than the actual
+data and are never removed.
+* The logs need to be written to the external storage device if it is connected.
+This will allow an operator to see a problem if they don't have access to
+the SD card or if it gets corrupted.
