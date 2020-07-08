@@ -638,6 +638,11 @@ emf390cli tool, these discrepancies are mitigated in the `weather_station.py`
 file by collecting values and then reporting averages and maximums rather than
 simply reporting each of the values directly reported by the tool.
 
+IMPORTANT: When the EMF-390 sensor is plugged into the Raspberry Pi, the EF
+values are extremely high. It's unknown why this happens when it's plugged
+into the Raspberry Pi. It doesn't report high values when just the battery
+is in use or when it's plugged into computers besides the Raspberry Pi.
+
 #### logging.py
 
 This file provides logging functionality. A path to the log file location is
