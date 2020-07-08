@@ -1,14 +1,11 @@
-# Weather Station
+# Weather and EMF Sensing Station
 
 ## Overview
 
 The object of this project is to provide a collection of Python modules for
-various sensors to be connected to a Raspberry Pi to form a weather station
-equipped with logging. It is heavily based off of the tutorial found 
-[here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station).
-
-It also provides for EMF sensing and logging using the EMF-390 sensor connected
-to the Raspberry Pi.
+various sensors to be connected to a Raspberry Pi to form a weather and
+Electromagnetic Frequency sensing station equipped with logging. It is heavily
+based off of the tutorial found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station) and further customized.
 
 ## Hardware
 
@@ -45,6 +42,7 @@ This project is set up to handle the following sensors:
 * 2 - [RJ11 Breakout Boards](http://www.mdfly.com/products/rj11-6p6c-connector-breakout-board-module-ra-screw-terminals.html)
 * [3.4 x 3.4 x 2inch (85 x 85 x 50mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07Q1YBFLP/ref=asc_df_B07Q1YBFLP/?tag=hyprod-20&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&psc=1&tag=&ref=&adgrpid=69357499415&hvpone=&hvptwo=&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684)
 * [5.9 x 4.3 x 2.8inch (150 x 110 x 70mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07PVVDLCC/ref=asc_df_B07Q1YBFLP/?tag=&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&ref=&adgrpid=69357499415&th=1)
+* [5.9 x 5.9 x 2.8inch (150 x 150 x 70mm) Junction Box](https://www.amazon.com/LeMotech-Dustproof-Waterproof-Electrical-150mmx150mmx70mm/dp/B075DG55KS/ref=sr_1_4?dchild=1&keywords=150x150x70+junction+box+Zulkit&qid=1590254877&sr=8-4)
 * [ChronoDot 2.1 (DS3231 Chip) Real Time Clock](https://www.adafruit.com/product/255)
 
 ## Raspberry Pi Configuration
@@ -60,7 +58,9 @@ can be done by running `sudo reboot`.
 
 The Raspberry Pi can't keep accurate time when it's disconnected from the
 internet. For this reason, we use a Real Time Clock (RTC) module. We've
-chosen to use the ChronoDot 2.1.
+chosen to use the ChronoDot 2.1. Note that the `install.sh` script will
+configure the Pi to use the Real Time Clock. For completeness, the steps
+performed are documented below.
 
 The following location provides a nice tutorial for setting up the Raspberry Pi
 to use the RTC:
@@ -85,13 +85,19 @@ sudo i2cdetect -y 1
 This may show the addresses of other connected I2C devices, but the RTC address
 will likely by 0x68.
 
+The following line needs to be appended to the /etc/modules file:
+
+```
+rtc-ds3231
+```
+
 In order to synchronize the Raspberry Pi's time with the RTC when the Pi boots,
 the following needs to be added to the `/etc/rc.local` file right before the
 `exit 0` at the end: 
 
 ```
-echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
-hwclock -s
+/bin/bash -c "echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+/sbin/hwclock -s
 ```
 
 The Raspberry Pi should then be rebooted:
@@ -140,12 +146,13 @@ The project must be cloned to `/home/pi/` for the scripts to work correctly.
 This can be done by running the following:
 
 ```
-git clone https://github.com/lightningWhite/WeatherStation.git
+git clone https://github.com/lightningWhite/WeatherAndEMFSensingStation.git
 ```
 
 The project requires Python 3 to be installed. 
 
-Once this repository is cloned, perform the following steps:
+Once this repository is cloned, perform the following steps in the repository
+directory:
 
 Create a python virtual environment and activate it:
 
@@ -173,7 +180,8 @@ so the weather station will start on boot automatically. It will also create a
 mount point and modify the fstab so an external USB storage device will be
 automatically mounted on boot. It will also configure the Pi to automatically
 connect to a network named `Weather` if present. This can be helpful if you want
-to connect to the Pi wirelessly using a mobile hotspot. This script must be run
+to connect to the Pi wirelessly using a mobile hotspot. The script will also
+configure the Pi to use the Real Time Clock for time. This script must be run
 as root and the Pi must be restarted for the changes to take effect:
 
 ```
@@ -225,7 +233,7 @@ sensors in order to calculate and averages or maximums. The
 ACCUMULATION_INTERVAL should be less than the LOG_INTERVAL.
 
 A log file will be created every time the weather station is started and it
-will be saved to `/home/pi/WeatherStation/data` and be named the date and time
+will be saved to `/home/pi/WeatherAndEMFSensingStation/data` and be named the date and time
 of when it was created.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
@@ -238,6 +246,21 @@ until the latest copy of the data file is obtained. The next time the data file
 is to be copied to the external storage device, the .bak file will be
 overwritten with the previously backed up file and the new data file will be
 copied to the drive.
+
+Here is some sample data that was logged by the station:
+
+```
+Record Number, Time, Temperature (F), Pressure (mbar), Humidity (%), Wind Direction (Degrees), Wind Direction (String), Wind Speed (MPH), Wind Gust (MPH), Precipitation (Inches), Shortwave Radiation (W m^(-2)), Avg. RF Watts (W), Avg. RF Watts Frequency (MHz), Peak RF Watts (W), Frequency of RF Watts Peak (MHz), Peak RF Watts Frequency (MHz), Watts of RF Watts Frequency Peak (W), Avg. RF Density (W m^(-2)), Avg. RF Density Frequency (MHz), Peak RF Density (W m^(-2)), Frequency of RF Density Peak (MHz), Peak RF Density Frequency (MHz), Density of RF Density Frequency Peak (W m^(-2)), Avg. Total Density (W m^(-2)), Max Total Density (W m^(-2)), Avg. EF (V/m), Max EF (V/m), Avg. EMF (mG), Max EMF (mG)
+1, 2020-05-16 16:38:54.100572, 67.8, 1014.3, 23.8, 256.5, WSW, 0.7, 2.5, 0.0, 130.0, 0.0000000003326912, 694.0, 0.0000000050000000, 1866.0, 1866.0, 0.0000000050000000, 0.0000338235294118, 732.6, 0.0005000000000000, 1866.0, 1881.0, 0.0003000000000000, 0.0001264705882353, 0.0010000000000000, 693.7, 886.0, 1.2, 1.4
+2, 2020-05-16 16:53:55.786168, 66.2, 1014.3, 24.0, 252.0, WSW, 0.5, 2.1, 0.0, 140.0, 0.0000000008500571, 759.1, 0.0000000250000000, 1880.0, 1881.0, 0.0000000040000000, 0.0000542857142857, 776.4, 0.0013000000000000, 1880.0, 1881.0, 0.0004000000000000, 0.0003014285714286, 0.0011000000000000, 676.6, 844.0, 1.3, 1.5
+3, 2020-05-16 17:08:56.629817, 65.8, 1014.1, 23.3, 255.5, WSW, 0.4, 3.1, 0.0, 130.0, 0.0000000004531143, 741.0, 0.0000000050000000, 1861.0, 1878.0, 0.0000000030000000, 0.0000285714285714, 758.6, 0.0005000000000000, 1861.0, 1878.0, 0.0003000000000000, 0.0002600000000000, 0.0011000000000000, 690.1, 889.6, 1.2, 1.4
+4, 2020-05-16 17:23:58.887251, 65.1, 1014.2, 24.5, 248.4, WSW, 0.3, 1.5, 0.0, 140.0, 0.0000000005634000, 775.9, 0.0000000160000000, 1884.0, 1884.0, 0.0000000160000000, 0.0000028571428571, 671.5, 0.0001000000000000, 1880.0, 1880.0, 0.0001000000000000, 0.0004728571428571, 0.0028000000000000, 664.1, 880.0, 1.2, 1.5
+5, 2020-05-16 17:38:59.409071, 65.1, 1014.2, 23.7, 295.7, WNW, 0.1, 0.9, 0.0, 145.0, 0.0000000002303000, 670.8, 0.0000000030000000, 1872.0, 1872.0, 0.0000000030000000, 0.0000228571428571, 776.0, 0.0003000000000000, 1872.0, 1879.0, 0.0003000000000000, 0.0011057142857143, 0.0029000000000000, 675.8, 880.0, 1.2, 1.4
+
+```
+
+This can easily be viewed by opening the .csv file with a spreadsheet
+application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
 
 ## Logging
 
@@ -313,7 +336,7 @@ command such as this:
 
 ```
 cd storage/downloads
-scp pi@192.168.0.23:/home/pi/WeatherStation/data/05-07-2020--19-08-22.csv .
+scp pi@192.168.0.23:/home/pi/WeatherAndEMFSensingStation/data/05-07-2020--19-08-22.csv .
 ```
 
 Enter the Raspberry Pi's password and the file should be copied to the phone.
@@ -325,7 +348,7 @@ the wildcard such as this:
 
 ```
 cd storage/downloads
-scp pi@192.168.0.23:/home/pi/WeatherStation/data/*.csv .
+scp -r pi@192.168.0.23:/home/pi/WeatherAndEMFSensingStation/data/ .
 ```
 
 #### VNC Viewer - Remote Desktop
@@ -370,8 +393,8 @@ is as follows:
 
 ```
 network={
-  ssid="Weather"
-  psk="weatherStationNetwork"
+  ssid="WeatherNetwork"
+  psk="password"
   key_mgmt=WPA-PSK
   priority=20
 }
@@ -380,7 +403,7 @@ network={
 The Raspberry Pi must be restarted for the changes to take effect.
 
 This will cause the Raspberry Pi to automatically connect to a network with the
-name of "Weather" and use the password "weatherStationNetwork" if the network is
+name of "WeatherNetwork" and use the password "password" if the network is
 present. Setting the priority to 20 (some arbitrarily large number) should
 ensure that it will be the first network that it will try to connect to. Note
 that the `install.sh` script will configure this network connection when it is
@@ -527,7 +550,8 @@ White wire of the Pyranometer to pin 2 (CH1) of the MCP3208 chip
 #### EMF-390
 
 A command line interface tool has been written that allows the Raspberry Pi
-to perform real-time logging of the readings from the EMF-390 sensor.
+to perform real-time logging of the readings from the EMF-390 sensor. This
+tool was written by Davide Dal Farra.
 
 The application can be downloaded from [here](https://gitlab.com/codref/em390cli/-/tags/v0.1.0).
 Simply download the Arm Linux zip file to the Raspberry Pi and unzip it:
@@ -613,6 +637,11 @@ Although there are some discrepancies between the values obtained from the
 emf390cli tool, these discrepancies are mitigated in the `weather_station.py`
 file by collecting values and then reporting averages and maximums rather than
 simply reporting each of the values directly reported by the tool.
+
+IMPORTANT: When the EMF-390 sensor is plugged into the Raspberry Pi, the EF
+values are extremely high. It's unknown why this happens when it's plugged
+into the Raspberry Pi. It doesn't report high values when just the battery
+is in use or when it's plugged into computers besides the Raspberry Pi.
 
 #### logging.py
 
@@ -790,3 +819,16 @@ connectors. Remember to test it out and set the clock. Again, make sure you
 have the Pi off and start it after it's connected. Also, remember to follow
 the set up instructions near the top of this readme to configure and set the
 Real Time Clock.
+
+## TODOs
+
+* Although the station records the readings every 15 minutes, it is just
+recording them every 15 minutes from when the station was started. This needs
+to be changed so it will record the data every 15 minutes (or what ever the
+configured interval is) from the start of the hour instead. 
+* The logs need to be rotated. They grow to be much larger than the actual
+data and are never removed.
+* The logs need to be written to the external storage device if it is connected.
+This will allow an operator to see a problem if they don't have access to
+the SD card or if it gets corrupted.
+

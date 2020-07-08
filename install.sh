@@ -23,6 +23,18 @@ echo "/dev/sda1 /mnt/usb1 vfat uid=pi,gid=pi,umask=0022,sync,auto,nofail,nosuid,
 echo "Setting up a default network to which the Pi should attempt to connect if present..."
 printf 'network={\n\tssid="Weather"\n\tpsk="weatherStationNetwork"\n\tkey_mgmt=WPA-PSK\n\tpriority=20\n}\n' >> /etc/wpa_supplicant/wpa_supplicant.conf
 
+echo "Configuring the Pi to synchronize with the Real Time Clock..."
+# Add the RTC device to the /etc/modules file
+echo "rtc-ds3231" >> /etc/modules
+# Delete the last line of the file containing 'exit 0'
+sed -i '/exit/d' /etc/rc.local
+# Place the following at the end of the file followed by exit 0
+# This is what will make the hwclock accessible and sync the Pi's time with the
+# time reported by the hwclock when the Pi starts.
+printf '/bin/bash -c "echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"\n/sbin/hwclock -s\nexit 0' >> /etc/rc.local
+echo "Ensure that the Real Time Clock's time is set correctly. This should be performed manually."
+echo "It can be done with 'sudo hwclock -w' while the clock is connected and the 'date' command reports the correct time."
+
 echo ""
 
 echo "The weather station has been installed!"
