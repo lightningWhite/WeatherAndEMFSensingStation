@@ -85,13 +85,19 @@ sudo i2cdetect -y 1
 This may show the addresses of other connected I2C devices, but the RTC address
 will likely by 0x68.
 
+The following line needs to be appended to the /etc/modules file:
+
+```
+rtc-ds3231
+```
+
 In order to synchronize the Raspberry Pi's time with the RTC when the Pi boots,
 the following needs to be added to the `/etc/rc.local` file right before the
 `exit 0` at the end: 
 
 ```
-echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
-hwclock -s
+/bin/bash -c "echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"
+/sbin/hwclock -s
 ```
 
 The Raspberry Pi should then be rebooted:
@@ -632,6 +638,11 @@ emf390cli tool, these discrepancies are mitigated in the `weather_station.py`
 file by collecting values and then reporting averages and maximums rather than
 simply reporting each of the values directly reported by the tool.
 
+IMPORTANT: When the EMF-390 sensor is plugged into the Raspberry Pi, the EF
+values are extremely high. It's unknown why this happens when it's plugged
+into the Raspberry Pi. It doesn't report high values when just the battery
+is in use or when it's plugged into computers besides the Raspberry Pi.
+
 #### logging.py
 
 This file provides logging functionality. A path to the log file location is
@@ -808,3 +819,16 @@ connectors. Remember to test it out and set the clock. Again, make sure you
 have the Pi off and start it after it's connected. Also, remember to follow
 the set up instructions near the top of this readme to configure and set the
 Real Time Clock.
+
+## TODOs
+
+* Although the station records the readings every 15 minutes, it is just
+recording them every 15 minutes from when the station was started. This needs
+to be changed so it will record the data every 15 minutes (or what ever the
+configured interval is) from the start of the hour instead. 
+* The logs need to be rotated. They grow to be much larger than the actual
+data and are never removed.
+* The logs need to be written to the external storage device if it is connected.
+This will allow an operator to see a problem if they don't have access to
+the SD card or if it gets corrupted.
+
