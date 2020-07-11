@@ -124,34 +124,34 @@ try:
     
     with open(data_file, "w") as file:
         # Write the labels row
-        file.write("Record Number, " \
-                   "Time, " \
-                   "Temperature (F), " \
-                   "Pressure (mbar), " \
-                   "Humidity (%), " \
-                   "Wind Direction (Degrees), " \
-                   "Wind Direction (String), " \
-                   "Wind Speed (MPH), " \
-                   "Wind Gust (MPH), " \
-                   "Precipitation (Inches), " \
-                   "Shortwave Radiation (W m^(-2)), " \
-                   "Avg. RF Watts (W), " \
-                   "Avg. RF Watts Frequency (MHz), " \
-                   "Peak RF Watts (W), " \
-                   "Frequency of RF Watts Peak (MHz), "\
-                   "Peak RF Watts Frequency (MHz), " \
-                   "Watts of RF Watts Frequency Peak (W), " \
-                   "Avg. RF Density (W m^(-2)), " \
-                   "Avg. RF Density Frequency (MHz), " \
-                   "Peak RF Density (W m^(-2)), " \
-                   "Frequency of RF Density Peak (MHz), "\
-                   "Peak RF Density Frequency (MHz), " \
-                   "Density of RF Density Frequency Peak (W m^(-2)), " \
-                   "Avg. Total Density (W m^(-2)), " \
-                   "Max Total Density (W m^(-2)), " \
-                   "Avg. EF (V/m), " \
-                   "Max EF (V/m), " \
-                   "Avg. EMF (mG), " \
+        file.write("Record Number," \
+                   "Time," \
+                   "Temperature (F)," \
+                   "Pressure (mbar)," \
+                   "Humidity (%)," \
+                   "Wind Direction (Degrees)," \
+                   "Wind Direction (String)," \
+                   "Wind Speed (MPH)," \
+                   "Wind Gust (MPH)," \
+                   "Precipitation (Inches)," \
+                   "Shortwave Radiation (W m^(-2))," \
+                   "Avg. RF Watts (W)," \
+                   "Avg. RF Watts Frequency (MHz)," \
+                   "Peak RF Watts (W)," \
+                   "Frequency of RF Watts Peak (MHz),"\
+                   "Peak RF Watts Frequency (MHz)," \
+                   "Watts of RF Watts Frequency Peak (W)," \
+                   "Avg. RF Density (W m^(-2))," \
+                   "Avg. RF Density Frequency (MHz)," \
+                   "Peak RF Density (W m^(-2))," \
+                   "Frequency of RF Density Peak (MHz),"\
+                   "Peak RF Density Frequency (MHz)," \
+                   "Density of RF Density Frequency Peak (W m^(-2))," \
+                   "Avg. Total Density (W m^(-2))," \
+                   "Max Total Density (W m^(-2))," \
+                   "Avg. EF (V/m)," \
+                   "Max EF (V/m)," \
+                   "Avg. EMF (mG)," \
                    "Max EMF (mG)\n")
         
     record_number = 1
@@ -330,18 +330,18 @@ try:
     
         # Log the data by appending the values to the data .csv file
         with open(data_file, "a") as file:
-            file.write(f"{record_number}, {current_time}, {ambient_temp}, {pressure}, " \
-                       f"{humidity}, {wind_direction_avg}, {wind_direction_string}, " \
-                       f"{wind_speed}, {wind_gust}, {precipitation}, " \
-                       f"{shortwave_radiation}, {rf_watts_avg:.16f}, {rf_watts_frequency_avg}, " \
-                       f"{rf_watts_peak:.16f}, {frequency_of_rf_watts_peak}, " \
-                       f"{rf_watts_frequency_peak}, {watts_of_rf_watts_frequency_peak:.16f}, " \
-                       f"{rf_density_avg:.16f}, {rf_density_frequency_avg}, " \
-                       f"{rf_density_peak:.16f}, {frequency_of_rf_density_peak}, " \
-                       f"{rf_density_frequency_peak}, {density_of_rf_density_frequency_peak:.16f}, " \
-                       f"{rf_total_density_avg:.16f}, {rf_total_density_max:.16f}, " \
-                       f"{ef_volts_per_meter_avg}, {ef_volts_per_meter_max}, " \
-                       f"{emf_milligauss_avg}, {emf_milligauss_max}\n")
+            file.write(f"{record_number},{current_time},{ambient_temp},{pressure}," \
+                       f"{humidity},{wind_direction_avg},{wind_direction_string}," \
+                       f"{wind_speed},{wind_gust},{precipitation}," \
+                       f"{shortwave_radiation},{rf_watts_avg:.16f},{rf_watts_frequency_avg}," \
+                       f"{rf_watts_peak:.16f},{frequency_of_rf_watts_peak}," \
+                       f"{rf_watts_frequency_peak},{watts_of_rf_watts_frequency_peak:.16f}," \
+                       f"{rf_density_avg:.16f},{rf_density_frequency_avg}," \
+                       f"{rf_density_peak:.16f},{frequency_of_rf_density_peak}," \
+                       f"{rf_density_frequency_peak},{density_of_rf_density_frequency_peak:.16f}," \
+                       f"{rf_total_density_avg:.16f},{rf_total_density_max:.16f}," \
+                       f"{ef_volts_per_meter_avg},{ef_volts_per_meter_max}," \
+                       f"{emf_milligauss_avg},{emf_milligauss_max}\n")
     
         # Check if an external USB storage device is connected
         check_external_drive = subprocess.Popen(
