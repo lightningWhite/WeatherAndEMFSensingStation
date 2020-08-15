@@ -76,8 +76,6 @@ wind_speed_sensor.when_pressed = spin
 
 BUCKET_SIZE = 0.011 # Inches per bucket tip
 
-previous_day = datetime.datetime.now()
-
 rain_sensor = Button(6)
 rain_count = 0
 precipitation = 0.0
@@ -103,12 +101,42 @@ rain_sensor.when_pressed = bucket_tipped
 # Main Program Loop
 ###############################################################################
 
-# Create a new file named by the current date and time
+# The data file will be named by the current date and time
 time_name = datetime.datetime.now().strftime("%m-%d-%Y--%H-%M-%S")
-data_file = "/home/pi/WeatherAndEMFSensingStation" + "/" +  "data" + "/" + time_name + ".csv"
+data_file = ""
+log_file = ""
+backup_file = ""
+external_storage_connected = False
+previous_day = datetime.datetime.now()
 
-logging.initialize_logger(f"/home/pi/WeatherAndEMFSensingStation/logs/{time_name}.log")
+# Check if an external USB storage device is connected
+check_external_drive = subprocess.Popen(
+    'df -h | grep /dev/sda1',
+    shell=True,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT) 
+stdout, stderr = check_external_drive.communicate()
 
+# If an external USB storage device is connected, write the data to it
+if len(stdout) > 0:
+    external_storage_connected = True
+    data_file = "/mnt/usb1/" + time_name + ".csv"
+    log_file = "/mnt/usb1/" + time_name + ".log"
+# If an external USB storage device isn't connected, write to the repo directory
+else:
+    data_file = "/home/pi/WeatherAndEMFSensingStation" + "/" +  "data" + "/" + time_name + ".csv"
+    log_file = f"/home/pi/WeatherAndEMFSensingStation/logs/{time_name}.log"
+
+backup_file = data_file + ".bak"
+
+# Setup the logger
+logging.initialize_logger(log_file)
+
+if not external_storage_connected:
+    print("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+    logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+
+print("The EMF sensing station has been started")
 logging.log("The weather and emf sensing station has been started")
 logging.log(f"Readings will be accumulated every {ACCUMULATION_INTERVAL} seconds")
 logging.log(f"The data will be written every {LOG_INTERVAL} seconds")
@@ -325,6 +353,14 @@ try:
         print(f"Max  EMF (mG):                                 {emf_milligauss_max}")
     
         print("##########################################################################")
+
+        logging.log(f"Creating a temporary backup file of the data at {backup_file}")
+        backup_data = subprocess.Popen(
+            f"cp {data_file} {backup_file}",
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        stdout, stderr = backup_data.communicate()
         
         logging.log(f"Writing the data to {data_file}")
     
@@ -342,41 +378,31 @@ try:
                        f"{rf_total_density_avg:.16f},{rf_total_density_max:.16f}," \
                        f"{ef_volts_per_meter_avg},{ef_volts_per_meter_max}," \
                        f"{emf_milligauss_avg},{emf_milligauss_max}\n")
-    
-        # Check if an external USB storage device is connected
-        check_external_drive = subprocess.Popen(
-            'df -h | grep /dev/sda1',
+
+        logging.log(f"Removing the temporary backup file {backup_file}")
+        remove_temp_backup_file = subprocess.Popen(
+            f"rm {backup_file}",
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)    
-        stdout, stderr = check_external_drive.communicate()
-    
-        # Copy the newly written file to the external USB drive if one is connected
-        if len(stdout) > 0:
-            file_name = time_name + '.csv'
-            backup_name = time_name + '.csv' + '.bak'
-            logging.log(f"Backing up the data to /mnt/usb1/{file_name}")
-            
-            # Change the name of the last backup so we don't overwrite it until
-            # the latest backup is obtained
-            rename_old_backup_data = subprocess.Popen(
-                f"mv /mnt/usb1/{file_name} /mnt/usb1/{backup_name}",
+            stderr=subprocess.STDOUT)
+        stdout, stderr = remove_temp_backup_file.communicate()
+
+        if not external_storage_connected:
+            print("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+            logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+
+        # Empty the log file every month so it doesn't grow too big
+        if int(current_time.strftime("%-m")) != int(previous_day.strftime("%-m")):
+            print("Emptying the log file to conserve disk space")
+            logging.log("Emptying the log file to conserve disk space")
+            clear_log = subprocess.Popen(
+                f"rm {log_file}",
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT)
-            stdout, stderr = rename_old_backup_data.communicate()
-    
-            # Get the latest data file to the external drive
-            backup_data = subprocess.Popen(
-                f"cp {data_file} /mnt/usb1/{file_name}",
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
-            stdout, stderr = backup_data.communicate()
-        else:
-            print("WARNING: The data is not being backed up. Ensure an external storage device is connected.")
-            logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected.")
-    
+            stdout, stderr = clear_log.communicate()
+            previous_day = current_time
+
         # Clear the recorded values so they can be updated over the next LOG_INTERVAL
         store_speeds.clear()
         store_directions.clear()

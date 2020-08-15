@@ -1,16 +1,14 @@
 #!/bin/bash
 
 # This script sets up the Raspberry Pi to have the weather station start up
-# on boot.
+# on boot. It also performs all the necessary hardware configurations.
 
 echo ""
 echo "This script must be run as root."
 echo ""
 
-echo "Copying startWeatherStation.sh to /etc/init.d"
+echo "Copying startWeatherStation.sh to /etc/init.d and Enabling the weather station to start on boot"
 cp startWeatherStation.sh /etc/init.d/
-
-echo "Enabling the weather station to start on boot"
 update-rc.d startWeatherStation.sh defaults
 
 echo "Creating /mnt/usb1 as a mount point for an external storage device..."
@@ -34,6 +32,10 @@ sed -i '/exit/d' /etc/rc.local
 printf '/bin/bash -c "echo ds3231 0x68 > /sys/class/i2c-adapter/i2c-1/new_device"\n/sbin/hwclock -s\nexit 0' >> /etc/rc.local
 echo "Ensure that the Real Time Clock's time is set correctly. This should be performed manually."
 echo "It can be done with 'sudo hwclock -w' while the clock is connected and the 'date' command reports the correct time."
+
+# Create the data and logs directory with the proper permissions
+mkdir -p /home/pi/WeatherAndEMFSensingStation/data /home/pi/WeatherAndEMFSensingStation/logs
+chown pi:pi /home/pi/WeatherAndEMFSensingStation/data /home/pi/WeatherAndEMFSensingStation/logs
 
 echo ""
 

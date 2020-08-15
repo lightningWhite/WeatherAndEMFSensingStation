@@ -7,6 +7,48 @@ various sensors to be connected to a Raspberry Pi to form a weather and
 Electromagnetic Frequency sensing station equipped with logging. It is heavily
 based off of the tutorial found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station) and further customized.
 
+## A Brief User's Guide
+
+Here are some brief points for common use of the WeatherAndEMFSensing Station:
+
+To start the station and begin logging the weather and EMF readings, simply power
+on the Raspberry Pi with the EMF sensor plugged into one of the USB ports, the
+PiHAT securely on the GPIO pins, and an external storage device plugged
+into one of the USB drives. When the Pi turns on, it will automatically start
+the sensing station and begin logging the readings.
+
+When the Pi turns on, always ensure that the EMF sensor is in vertical mode
+showing the RF reading. The device is in the correct mode when you can see that
+the main screen is in portrait mode and divided into thirds by three horizontal
+lines. The top section should show the time (it's okay if it's the wrong time),
+the section below the time should be displaying RF, the next section should show
+a power density reading (probably in mW/m^2), and the bottom reading should show
+the peak density reading since the device was powered on. If it is not in
+vertical mode when it turns on, change it to vertical mode, press and hold the
+power button to turn off the device, then press and hold the power button to turn
+it back on. Then restart the Raspberry Pi to be sure that correct data collection
+will begin. The EMF sensor should start up in the same mode as when it was turned
+off in this manner. Having the EMF sensor in vertical mode is required for proper
+functionality of the EMF sensing station. For any questions about operating the
+EMF sensor, visit this documentation page:
+
+https://www.gqelectronicsllc.com/GQ-EMF-360V2-380V2-390_UserGuide.pdf
+
+While the station is running, it will gather readings and log them every 15
+minutes. These readings will be written to an external storage device at
+`/mnt/usb1` if one is plugged in. If one is not connected to the Pi, the data
+will be written to the SD card at
+`/home/pi/EMFSensingStation/data/<date--time>.csv`. The data file will be named 
+as the date and time of when the station was started in the format of
+`YYYY-MM-DD--HH-MM-SS.csv`. 
+
+To retrieve the data, the Pi can be powered off and the external storage device
+can be disconnected from the Pi. The data can then be transferred to another
+computer for analysis. To begin logging again, simply plug the external storage
+device back into the Pi and turn the Pi back on following the same steps above.
+
+Additional documentation can be found below.
+
 ## Hardware
 
 Raspberry Pi 3 Model B Board
@@ -233,19 +275,18 @@ sensors in order to calculate and averages or maximums. The
 ACCUMULATION_INTERVAL should be less than the LOG_INTERVAL.
 
 A log file will be created every time the weather station is started and it
-will be saved to `/home/pi/WeatherAndEMFSensingStation/data` and be named the date and time
-of when it was created.
+will be saved to `/home/pi/WeatherAndEMFSensingStation/data` if an external
+storage device isn't connected and be named the date and time of when it was
+created. If an external storage devices is connected, it will be logged to
+`/mnt/usb1` where that device will automatically be mounted.
 
 The CSV file will grow at a rate of about 4 Kilobytes for every 13 entries.
 
-If an external USB storage device is connected, such as a thumbdrive, the data
-file will be copied to it after each data record is written. When the next
-record is to be copied to the external storage drive, the previously copied
-file will have its name changed to have a .bak extension so it isn't overwritten
-until the latest copy of the data file is obtained. The next time the data file
-is to be copied to the external storage device, the .bak file will be
-overwritten with the previously backed up file and the new data file will be
-copied to the drive.
+While data is being written to the data file, the current data file will be
+copied to <data_filename>.csv.bak. Then the new data will be appended to the
+original data file. After this is complete the .bak file will be removed. This
+is done to prevent corruption if the Pi is unplugged while the file is being
+written to.
 
 Here is some sample data that was logged by the station:
 
@@ -267,7 +308,10 @@ application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
 The `weather_station.py` file initializes a logger. Log messages from the
 weather and EMF sensing station will be stored in the `logs` directory by
 the same time name as the data file. This log output can be very helpful for
-debugging if any issues arise.
+debugging if any issues arise. If an external storage device is connected,
+the log file will be written to `/mnt/usb1` instead of the logs directory
+in the repo directory. The log file will be cleared at the beginning of
+every month to save disk space.
 
 ## Helpful Connection Information
 
@@ -547,7 +591,7 @@ Ground to pin 14 (AGND) on the MCP3208 chip
 Black wire of the Pyranometer to Ground
 White wire of the Pyranometer to pin 2 (CH1) of the MCP3208 chip
 
-#### EMF-390
+#### EMF-390 Sensor
 
 A command line interface tool has been written that allows the Raspberry Pi
 to perform real-time logging of the readings from the EMF-390 sensor. This
@@ -613,15 +657,41 @@ the sensor may be different for each reading reported in the output. This is not
 ideal. They should not contradict each other. One or the other reading could be
 taken and then converted to the other form if it's desirable to have both.
 
-I believe that the power density value obtained from the sensor is calculated
-using this formula: Power Density = (Pout * Gain) / (4 * PI * Distance^2)
+I'm not sure what equation is being used for calculating the power density.
+According to [Wikipedia](https://en.wikipedia.org/wiki/Surface_power_density),
+the equation for surface power density is the following:
 
-The gain used by the sensor for the antennae is 10 (configurable in the sensor
-settings, but the forum recommends to leave it at 10 unless using some sort of
-external antenna). The distance can be calculated when D when a Power Density
-is reported, however, this distance seems to change for different readings, so
-it's unclear what's being used for the distance in the equation. Pout is
-probably the rfwatts reading.
+```
+Pd (Watts/meter^2) = E x H (Volts/meter x Amperes/meter)
+```
+
+And at far field, the ratio between E and H becomes a fixed constant of 377
+ohms, making the following two equations applicable as well:
+
+```
+Pd = H^2 x 377 Ohms
+Pd = E^2 / 377 Ohms
+```
+
+However, using these equations and the readings from the sensor don't seem to
+calculate the power density reported by the sensor. After asking about this on
+the forum, the supplier indicated that the value is simply reported by the
+sensor, rather than using a formula to calculate it.
+
+Additionally, in radar applications, there is a power density equation that is as
+follows, according to this
+[website](https://www.pasternack.com/t-calculator-power-density.aspx):
+
+```
+Power Density = (Pout * Gain) / (4 * PI * Distance^2)
+```
+
+The gain used by the EMF-390 sensor for the antennae is 10 (configurable in the
+sensor settings, but the forum recommends to leave it at 10 unless using some
+sort of external antenna). The distance can be calculated when D when a Power
+Density is reported, however, this distance seems to change for different
+readings, so it's unclear what's being used for the distance in the equation.
+Pout is probably the rfwatts reading.
 
 Since the gain and the distance (probably) is hard-coded, the power density is
 not the value of a tower or something. It is just a relative value at the
@@ -922,9 +992,3 @@ the junction box plugs to improve water proofing.
 recording them every 15 minutes from when the station was started. This needs
 to be changed so it will record the data every 15 minutes (or what ever the
 configured interval is) from the start of the hour instead. 
-* The logs need to be rotated. They grow to be much larger than the actual
-data and are never removed.
-* The logs need to be written to the external storage device if it is connected.
-This will allow an operator to see a problem if they don't have access to
-the SD card or if it gets corrupted.
-
