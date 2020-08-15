@@ -309,21 +309,6 @@ Record Number, Time, Temperature (F), Pressure (mbar), Humidity (%), Wind Direct
 This can easily be viewed by opening the .csv file with a spreadsheet
 application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
 
-Here is some sample data that was logged by the station:
-
-```
-Record Number, Time, Temperature (F), Pressure (mbar), Humidity (%), Wind Direction (Degrees), Wind Direction (String), Wind Speed (MPH), Wind Gust (MPH), Precipitation (Inches), Shortwave Radiation (W m^(-2)), Avg. RF Watts (W), Avg. RF Watts Frequency (MHz), Peak RF Watts (W), Frequency of RF Watts Peak (MHz), Peak RF Watts Frequency (MHz), Watts of RF Watts Frequency Peak (W), Avg. RF Density (W m^(-2)), Avg. RF Density Frequency (MHz), Peak RF Density (W m^(-2)), Frequency of RF Density Peak (MHz), Peak RF Density Frequency (MHz), Density of RF Density Frequency Peak (W m^(-2)), Avg. Total Density (W m^(-2)), Max Total Density (W m^(-2)), Avg. EF (V/m), Max EF (V/m), Avg. EMF (mG), Max EMF (mG)
-1, 2020-05-16 16:38:54.100572, 67.8, 1014.3, 23.8, 256.5, WSW, 0.7, 2.5, 0.0, 130.0, 0.0000000003326912, 694.0, 0.0000000050000000, 1866.0, 1866.0, 0.0000000050000000, 0.0000338235294118, 732.6, 0.0005000000000000, 1866.0, 1881.0, 0.0003000000000000, 0.0001264705882353, 0.0010000000000000, 693.7, 886.0, 1.2, 1.4
-2, 2020-05-16 16:53:55.786168, 66.2, 1014.3, 24.0, 252.0, WSW, 0.5, 2.1, 0.0, 140.0, 0.0000000008500571, 759.1, 0.0000000250000000, 1880.0, 1881.0, 0.0000000040000000, 0.0000542857142857, 776.4, 0.0013000000000000, 1880.0, 1881.0, 0.0004000000000000, 0.0003014285714286, 0.0011000000000000, 676.6, 844.0, 1.3, 1.5
-3, 2020-05-16 17:08:56.629817, 65.8, 1014.1, 23.3, 255.5, WSW, 0.4, 3.1, 0.0, 130.0, 0.0000000004531143, 741.0, 0.0000000050000000, 1861.0, 1878.0, 0.0000000030000000, 0.0000285714285714, 758.6, 0.0005000000000000, 1861.0, 1878.0, 0.0003000000000000, 0.0002600000000000, 0.0011000000000000, 690.1, 889.6, 1.2, 1.4
-4, 2020-05-16 17:23:58.887251, 65.1, 1014.2, 24.5, 248.4, WSW, 0.3, 1.5, 0.0, 140.0, 0.0000000005634000, 775.9, 0.0000000160000000, 1884.0, 1884.0, 0.0000000160000000, 0.0000028571428571, 671.5, 0.0001000000000000, 1880.0, 1880.0, 0.0001000000000000, 0.0004728571428571, 0.0028000000000000, 664.1, 880.0, 1.2, 1.5
-5, 2020-05-16 17:38:59.409071, 65.1, 1014.2, 23.7, 295.7, WNW, 0.1, 0.9, 0.0, 145.0, 0.0000000002303000, 670.8, 0.0000000030000000, 1872.0, 1872.0, 0.0000000030000000, 0.0000228571428571, 776.0, 0.0003000000000000, 1872.0, 1879.0, 0.0003000000000000, 0.0011057142857143, 0.0029000000000000, 675.8, 880.0, 1.2, 1.4
-
-```
-
-This can easily be viewed by opening the .csv file with a spreadsheet
-application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
-
 ## Logging
 
 The `weather_station.py` file initializes a logger. Log messages from the
