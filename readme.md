@@ -89,7 +89,10 @@ This project is set up to handle the following sensors:
 
 ## Raspberry Pi Configuration
 
-This works well with the [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) installation. This was all tested with the Buster version of Raspbian.
+This works well with the
+[NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) 
+installation. This was all tested with the Buster version of Raspbian on a
+Raspberry Pi 3 Model B+.
 
 In order to use the I2C and SPI interfaces, these have to be enabled. This can
 be done by running `sudo raspi-config` and enabling I2C and SPI in the
@@ -102,7 +105,10 @@ The Raspberry Pi can't keep accurate time when it's disconnected from the
 internet. For this reason, we use a Real Time Clock (RTC) module. We've
 chosen to use the ChronoDot 2.1. Note that the `install.sh` script will
 configure the Pi to use the Real Time Clock. For completeness, the steps
-performed are documented below.
+performed are documented below. **However**, the only step that the `install.sh`
+script does not do is set Real Time Clock's time. **This must be done for it
+to be accurate.**
+
 
 The following location provides a nice tutorial for setting up the Raspberry Pi
 to use the RTC:
