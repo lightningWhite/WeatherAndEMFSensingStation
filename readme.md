@@ -38,9 +38,9 @@ While the station is running, it will gather readings and log them every 15
 minutes. These readings will be written to an external storage device at
 `/mnt/usb1` if one is plugged in. If one is not connected to the Pi, the data
 will be written to the SD card at
-`/home/pi/EMFSensingStation/data/<date--time>.csv`. The data file will be named 
-as the date and time of when the station was started in the format of
-`YYYY-MM-DD--HH-MM-SS.csv`. 
+`/home/pi/WeatherAndEMFSensingStation/data/logs/<date--time>.csv`. The data file
+will be named as the date and time of when the station was started in the format
+of `YYYY-MM-DD--HH-MM-SS.csv`. 
 
 To retrieve the data, the Pi can be powered off and the external storage device
 can be disconnected from the Pi. The data can then be transferred to another
@@ -87,7 +87,7 @@ This project is set up to handle the following sensors:
 * [5.9 x 5.9 x 2.8inch (150 x 150 x 70mm) Junction Box](https://www.amazon.com/LeMotech-Dustproof-Waterproof-Electrical-150mmx150mmx70mm/dp/B075DG55KS/ref=sr_1_4?dchild=1&keywords=150x150x70+junction+box+Zulkit&qid=1590254877&sr=8-4)
 * [ChronoDot 2.1 (DS3231 Chip) Real Time Clock](https://www.adafruit.com/product/255)
 
-## Raspberry Pi Configuration
+## Installation and Setup on a Raspberry Pi
 
 This works well with the
 [NOOBS Raspbian OS](https://www.raspberrypi.org/downloads/noobs/) 
@@ -99,7 +99,91 @@ be done by running `sudo raspi-config` and enabling I2C and SPI in the
 `Interfacing Options`. A reboot is required for these to be fully enabled. This
 can be done by running `sudo reboot`.
 
-### Real Time Clock
+The project must be cloned to `/home/pi/` for the scripts to work correctly.
+This can be done by running the following:
+
+``` bash
+git clone https://github.com/lightningWhite/WeatherAndEMFSensingStation.git
+```
+
+The project requires Python 3 to be installed. 
+
+Once this repository is cloned, perform the following steps in the repository
+directory:
+
+Create a python virtual environment and activate it:
+
+``` bash
+python3 -m venv env
+source env/bin/activate
+```
+
+Install the pip dependencies of the project (Note: Don't use sudo for the pip
+installation in the virtual environment): 
+
+``` bash
+pip3 install -r requirements.txt
+```
+
+Install `tmux`:
+
+``` bash
+sudo apt-get update
+sudo apt-get install tmux
+```
+
+The `install.sh` script when run will copy the necessary files to `/etc/init.d`
+so the weather station will start on boot automatically. It will also create a
+mount point and modify the fstab so an external USB storage device will be
+automatically mounted on boot. It will also configure the Pi to automatically
+connect to a network named `Weather` if present. This can be helpful if you want
+to connect to the Pi wirelessly using a mobile hotspot. The script will also
+configure the Pi to use the Real Time Clock for time. This script must be run
+as root and the Pi must be restarted for the changes to take effect:
+
+``` bash
+sudo ./install.sh
+# Ensure the Pi reports the correct time with the 'date' command, and then
+# write the time to the RTC module with this command
+sudo hwclock -w
+sudo reboot
+```
+
+## Running the Weather Station
+
+The `startWeatherStation.sh` script will start a tmux session and call the
+`initializeWeatherStation.sh` script. This script will source the python virtual
+environment. It will then start the weather station and detach the tmux session. 
+This makes it so the ssh session can time out or be terminated and the weather
+station process will remain running. Using tmux also allows the user to attach
+to the session at any time and view the real-time output of the program.
+
+After the `startWeatherStation.sh` script has been executed, you can attach to
+the process and view the output in real-time by typing `tmux attach`. To detach
+from the session again so it can continue running when the ssh session times
+out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
+background to continue running.
+
+Note that when the weather station has been started automatically on boot,
+to view the real-time output of the weather station, you must attach to the
+tmux session as root: `sudo tmux attach`.
+
+The EMF-390 sensor must be connected to the Raspberry Pi via USB for the weather
+station to start up correctly. The sensor must also be in vertical mode viewing
+RF. If this is not set up like this, the Weather Station may crash and/or won't
+report the correct EMF values. Also, it's important that the battery is
+removed from the EMF-390 device. Some resources on the internet report that
+the charging circuit is not shielded. Since it is plugged into the Raspberry
+Pi, this unshielded circuit would throw off the EMF readings.
+
+When the weather and EMF sensing station is started with the
+`startWeatherStation.sh` script, the real-time output will be written to a log
+file by the name of the time the weather station was started and be written to
+the /logs directory in the repository. Log messages are written to stdout and
+should capture most of the problems that may arise while the weather station is
+running. This can assist in debugging.
+
+## Real Time Clock
 
 The Raspberry Pi can't keep accurate time when it's disconnected from the
 internet. For this reason, we use a Real Time Clock (RTC) module. We've
@@ -107,8 +191,8 @@ chosen to use the ChronoDot 2.1. Note that the `install.sh` script will
 configure the Pi to use the Real Time Clock. For completeness, the steps
 performed are documented below. **However**, the only step that the `install.sh`
 script does not do is set Real Time Clock's time. **This must be done for it
-to be accurate.**
-
+to be accurate.** This can be accomplished by running `sudo hwclock -w` while
+the Pi has the correct time being displayed.
 
 The following location provides a nice tutorial for setting up the Raspberry Pi
 to use the RTC:
@@ -188,89 +272,6 @@ power cable, remove the network connection, connect the Pi to a monitor and
 keyboard, leave it overnight, and then power it up and use "date" to
 verify that the time reported is correct.
 
-## Dependencies and Prerequisites
-
-The project must be cloned to `/home/pi/` for the scripts to work correctly.
-This can be done by running the following:
-
-```
-git clone https://github.com/lightningWhite/WeatherAndEMFSensingStation.git
-```
-
-The project requires Python 3 to be installed. 
-
-Once this repository is cloned, perform the following steps in the repository
-directory:
-
-Create a python virtual environment and activate it:
-
-```
-python3 -m venv env
-source env/bin/activate
-```
-
-Install the pip dependencies of the project (Note: Don't use sudo for the pip
-installation in the virtual environment): 
-
-```
-pip3 install -r requirements.txt
-```
-
-Install `tmux`:
-
-```
-sudo apt-get update
-sudo apt-get install tmux
-```
-
-The `install.sh` script when run will copy the necessary files to `/etc/init.d`
-so the weather station will start on boot automatically. It will also create a
-mount point and modify the fstab so an external USB storage device will be
-automatically mounted on boot. It will also configure the Pi to automatically
-connect to a network named `Weather` if present. This can be helpful if you want
-to connect to the Pi wirelessly using a mobile hotspot. The script will also
-configure the Pi to use the Real Time Clock for time. This script must be run
-as root and the Pi must be restarted for the changes to take effect:
-
-```
-sudo ./install.sh
-sudo reboot
-```
-
-## Running the Weather Station
-
-The `startWeatherStation.sh` script will start a tmux session and call the
-`initializeWeatherStation.sh` script. This script will source the python virtual
-environment. It will then start the weather station and detach the tmux session. 
-This makes it so the ssh session can time out or be terminated and the weather
-station process will remain running. Using tmux also allows the user to attach
-to the session at any time and view the real-time output of the program.
-
-After the `startWeatherStation.sh` script has been executed, you can attach to
-the process and view the output in real-time by typing `tmux attach`. To detach
-from the session again so it can continue running when the ssh session times
-out or you log out from it, type `Ctrl+b` and then `d`. This will put it in the
-background to continue running.
-
-Note that when the weather station has been started automatically on boot,
-to view the real-time output of the weather station, you must attach to the
-tmux session as root: `sudo tmux attach`.
-
-The EMF-390 sensor must be connected to the Raspberry Pi via USB for the weather
-station to start up correctly. The sensor must also be in vertical mode viewing
-RF. If this is not set up like this, the Weather Station may crash and/or won't
-report the correct EMF values. Also, it's important that the battery is
-removed from the EMF-390 device. Some resources on the internet report that
-the charging circuit is not shielded. Since it is plugged into the Raspberry
-Pi, this unshielded circuit would throw off the EMF readings.
-
-When the weather and EMF sensing station is started with the
-`startWeatherStation.sh` script, the real-time output will be written to a log
-file by the name of the time the weather station was started and be written to
-the /logs directory in the repository. Log messages are written to stdout and
-should capture most of the problems that may arise while the weather station is
-running. This can assist in debugging.
-
 ## Data Logging
 
 As the weather station runs, it will log readings from all of the sensors at a
@@ -309,7 +310,7 @@ Record Number, Time, Temperature (F), Pressure (mbar), Humidity (%), Wind Direct
 This can easily be viewed by opening the .csv file with a spreadsheet
 application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
 
-## Logging
+## Application Logging
 
 The `weather_station.py` file initializes a logger. Log messages from the
 weather and EMF sensing station will be stored in the `logs` directory by
@@ -475,7 +476,7 @@ This should show the IP address of the Raspberry Pi on the hotspot network.
 Any of the previously mentioned methods should now work to connect to the
 Raspberry Pi using the mobile device.
 
-## Files
+## Weather and EMF Sensing Station Files
 
 The following files are the primary files used in the weather and EMF sensing
 station:
@@ -503,7 +504,7 @@ weather_station.py file:
 resistance values in for calculating the wind direction
 * wind.py - Calculates the wind speed
 
-### Primary Weather Station and EMF Sensing Files 
+### Additional Documentation on Primary Weather Station and EMF Sensing Files 
 
 #### weather_station.py
 

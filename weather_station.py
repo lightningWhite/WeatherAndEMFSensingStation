@@ -11,6 +11,7 @@ import statistics
 import subprocess
 import sys
 import time
+import traceback
 import wind_direction
 
 # How often the sensor readings should be logged
@@ -108,6 +109,7 @@ log_file = ""
 backup_file = ""
 external_storage_connected = False
 previous_day = datetime.datetime.now()
+previous_month = datetime.datetime.now()
 
 # Check if an external USB storage device is connected
 check_external_drive = subprocess.Popen(
@@ -392,7 +394,7 @@ try:
             logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
 
         # Empty the log file every month so it doesn't grow too big
-        if int(current_time.strftime("%-m")) != int(previous_day.strftime("%-m")):
+        if int(current_time.strftime("%-m")) != int(previous_month.strftime("%-m")):
             print("Emptying the log file to conserve disk space")
             logging.log("Emptying the log file to conserve disk space")
             clear_log = subprocess.Popen(
@@ -401,7 +403,7 @@ try:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT)
             stdout, stderr = clear_log.communicate()
-            previous_day = current_time
+            previous_month = current_time
 
         # Clear the recorded values so they can be updated over the next LOG_INTERVAL
         store_speeds.clear()
@@ -425,4 +427,5 @@ try:
 
 except Exception as e:
     logging.log("An unhandled exception occurred causing a crash: " + str(e.args))
+    traceback.print_exc()
 
