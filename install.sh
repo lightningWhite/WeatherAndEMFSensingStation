@@ -37,6 +37,10 @@ echo "It can be done with 'sudo hwclock -w' while the clock is connected and the
 mkdir -p /home/pi/WeatherAndEMFSensingStation/data /home/pi/WeatherAndEMFSensingStation/logs
 chown pi:pi /home/pi/WeatherAndEMFSensingStation/data /home/pi/WeatherAndEMFSensingStation/logs
 
+# Enable ssh connections
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
 echo ""
 
 echo "The weather station has been installed!"

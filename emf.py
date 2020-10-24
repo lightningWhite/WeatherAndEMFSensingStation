@@ -15,6 +15,7 @@
 
 import logger as logging
 import subprocess
+import traceback
 import sys
 
 def to_MHz(frequency, unit):
@@ -152,6 +153,7 @@ def get_emf():
         USBDevice = get_serial_port()
     except Exception as e:
         logging.log(e)
+        traceback.print_exc()
         sys.exit(1)
         
     # Run the emf390cli application to obtain the EMF-390 sensor readings
