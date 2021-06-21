@@ -4,8 +4,10 @@
 
 The object of this project is to provide a collection of Python modules for
 various sensors to be connected to a Raspberry Pi to form a weather and
-Electromagnetic Frequency sensing station equipped with logging. It is heavily
-based off of the tutorial found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station) and further customized.
+Electromagnetic Frequency sensing station equipped with logging. The tutorial
+found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station)
+was used as a reference for some of the code in this repository. It was further
+customized and expanded.
 
 ## A Brief User's Guide
 
@@ -59,7 +61,8 @@ Raspberry Pi 3 Model B Board
 This project is set up to handle the following sensors:
 
 * [BME280](https://www.diymore.cc/products/5pcs-bme280-digital-pressure-sensor-temperature-humidity-barometricbreakout-module-board-gy-bme280interface-5v?_pos=1&_sid=955bdf851&_ss=r) - Temperature, pressure, and humidity.
-  * Provided by Diymore sensor. The address to access it is 0x76.
+  * Provided by Bosch. The address to access it is 0x76.
+  * [Datasheet](https://cdn-shop.adafruit.com/datasheets/BST-BME280_DS001-10.pdf)
 * [Wind / Rain Sensor Assembly](https://www.argentdata.com/catalog/product_info.php?products_id=145)
   * Provided by Argent Data Systems
   * [Datasheet](https://www.argentdata.com/files/80422_datasheet.pdf)
@@ -86,6 +89,15 @@ This project is set up to handle the following sensors:
 * [5.9 x 4.3 x 2.8inch (150 x 110 x 70mm) Junction Box](https://www.amazon.com/Zulkit-Dustproof-Waterproof-Universal-Electrical/dp/B07PVVDLCC/ref=asc_df_B07Q1YBFLP/?tag=&linkCode=df0&hvadid=344005018279&hvpos=&hvnetw=g&hvrand=4742956269277649464&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9029805&hvtargid=pla-807538012684&ref=&adgrpid=69357499415&th=1)
 * [5.9 x 5.9 x 2.8inch (150 x 150 x 70mm) Junction Box](https://www.amazon.com/LeMotech-Dustproof-Waterproof-Electrical-150mmx150mmx70mm/dp/B075DG55KS/ref=sr_1_4?dchild=1&keywords=150x150x70+junction+box+Zulkit&qid=1590254877&sr=8-4)
 * [ChronoDot 2.1 (DS3231 Chip) Real Time Clock](https://www.adafruit.com/product/255)
+* 1 - 64GB USB Thumb Drive
+* 1 - 25' 22 AWG Solid Core Insulated Wire
+* 1 - 1" x 6" x 24" Mounting Board
+* 1 - 6' Metal T-Post
+* 1 - Vertical T-Post Bracket
+* 1 - Horizontal T-Post Bracket
+* 12 - 1/2" Phillips Screws
+* 1 - 5' x 3/4" Velcro Roll with Adhesive
+* 1 - 2"-wide Winow Screen Repair Kit Fiberglass Mesh
 
 ## Installation and Setup on a Raspberry Pi
 
