@@ -62,7 +62,7 @@ This project is set up to handle the following sensors:
 
 * [BME280](https://www.diymore.cc/products/5pcs-bme280-digital-pressure-sensor-temperature-humidity-barometricbreakout-module-board-gy-bme280interface-5v?_pos=1&_sid=955bdf851&_ss=r) - Temperature, pressure, and humidity.
   * Provided by Bosch. The address to access it is 0x76.
-  * [Datasheet](https://cdn-shop.adafruit.com/datasheets/BST-BME280_DS001-10.pdf)
+  * [Datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf)
 * [Wind / Rain Sensor Assembly](https://www.argentdata.com/catalog/product_info.php?products_id=145)
   * Provided by Argent Data Systems
   * [Datasheet](https://www.argentdata.com/files/80422_datasheet.pdf)
