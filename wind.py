@@ -1,9 +1,9 @@
 # Argent Anemometer Sensor
-# 
+#
 # Reports the wind speed in miles per hour
 #
 # Ensure the following connections to the Raspberry Pi 3 Model B:
-# 
+#
 # Pin 3 on the RJ11 connector to Ground
 # Pin 4 on the RJ11 connector to BCM 5
 
@@ -18,19 +18,21 @@ SECS_IN_AN_HOUR = 3600
 CALIBRATION = 2.3589722140805094
 
 # How often the average wind speed and wind gust should be logged
-LOG_INTERVAL = 5 #900 # 15 Minutes in seconds
-wind_interval = 5 #30# How often in seconds to record the speed
+LOG_INTERVAL = 5  # 900 # 15 Minutes in seconds
+wind_interval = 5  # 30# How often in seconds to record the speed
 
-wind_speed_sensor = Button(5) # BCM 5
-wind_count = 0    # Number of half rotations
-radius_cm = 9.0   # Radius of the anemometer
+wind_speed_sensor = Button(5)  # BCM 5
+wind_count = 0  # Number of half rotations
+radius_cm = 9.0  # Radius of the anemometer
 
 # Store speeds in order to record wind gusts
 store_speeds = []
 
+
 def spin():
     global wind_count
     wind_count = wind_count + 1
+
 
 def calculate_speed(time_sec):
     global wind_count
@@ -50,9 +52,11 @@ def calculate_speed(time_sec):
     # data sheet
     return miles_per_hour * CALIBRATION
 
+
 def reset_wind():
     global wind_count
     wind_count = 0
+
 
 # Call the spin function every half rotation
 wind_speed_sensor.when_pressed = spin

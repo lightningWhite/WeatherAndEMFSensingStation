@@ -10,7 +10,7 @@
 # and rewritten to function properly.
 #
 # Ensure the following connections:
-# 
+#
 # Anemometer connected into the Wind Direction Sensor
 # Wind Direction Sensor connected to the RJ11 connector
 # Pin 2 on the RJ11 connector to 3v3
@@ -34,13 +34,13 @@ import math
 import time
 
 # How often the average wind direction should be logged
-LOG_INTERVAL = 5 #900 # 15 Minutes
+LOG_INTERVAL = 5  # 900 # 15 Minutes
 
 # Analog to Digital Converter
 adc = MCP3208(channel=0)
 
 # These voltage values mapped to headings came from the Raspberry Pi
-# weather station tutorial (see the readme). However, the voltages came 
+# weather station tutorial (see the readme). However, the voltages came
 # from an incorrect voltage divider equation.
 # In the tutorial, they used the following equation:
 # vout = (vin * r1) / (r1 + r2)
@@ -50,22 +50,24 @@ adc = MCP3208(channel=0)
 # (r1 in their equation), there are 16 different values, so it works.
 # Due to limited resources and time, I left it as they had it rather
 # than find a different resistor value that would also work.
-volts = {0.4: 0.0,
-         1.4: 22.5, 
-         1.2: 45.0, 
-         2.8: 67.5,
-         2.7: 90.0, 
-         2.9: 112.5, 
-         2.2: 135.0, 
-         2.5: 157.5,
-         1.8: 180.0, 
-         2.0: 202.5, 
-         0.7: 225.0, 
-         0.8: 247.5,
-         0.1: 270.0, 
-         0.3: 292.5, 
-         0.2: 315.0, 
-         0.6: 337.5}
+volts = {
+    0.4: 0.0,
+    1.4: 22.5,
+    1.2: 45.0,
+    2.8: 67.5,
+    2.7: 90.0,
+    2.9: 112.5,
+    2.2: 135.0,
+    2.5: 157.5,
+    1.8: 180.0,
+    2.0: 202.5,
+    0.7: 225.0,
+    0.8: 247.5,
+    0.1: 270.0,
+    0.3: 292.5,
+    0.2: 315.0,
+    0.6: 337.5,
+}
 
 # Calculate the average angle from a list of angles
 # This function comes from the Raspberry Pi Foundation's
@@ -84,7 +86,7 @@ def get_average(angles):
         cos_sum += math.cos(r)
 
     flen = float(len(angles))
-    
+
     # Don't allow division by 0
     if flen == 0:
         return 0.0
@@ -103,6 +105,7 @@ def get_average(angles):
 
     return 0.0 if average == 360 else average
 
+
 # Returns the average direction read over a period of time
 # This function is based on the "Build your own weather station"
 # tutorial, but had issues when trying to map the voltages to
@@ -111,24 +114,24 @@ def get_average(angles):
 # This function is not used by weather_station.py
 def get_value(time_period=LOG_INTERVAL):
     global volts
-    
+
     logging.log("Obtaining the average wind direction over a period of time")
 
     data = []
     expected_voltages = volts.keys()
     start_time = time.time()
-   
+
     # Accumulate some voltage readings during the log interval period
     while time.time() - start_time <= time_period:
 
         voltage = round(adc.value * 3.3, 3)
-        
+
         # Determine which directional voltage is closest to that which is read
-        closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))a
+        closest_voltage = min(expected_voltages, key=lambda x: abs(x - voltage))
         # Append the direction associated with the closest voltage
         data.append(volts[closest_voltage])
-    
-    # Average the collected 
+
+    # Average the collected
     return get_average(data)
 
 
@@ -142,40 +145,43 @@ def get_current_angle():
 
     expected_voltages = volts.keys()
     voltage = round(adc.value * 3.3, 3)
-    closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))
-    
+    closest_voltage = min(expected_voltages, key=lambda x: abs(x - voltage))
+
     # Return the angle mapped to the voltage read
     return volts[closest_voltage]
-    
+
 
 # A map that maps headings to wind direction strings
-directions = {0.0: "N",
-              22.5: "NNE", 
-              45.0: "NE", 
-              67.5: "ENE",
-              90.0: "E", 
-              112.5: "ESE", 
-              135.0: "SE", 
-              157.5: "SSE",
-              180.0: "S", 
-              202.5: "SSW", 
-              225.0: "SW", 
-              247.5: "WSW",
-              270.0: "W",
-              292.5: "WNW", 
-              315.0: "NW", 
-              337.5: "NNW"}
+directions = {
+    0.0: "N",
+    22.5: "NNE",
+    45.0: "NE",
+    67.5: "ENE",
+    90.0: "E",
+    112.5: "ESE",
+    135.0: "SE",
+    157.5: "SSE",
+    180.0: "S",
+    202.5: "SSW",
+    225.0: "SW",
+    247.5: "WSW",
+    270.0: "W",
+    292.5: "WNW",
+    315.0: "NW",
+    337.5: "NNW",
+}
 
 # Not used by weather_station.py
 def get_direction(time_period=LOG_INTERVAL):
     global directions
-    
+
     value = get_value(time_period)
-    
+
     expected_directions = directions.keys()
-    closest_direction = min(expected_directions, key=lambda x:abs(x-value))
+    closest_direction = min(expected_directions, key=lambda x: abs(x - value))
 
     return directions[closest_direction]
+
 
 # This function converts an angle direction to its associated string representation.
 def get_direction_as_string(angle):
@@ -184,7 +190,6 @@ def get_direction_as_string(angle):
     logging.log("Converting an angle direction to a string")
 
     expected_directions = directions.keys()
-    closest_direction = min(expected_directions, key=lambda x:abs(x-angle))
+    closest_direction = min(expected_directions, key=lambda x: abs(x - angle))
 
     return directions[closest_direction]
-

@@ -8,9 +8,9 @@
 # Some of the sensor interface code segments are based off of the
 # "Build your own weather station" tutorial, with additional
 # bug fixes and customizations.
-# This tutorial did not include code for the Pyranometer, EMF-390, 
+# This tutorial did not include code for the Pyranometer, EMF-390,
 # nor did it include data logging as it is done here.
-# 
+#
 # Written by Daniel Hornberger
 # 2020
 
@@ -31,10 +31,10 @@ import traceback
 import wind_direction
 
 # How often the sensor readings should be logged
-LOG_INTERVAL = 900 # 15 Minutes in seconds
+LOG_INTERVAL = 900  # 15 Minutes in seconds
 
 # How often readings should be taken to form the average that will be logged
-ACCUMULATION_INTERVAL = 10 # 10 seconds
+ACCUMULATION_INTERVAL = 10  # 10 seconds
 
 
 ###############################################################################
@@ -45,20 +45,23 @@ CM_IN_A_MILE = 160934.4
 SECS_IN_AN_HOUR = 3600
 # Calibration factor used to report the correct wind speed
 WIND_CALIBRATION = 2.3589722140805094
-RADIUS_CM = 9.0 # Radius of the anemometer
+RADIUS_CM = 9.0  # Radius of the anemometer
 
-wind_speed_sensor = Button(5) # BCM 5
-wind_count = 0        # Number of half rotations for calculating wind speed
-store_speeds = []     # Store speeds in order to record wind gusts
-store_directions = [] # Store directions to calculate the avg direction
+wind_speed_sensor = Button(5)  # BCM 5
+wind_count = 0  # Number of half rotations for calculating wind speed
+store_speeds = []  # Store speeds in order to record wind gusts
+store_directions = []  # Store directions to calculate the avg direction
+
 
 def reset_wind():
     global wind_count
     wind_count = 0
 
+
 def spin():
     global wind_count
     wind_count = wind_count + 1
+
 
 # Portions of this function are similar to the "Build your own
 # weather station" tutorial. It has been modified to report the
@@ -94,7 +97,7 @@ wind_speed_sensor.when_pressed = spin
 # Rain Gauge
 ###############################################################################
 
-BUCKET_SIZE = 0.011 # Inches per bucket tip
+BUCKET_SIZE = 0.011  # Inches per bucket tip
 
 rain_sensor = Button(6)
 rain_count = 0
@@ -109,6 +112,7 @@ def bucket_tipped():
     rain_count = rain_count + 1
     precipitation = round(rain_count * BUCKET_SIZE, 4)
 
+
 # This gets called at midnight to clear the accumulated precipitation value
 def reset_rainfall():
     logging.log("Resetting the accumulated rainfall")
@@ -116,6 +120,7 @@ def reset_rainfall():
     global precipitation
     rain_count = 0
     precipitation = 0.0
+
 
 rain_sensor.when_pressed = bucket_tipped
 
@@ -135,10 +140,11 @@ previous_month = datetime.datetime.now()
 
 # Check if an external USB storage device is connected
 check_external_drive = subprocess.Popen(
-    'df -h | grep /dev/sda1',
+    "df -h | grep /dev/sda1",
     shell=True,
     stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT) 
+    stderr=subprocess.STDOUT,
+)
 stdout, stderr = check_external_drive.communicate()
 
 # If an external USB storage device is connected, write the data to it
@@ -148,7 +154,9 @@ if len(stdout) > 0:
     log_file = "/mnt/usb1/" + time_name + ".log"
 # If an external USB storage device isn't connected, write to the repo directory
 else:
-    data_file = "/home/pi/WeatherAndEMFSensingStation" + "/" +  "data" + "/" + time_name + ".csv"
+    data_file = (
+        "/home/pi/WeatherAndEMFSensingStation" + "/" + "data" + "/" + time_name + ".csv"
+    )
     log_file = f"/home/pi/WeatherAndEMFSensingStation/logs/{time_name}.log"
 
 backup_file = data_file + ".bak"
@@ -157,8 +165,12 @@ backup_file = data_file + ".bak"
 logging.initialize_logger(log_file)
 
 if not external_storage_connected:
-    print("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
-    logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+    print(
+        "WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system."
+    )
+    logging.log(
+        "WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system."
+    )
 
 print("The EMF sensing station has been started")
 logging.log("The weather and emf sensing station has been started")
@@ -173,47 +185,49 @@ try:
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
-    
+
     with open(data_file, "w") as file:
         # Write the labels row
-        file.write("Record Number," \
-                   "Time," \
-                   "Temperature (F)," \
-                   "Pressure (mbar)," \
-                   "Humidity (%)," \
-                   "Wind Direction (Degrees)," \
-                   "Wind Direction (String)," \
-                   "Wind Speed (MPH)," \
-                   "Wind Gust (MPH)," \
-                   "Precipitation (Inches)," \
-                   "Shortwave Radiation (W m^(-2))," \
-                   "Avg. RF Watts (W)," \
-                   "Avg. RF Watts Frequency (MHz)," \
-                   "Peak RF Watts (W)," \
-                   "Frequency of RF Watts Peak (MHz),"\
-                   "Peak RF Watts Frequency (MHz)," \
-                   "Watts of RF Watts Frequency Peak (W)," \
-                   "Avg. RF Density (W m^(-2))," \
-                   "Avg. RF Density Frequency (MHz)," \
-                   "Peak RF Density (W m^(-2))," \
-                   "Frequency of RF Density Peak (MHz),"\
-                   "Peak RF Density Frequency (MHz)," \
-                   "Density of RF Density Frequency Peak (W m^(-2))," \
-                   "Avg. Total Density (W m^(-2))," \
-                   "Max Total Density (W m^(-2))," \
-                   "Avg. EF (V/m)," \
-                   "Max EF (V/m)," \
-                   "Avg. EMF (mG)," \
-                   "Max EMF (mG)\n")
-        
+        file.write(
+            "Record Number,"
+            "Time,"
+            "Temperature (F),"
+            "Pressure (mbar),"
+            "Humidity (%),"
+            "Wind Direction (Degrees),"
+            "Wind Direction (String),"
+            "Wind Speed (MPH),"
+            "Wind Gust (MPH),"
+            "Precipitation (Inches),"
+            "Shortwave Radiation (W m^(-2)),"
+            "Avg. RF Watts (W),"
+            "Avg. RF Watts Frequency (MHz),"
+            "Peak RF Watts (W),"
+            "Frequency of RF Watts Peak (MHz),"
+            "Peak RF Watts Frequency (MHz),"
+            "Watts of RF Watts Frequency Peak (W),"
+            "Avg. RF Density (W m^(-2)),"
+            "Avg. RF Density Frequency (MHz),"
+            "Peak RF Density (W m^(-2)),"
+            "Frequency of RF Density Peak (MHz),"
+            "Peak RF Density Frequency (MHz),"
+            "Density of RF Density Frequency Peak (W m^(-2)),"
+            "Avg. Total Density (W m^(-2)),"
+            "Max Total Density (W m^(-2)),"
+            "Avg. EF (V/m),"
+            "Max EF (V/m),"
+            "Avg. EMF (mG),"
+            "Max EMF (mG)\n"
+        )
+
     record_number = 1
-    
+
     ###############################################################################
     # The main program loop
     ###############################################################################
     while True:
         start_time = time.time()
-    
+
         store_directions = []
         store_speeds = []
         store_rf_watts = []
@@ -230,7 +244,7 @@ try:
         rf_total_density = 0.0
         ef_volts_per_meter = 0.0
         emf_milligauss = 0.0
-    
+
         # Accumulate wind direction and wind speeds every ACCUMULATION_INTERVAL
         # seconds, and log the averages every LOG_INTERVAL
         logging.log("Accumulating the sensor readings")
@@ -239,29 +253,35 @@ try:
 
             store_directions.append(wind_direction.get_current_angle())
             store_speeds.append(calculate_speed(ACCUMULATION_INTERVAL))
-            
+
             try:
-                rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = emf.get_emf()
+                rf_watts, rf_watts_mhz_frequency, rf_density, rf_density_frequency, rf_total_density, ef_volts_per_meter, emf_milligauss = (
+                    emf.get_emf()
+                )
             except Exception as e:
                 logging.log(str(e.args))
-                logging.log("Not accumulating the EMF sensor values because getting the values raised an exception")
+                logging.log(
+                    "Not accumulating the EMF sensor values because getting the values raised an exception"
+                )
                 bad_values = True
 
-            if not bad_values: 
-                store_rf_watts.append(rf_watts) 
+            if not bad_values:
+                store_rf_watts.append(rf_watts)
                 store_rf_watts_frequencies.append(rf_watts_mhz_frequency)
                 store_rf_density.append(rf_density)
                 store_rf_density_frequencies.append(rf_density_frequency)
                 store_rf_total_density.append(rf_total_density)
                 store_ef_volts_per_meter.append(ef_volts_per_meter)
                 store_emf_milligauss.append(emf_milligauss)
-    
+
             time.sleep(ACCUMULATION_INTERVAL)
-    
+
         # If any of the EMF lists are empty, they all are. Set the EMF sensor values to -1.
         if len(store_rf_watts) == 0:
-            logging.log("Setting the EMF values to -1 because no values were obtained from the sensor over the log period")
-            store_rf_watts.append(-1) 
+            logging.log(
+                "Setting the EMF values to -1 because no values were obtained from the sensor over the log period"
+            )
+            store_rf_watts.append(-1)
             store_rf_watts_frequencies.append(-1)
             store_rf_density.append(-1)
             store_rf_density_frequencies.append(-1)
@@ -269,74 +289,85 @@ try:
             store_ef_volts_per_meter.append(-1)
             store_emf_milligauss.append(-1)
 
-        # Obtain the wind gust and the average speed over the LOG_INTERVAL 
+        # Obtain the wind gust and the average speed over the LOG_INTERVAL
         wind_gust = round(max(store_speeds), 1)
         wind_speed = round(statistics.mean(store_speeds), 1)
-    
-        # Obtain the average wind direction over the LOG_INTERVAL 
+
+        # Obtain the average wind direction over the LOG_INTERVAL
         wind_direction_avg = round(wind_direction.get_average(store_directions), 1)
-        wind_direction_string = wind_direction.get_direction_as_string(wind_direction_avg)
-    
+        wind_direction_string = wind_direction.get_direction_as_string(
+            wind_direction_avg
+        )
+
         # Obtain the current humidity, pressure, and ambient temperature
-        logging.log("Obtaining the humidity, pressure, and temperature readings from the bme280 sensor")
+        logging.log(
+            "Obtaining the humidity, pressure, and temperature readings from the bme280 sensor"
+        )
         humidity, pressure, ambient_temp = bme280_sensor.read_all()
-    
+
         # Obtain the current shortwave radiation
         logging.log("Obtaining the shortwave radiation value from the pyranometer")
         shortwave_radiation = pyranometer.get_shortwave_radiation()
-   
+
         logging.log("Calculating the max, peak, and averages of the EMF data")
-    
+
         # Obtain the max RF watts value and its associated frequency
         rf_watts_peak = max(store_rf_watts)
-        frequency_of_rf_watts_peak = round(store_rf_watts_frequencies[store_rf_watts.index(max(store_rf_watts))], 1)
-    
+        frequency_of_rf_watts_peak = round(
+            store_rf_watts_frequencies[store_rf_watts.index(max(store_rf_watts))], 1
+        )
+
         # Obtain the max RF watts frequency and its associated power (watts)
         rf_watts_frequency_peak = max(store_rf_watts_frequencies)
-        watts_of_rf_watts_frequency_peak = store_rf_watts[store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))]
-    
+        watts_of_rf_watts_frequency_peak = store_rf_watts[
+            store_rf_watts_frequencies.index(max(store_rf_watts_frequencies))
+        ]
+
         # Obtain the average RF power and the average frequency
         rf_watts_avg = statistics.mean(store_rf_watts)
         rf_watts_frequency_avg = round(statistics.mean(store_rf_watts_frequencies), 1)
-    
-    
+
         # Obtain the max RF density value and its associated frequency
         rf_density_peak = max(store_rf_density)
-        frequency_of_rf_density_peak = round(store_rf_density_frequencies[store_rf_density.index(max(store_rf_density))], 1)
-    
+        frequency_of_rf_density_peak = round(
+            store_rf_density_frequencies[store_rf_density.index(max(store_rf_density))],
+            1,
+        )
+
         # Obtain the max RF density frequency and its associated density (W m^-2)
         rf_density_frequency_peak = max(store_rf_density_frequencies)
-        density_of_rf_density_frequency_peak = store_rf_density[store_rf_density_frequencies.index(max(store_rf_density_frequencies))]
-    
+        density_of_rf_density_frequency_peak = store_rf_density[
+            store_rf_density_frequencies.index(max(store_rf_density_frequencies))
+        ]
+
         # Obtain the average RF power density and the average frequency
         rf_density_avg = statistics.mean(store_rf_density)
-        rf_density_frequency_avg = round(statistics.mean(store_rf_density_frequencies), 1)
-    
-    
+        rf_density_frequency_avg = round(
+            statistics.mean(store_rf_density_frequencies), 1
+        )
+
         # Obtain the average and max RF total density value
         rf_total_density_avg = statistics.mean(store_rf_total_density)
         rf_total_density_max = max(store_rf_total_density)
-    
-    
+
         # Obtain the average and max EF values
         ef_volts_per_meter_avg = round(statistics.mean(store_ef_volts_per_meter), 1)
         ef_volts_per_meter_max = round(max(store_ef_volts_per_meter), 1)
-    
-    
+
         # Obtain the average and max EMF values
         emf_milligauss_avg = round(statistics.mean(store_emf_milligauss), 1)
         emf_milligauss_max = round(max(store_emf_milligauss), 1)
-    
+
         # This will pull from the Real Time Clock so it can be accurate
         # when there isn't an internet connection. See the readme for
         # instructions on how to configure the Real Time Clock correctly.
         current_time = datetime.datetime.now()
-        
+
         logging.log("Printing the values obtained and calculated")
-    
+
         print(f"Record Number:                                 {record_number}")
         print(f"Time:                                          {current_time}")
-    
+
         # Weather
         print(f"Temperature (F):                               {ambient_temp}")
         print(f"Pressure (mbar):                               {pressure}")
@@ -347,73 +378,107 @@ try:
         print(f"Wind Gust (MPH):                               {wind_gust}")
         print(f"Precipitation (Inches):                        {precipitation}")
         print(f"Shortwave Radiation (W m^-2):                  {shortwave_radiation}")
-    
+
         # RF Watts
         print(f"Avg. RF Watts (W):                             {rf_watts_avg:.16f}")
-        print(f"Avg. RF Watts Frequency (MHz):                 {rf_watts_frequency_avg}")
+        print(
+            f"Avg. RF Watts Frequency (MHz):                 {rf_watts_frequency_avg}"
+        )
         print(f"Peak RF Watts (W):                             {rf_watts_peak:.16f}")
-        print(f"Frequency of RF Watts Peak (MHz):              {frequency_of_rf_watts_peak}")
-        print(f"Peak RF Watts Frequency (MHz):                 {rf_watts_frequency_peak}")
-        print(f"Watts of RF Watts Frequency Peak (W):          {watts_of_rf_watts_frequency_peak:.16f}")
-    
+        print(
+            f"Frequency of RF Watts Peak (MHz):              {frequency_of_rf_watts_peak}"
+        )
+        print(
+            f"Peak RF Watts Frequency (MHz):                 {rf_watts_frequency_peak}"
+        )
+        print(
+            f"Watts of RF Watts Frequency Peak (W):          {watts_of_rf_watts_frequency_peak:.16f}"
+        )
+
         # RF Density
         print(f"Avg. RF Density (W m^-2):                      {rf_density_avg:.16f}")
-        print(f"Avg. RF Density Frequency (MHz):               {rf_density_frequency_avg}")
+        print(
+            f"Avg. RF Density Frequency (MHz):               {rf_density_frequency_avg}"
+        )
         print(f"Peak RF Density (W m^-2):                      {rf_density_peak:.16f}")
-        print(f"Frequency of RF Density Peak (MHz):            {frequency_of_rf_density_peak}")
-        print(f"Peak RF Density Frequency (MHz):               {rf_density_frequency_peak}")
-        print(f"Density of RF Density Frequency Peak (W m^-2): {density_of_rf_density_frequency_peak:.16f}")
-    
-        # RF Total Density 
-        print(f"Avg. RF Total Density (W m^-2):                {rf_total_density_avg:.16f}")
-        print(f"Max  RF Total Density (W m^-2):                {rf_total_density_max:.16f}")
-    
+        print(
+            f"Frequency of RF Density Peak (MHz):            {frequency_of_rf_density_peak}"
+        )
+        print(
+            f"Peak RF Density Frequency (MHz):               {rf_density_frequency_peak}"
+        )
+        print(
+            f"Density of RF Density Frequency Peak (W m^-2): {density_of_rf_density_frequency_peak:.16f}"
+        )
+
+        # RF Total Density
+        print(
+            f"Avg. RF Total Density (W m^-2):                {rf_total_density_avg:.16f}"
+        )
+        print(
+            f"Max  RF Total Density (W m^-2):                {rf_total_density_max:.16f}"
+        )
+
         # EF
-        print(f"Avg. EF (V/m):                                 {ef_volts_per_meter_avg}")
-        print(f"Max  EF (V/m):                                 {ef_volts_per_meter_max}")
-    
+        print(
+            f"Avg. EF (V/m):                                 {ef_volts_per_meter_avg}"
+        )
+        print(
+            f"Max  EF (V/m):                                 {ef_volts_per_meter_max}"
+        )
+
         # EMF
         print(f"Avg. EMF (mG):                                 {emf_milligauss_avg}")
         print(f"Max  EMF (mG):                                 {emf_milligauss_max}")
-    
-        print("##########################################################################")
+
+        print(
+            "##########################################################################"
+        )
 
         logging.log(f"Creating a temporary backup file of the data at {backup_file}")
         backup_data = subprocess.Popen(
             f"cp {data_file} {backup_file}",
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.STDOUT,
+        )
         stdout, stderr = backup_data.communicate()
-        
+
         logging.log(f"Writing the data to {data_file}")
-    
+
         # Log the data by appending the values to the data .csv file
         with open(data_file, "a") as file:
-            file.write(f"{record_number},{current_time},{ambient_temp},{pressure}," \
-                       f"{humidity},{wind_direction_avg},{wind_direction_string}," \
-                       f"{wind_speed},{wind_gust},{precipitation}," \
-                       f"{shortwave_radiation},{rf_watts_avg:.16f},{rf_watts_frequency_avg}," \
-                       f"{rf_watts_peak:.16f},{frequency_of_rf_watts_peak}," \
-                       f"{rf_watts_frequency_peak},{watts_of_rf_watts_frequency_peak:.16f}," \
-                       f"{rf_density_avg:.16f},{rf_density_frequency_avg}," \
-                       f"{rf_density_peak:.16f},{frequency_of_rf_density_peak}," \
-                       f"{rf_density_frequency_peak},{density_of_rf_density_frequency_peak:.16f}," \
-                       f"{rf_total_density_avg:.16f},{rf_total_density_max:.16f}," \
-                       f"{ef_volts_per_meter_avg},{ef_volts_per_meter_max}," \
-                       f"{emf_milligauss_avg},{emf_milligauss_max}\n")
+            file.write(
+                f"{record_number},{current_time},{ambient_temp},{pressure},"
+                f"{humidity},{wind_direction_avg},{wind_direction_string},"
+                f"{wind_speed},{wind_gust},{precipitation},"
+                f"{shortwave_radiation},{rf_watts_avg:.16f},{rf_watts_frequency_avg},"
+                f"{rf_watts_peak:.16f},{frequency_of_rf_watts_peak},"
+                f"{rf_watts_frequency_peak},{watts_of_rf_watts_frequency_peak:.16f},"
+                f"{rf_density_avg:.16f},{rf_density_frequency_avg},"
+                f"{rf_density_peak:.16f},{frequency_of_rf_density_peak},"
+                f"{rf_density_frequency_peak},{density_of_rf_density_frequency_peak:.16f},"
+                f"{rf_total_density_avg:.16f},{rf_total_density_max:.16f},"
+                f"{ef_volts_per_meter_avg},{ef_volts_per_meter_max},"
+                f"{emf_milligauss_avg},{emf_milligauss_max}\n"
+            )
 
         logging.log(f"Removing the temporary backup file {backup_file}")
         remove_temp_backup_file = subprocess.Popen(
             f"rm {backup_file}",
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.STDOUT,
+        )
         stdout, stderr = remove_temp_backup_file.communicate()
 
         if not external_storage_connected:
-            print("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
-            logging.log("WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system.")
+            print(
+                "WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system."
+            )
+            logging.log(
+                "WARNING: The data is not being backed up. Ensure an external storage device is connected and restart the system."
+            )
 
         # Empty the log file every month so it doesn't grow too big
         if int(current_time.strftime("%-m")) != int(previous_month.strftime("%-m")):
@@ -423,7 +488,8 @@ try:
                 f"rm {log_file}",
                 shell=True,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
+                stderr=subprocess.STDOUT,
+            )
             stdout, stderr = clear_log.communicate()
             previous_month = current_time
 
@@ -431,23 +497,22 @@ try:
         store_speeds.clear()
         store_directions.clear()
         store_rf_watts.clear()
-        store_rf_watts_frequencies.clear() 
+        store_rf_watts_frequencies.clear()
         store_rf_density.clear()
         store_rf_density_frequencies.clear()
         store_rf_total_density.clear()
         store_ef_volts_per_meter.clear()
         store_emf_milligauss.clear()
-    
+
         # Clear the rainfall each day at midnight
         # When it's a new weekday, clear the rainfall total
         if int(current_time.strftime("%w")) != int(previous_day.strftime("%w")):
             print("Resetting the accumulated rainfall")
             reset_rainfall()
             previous_day = current_time
-    
+
         record_number = record_number + 1
 
 except Exception as e:
     logging.log("An unhandled exception occurred causing a crash: " + str(e.args))
     traceback.print_exc()
-
