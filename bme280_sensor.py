@@ -2,7 +2,12 @@
 # 
 # Reports the Relative Humidity as a percentage.
 # Reports the Barometric Pressure in millibars calibrated to an elevation.
-# Reports the Temperature in Fahrenheit or Celsius
+# Reports the Temperature in Fahrenheit or Celsius.
+#
+# This file is similar to the code provided in the Raspberry Pi Foundation's
+# "Build your own weather station" tutorial. It was further customized
+# by adding calibration, Fahrenheit, rounding, and modularity for integration
+# with the weather_station.py file.
 #
 # Ensure the following connections to the Raspberry Pi 3 Model B:
 # 

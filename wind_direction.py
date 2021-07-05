@@ -4,6 +4,11 @@
 # and maps it do the corresponding direction. It then averages the readings
 # over a period of time and then logs the average.
 #
+# Portions of this code came from the Raspberri Pi Foundation's "Build
+# your own weather station" tutorial. Some issues were encountered with
+# the default code provided though, so the functions have been customized
+# and rewritten to function properly.
+#
 # Ensure the following connections:
 # 
 # Anemometer connected into the Wind Direction Sensor
@@ -63,6 +68,10 @@ volts = {0.4: 0.0,
          0.6: 337.5}
 
 # Calculate the average angle from a list of angles
+# This function comes from the Raspberry Pi Foundation's
+# "Build your own weather station" tutorial. However, as it
+# was, division by zero could occur. This function resolves
+# that bug.
 def get_average(angles):
     logging.log("Calculating the average of the list of angles")
 
@@ -95,6 +104,11 @@ def get_average(angles):
     return 0.0 if average == 360 else average
 
 # Returns the average direction read over a period of time
+# This function is based on the "Build your own weather station"
+# tutorial, but had issues when trying to map the voltages to
+# the associated directions. The function has been modified
+# to work more reliably.
+# This function is not used by weather_station.py
 def get_value(time_period=LOG_INTERVAL):
     global volts
     
@@ -103,18 +117,24 @@ def get_value(time_period=LOG_INTERVAL):
     data = []
     expected_voltages = volts.keys()
     start_time = time.time()
-    
+   
+    # Accumulate some voltage readings during the log interval period
     while time.time() - start_time <= time_period:
 
         voltage = round(adc.value * 3.3, 3)
-
-        closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))
-        data.append(volts[closest_voltage])
         
+        # Determine which directional voltage is closest to that which is read
+        closest_voltage = min(expected_voltages, key=lambda x:abs(x-voltage))a
+        # Append the direction associated with the closest voltage
+        data.append(volts[closest_voltage])
+    
+    # Average the collected 
     return get_average(data)
 
 
 # Returns the current wind direction
+# This function is what the weather_station.py file calls when
+# calculating the wind direction over a period of time.
 def get_current_angle():
     global volts
 
@@ -146,7 +166,7 @@ directions = {0.0: "N",
               315.0: "NW", 
               337.5: "NNW"}
 
-
+# Not used by weather_station.py
 def get_direction(time_period=LOG_INTERVAL):
     global directions
     
@@ -157,6 +177,7 @@ def get_direction(time_period=LOG_INTERVAL):
 
     return directions[closest_direction]
 
+# This function converts an angle direction to its associated string representation.
 def get_direction_as_string(angle):
     global directions
 

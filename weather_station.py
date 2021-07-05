@@ -1,3 +1,19 @@
+# Weather and EMR Sensing Station
+#
+# This file is the main entrypoint for the station.
+# It imports the necessary submodules, contains various functions
+# and code segments for interfacing with the various station
+# components, and performs the main program loop.
+#
+# Some of the sensor interface code segments are based off of the
+# "Build your own weather station" tutorial, with additional
+# bug fixes and customizations.
+# This tutorial did not include code for the Pyranometer, EMF-390, 
+# nor did it include data logging as it is done here.
+# 
+# Written by Daniel Hornberger
+# 2020
+
 from gpiozero import Button
 import bme280_sensor
 import datetime
@@ -44,6 +60,9 @@ def spin():
     global wind_count
     wind_count = wind_count + 1
 
+# Portions of this function are similar to the "Build your own
+# weather station" tutorial. It has been modified to report the
+# wind speed in MPH, along with some other customizations.
 def calculate_speed(time_sec):
     logging.log("Calculating the wind speed")
     global wind_count
@@ -81,6 +100,8 @@ rain_sensor = Button(6)
 rain_count = 0
 precipitation = 0.0
 
+# This function is based on that provided by the "Build your own weather
+# station" tutorial with some minor customizations.
 def bucket_tipped():
     logging.log("Detected a rainfall bucket tip")
     global rain_count
@@ -88,6 +109,7 @@ def bucket_tipped():
     rain_count = rain_count + 1
     precipitation = round(rain_count * BUCKET_SIZE, 4)
 
+# This gets called at midnight to clear the accumulated precipitation value
 def reset_rainfall():
     logging.log("Resetting the accumulated rainfall")
     global rain_count

@@ -1,25 +1,26 @@
-# Weather and EMF Sensing Station
+# Weather and EMR Sensing Station
 
 ## Overview
 
 The object of this project is to provide a collection of Python modules for
 various sensors to be connected to a Raspberry Pi to form a weather and
-Electromagnetic Frequency sensing station equipped with logging. The tutorial
+Electromagnetic Radiation sensing station equipped with logging. The tutorial
 found [here](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station)
-was used as a reference for some of the code in this repository. It was further
-customized and expanded.
+was used as a reference for some of the sensor interface code in this repository.
+The snippets that were used were further customized and expanded. Much more
+code was written to meet the end-goals of the project.
 
 ## A Brief User's Guide
 
-Here are some brief points for common use of the WeatherAndEMFSensing Station:
+Here are some brief points for common use of the WeatherAndEMRSensing Station:
 
-To start the station and begin logging the weather and EMF readings, simply power
-on the Raspberry Pi with the EMF sensor plugged into one of the USB ports, the
+To start the station and begin logging the weather and EMR readings, simply power
+on the Raspberry Pi with the EMR sensor plugged into one of the USB ports, the
 PiHAT securely on the GPIO pins, and an external storage device plugged
 into one of the USB drives. When the Pi turns on, it will automatically start
 the sensing station and begin logging the readings.
 
-When the Pi turns on, always ensure that the EMF sensor is in vertical mode
+When the Pi turns on, always ensure that the EMR sensor is in vertical mode
 showing the RF reading. The device is in the correct mode when you can see that
 the main screen is in portrait mode and divided into thirds by three horizontal
 lines. The top section should show the time (it's okay if it's the wrong time),
@@ -29,10 +30,10 @@ the peak density reading since the device was powered on. If it is not in
 vertical mode when it turns on, change it to vertical mode, press and hold the
 power button to turn off the device, then press and hold the power button to turn
 it back on. Then restart the Raspberry Pi to be sure that correct data collection
-will begin. The EMF sensor should start up in the same mode as when it was turned
-off in this manner. Having the EMF sensor in vertical mode is required for proper
-functionality of the EMF sensing station. For any questions about operating the
-EMF sensor, visit this documentation page:
+will begin. The EMR sensor should start up in the same mode as when it was turned
+off in this manner. Having the EMR sensor in vertical mode is required for proper
+functionality of the EMR sensing station. For any questions about operating the
+EMR sensor, visit this documentation page:
 
 https://www.gqelectronicsllc.com/GQ-EMF-360V2-380V2-390_UserGuide.pdf
 
@@ -183,12 +184,12 @@ tmux session as root: `sudo tmux attach`.
 The EMF-390 sensor must be connected to the Raspberry Pi via USB for the weather
 station to start up correctly. The sensor must also be in vertical mode viewing
 RF. If this is not set up like this, the Weather Station may crash and/or won't
-report the correct EMF values. Also, it's important that the battery is
+report the correct EMR values. Also, it's important that the battery is
 removed from the EMF-390 device. Some resources on the internet report that
 the charging circuit is not shielded. Since it is plugged into the Raspberry
-Pi, this unshielded circuit would throw off the EMF readings.
+Pi, this unshielded circuit would throw off the EMR readings.
 
-When the weather and EMF sensing station is started with the
+When the weather and EMR sensing station is started with the
 `startWeatherStation.sh` script, the real-time output will be written to a log
 file by the name of the time the weather station was started and be written to
 the /logs directory in the repository. Log messages are written to stdout and
@@ -325,7 +326,7 @@ application such as Microsoft Excel, LibreOffice Calc, or Google Sheets.
 ## Application Logging
 
 The `weather_station.py` file initializes a logger. Log messages from the
-weather and EMF sensing station will be stored in the `logs` directory by
+weather and EMR sensing station will be stored in the `logs` directory by
 the same time name as the data file. This log output can be very helpful for
 debugging if any issues arise. If an external storage device is connected,
 the log file will be written to `/mnt/usb1` instead of the logs directory
@@ -488,14 +489,14 @@ This should show the IP address of the Raspberry Pi on the hotspot network.
 Any of the previously mentioned methods should now work to connect to the
 Raspberry Pi using the mobile device.
 
-## Weather and EMF Sensing Station Files
+## Weather and EMR Sensing Station Files
 
-The following files are the primary files used in the weather and EMF sensing
+The following files are the primary files used in the weather and EMR sensing
 station:
 
 * weather_station.py - The main program loop
 * bme280_sensor.py - Temperature, pressure, and humidity sensing
-* emf.py - EMF sensing
+* emf.py - EMR sensing
 * pyranometer.py - Solar radiation sensing (Shortwave sensing)
 * wind_direction.py - Wind direction sensing
 
@@ -516,7 +517,7 @@ weather_station.py file:
 resistance values in for calculating the wind direction
 * wind.py - Calculates the wind speed
 
-### Additional Documentation on Primary Weather Station and EMF Sensing Files 
+### Additional Documentation on Primary Weather Station and EMR Sensing Files 
 
 #### weather_station.py
 
@@ -664,7 +665,7 @@ emf, 0.6, 0.6, mG, 0, n/a
 For each metric, it lists the name, the value, the raw value, the raw value
 unit, the MHz, and the MHz unit.
 
-IMPORTANT: In order for the correct values to be obtained, the EMF sensor must
+IMPORTANT: In order for the correct values to be obtained, the EMR sensor must
 be in `Vertical Mode` or else the readings will be incorrect and a potential
 crash could occur.
 
@@ -967,7 +968,7 @@ With the Pi off, carefully place the Pi-HAT fully on the GPIO pins. Make sure
 that header of the Pi-HAT is correctly on the pins. 
 
 Screw the junction boxes to a board leaving the middle free for the vertical
-T-post mounting plate. Velcro the EMF sensor, Pi, and BME-280 sensor in their
+T-post mounting plate. Velcro the EMR sensor, Pi, and BME-280 sensor in their
 respective boxes. Connect the wires between them.
 
 ![Step 7](./images/IMG_20200509_174329.jpg)
