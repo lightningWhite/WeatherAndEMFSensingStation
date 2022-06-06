@@ -5,7 +5,7 @@ authors = ["codref <dalfarra@codref.com>"]
 edition = "2018"
 
 [dependencies]
-regex = "1.1.0"
+regex = "1.5.5"
 serialport = "3.2.0"
 clap = "2.32.0"
 serde = "1.0.84"
